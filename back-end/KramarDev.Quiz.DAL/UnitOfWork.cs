@@ -1,0 +1,54 @@
+﻿using KramarDev.Quiz.DAL.Repositories;
+using KramarDev.Quiz.DALAbstractions;
+using System.Data;
+
+namespace KramarDev.Quiz.DAL;
+
+public sealed class UnitOfWork : IUnitOfWork
+{
+    private static readonly DbContextOptions<QuizDbContext> _options;
+
+    QuizDbContext _ctx = new (_options);
+
+    static UnitOfWork()
+    {
+        var connectionString = DatabaseConfig.GetConnectionString();
+        var optionsBuilder = new DbContextOptionsBuilder<QuizDbContext>();
+        optionsBuilder.UseSqlServer(connectionString);
+        _options = optionsBuilder.Options;
+    }
+
+    public ITestRepository TestRepository => new TestRepository(_ctx);
+
+    public ITechnologyRepository TechnologyRepository => new TechnologyRepository(_ctx);
+
+    public ITestQuestionRepository TestQuestionRepository => new TestQuestionRepository(_ctx);
+
+    public IComplexQueriesRepository ComplexQueriesRepository => new ComplexQueriesRepository(_ctx);
+
+    public async Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
+    {
+        await _ctx.Database.BeginTransactionAsync(isolationLevel);
+    }
+
+    public async Task CommitTransactionAsync()
+    {
+        await _ctx.Database.CommitTransactionAsync();
+    }
+
+    public async Task RollbackTransactionAsync()
+    {
+        await _ctx.Database.RollbackTransactionAsync();
+    }
+
+    public async Task<int> SaveAsync()
+    {
+        return await _ctx.SaveChangesAsync();
+    }
+
+    public async Task UpdateDbAsync()
+    {
+        await _ctx.Database.MigrateAsync();
+        DbInitializer.Initialize(_ctx);
+    }
+}
