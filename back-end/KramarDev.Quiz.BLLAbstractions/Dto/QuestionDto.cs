@@ -2,6 +2,8 @@
 
 public sealed class QuestionDto
 {
+    public int Number { get; set; }
+
     public int TestId { get; set; }
 
     public int QuestionId { get; set; }

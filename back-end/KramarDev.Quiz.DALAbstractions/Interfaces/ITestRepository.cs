@@ -8,10 +8,6 @@ public interface ITestRepository
 
     Task AnswerAndSaveAsync(QuestionAnswerDto answer);
 
-    Task<TestDto> GetTestByIdAsync(string userName, int? testId);
-
-    Task<TestResultDto> GetTestResultAsync(string userName, int testId);
-
     Task CompleteTestAndSaveAsync(string userName, int testId, float finalScore);
 
     Task<int?> GetActiveTestByUserAsync(string userName);
@@ -19,4 +15,6 @@ public interface ITestRepository
     Task<CurrentTestStateDto> GetCurrentTestStateAsync(int testId);
 
     Task<bool> CanAnswerQuestionAsync(int testId, int questionId, string userName);
+
+    Task CancelTestAsync(string userName, int testId);
 }

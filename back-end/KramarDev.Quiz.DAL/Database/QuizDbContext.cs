@@ -24,6 +24,15 @@ public class QuizDbContext : IdentityDbContext<User>
             .HasPrincipalKey(e => e.Id)
             .OnDelete(DeleteBehavior.Restrict);
 
+        builder.Entity<Test>()
+            .Property(t => t.State)
+            .HasConversion<byte>();
+
+        builder.Entity<Test>()
+            .ToTable(t => t.HasCheckConstraint(
+                "CK_Test_State",
+                "[State] in (0, 1, 2)"));
+
         builder.Entity<Question>()
             .HasMany(e => e.TestQuestions)
             .WithOne(e => e.Question)

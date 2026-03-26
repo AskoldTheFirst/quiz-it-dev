@@ -11,8 +11,4 @@ public class TechnologyModel
     public int QuestionCount { get; set; }
 
     public int DurationInMinute { get; set; }
-
-    public string Color { get; set; }
-
-    public string Icon { get; set; }
 }

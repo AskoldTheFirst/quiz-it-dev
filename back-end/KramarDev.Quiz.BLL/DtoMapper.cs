@@ -4,6 +4,22 @@ namespace KramarDev.Quiz.BLL;
 
 static class DtoMapper
 {
+    public static AnswerDto[] FromDAL(DAL.AnswerResultDto[] dto)
+    {
+        AnswerDto[] answers = new AnswerDto[dto.Length];
+        for(int i = 0; i < dto.Length; ++i)
+        {
+            answers[i] = new AnswerDto() {
+                Answer = dto[i].Answer,
+                Complexity = dto[i].Complexity,
+                CorrectAnswer = dto[i].CorrectAnswer,
+                QuestionText = dto[i].QuestionText,
+            };
+        }
+
+        return answers;
+    }
+
     public static TechnologyDto[] FromDAL(DAL.TechnologyDto[] dto)
     {
         TechnologyDto[] technologies = new TechnologyDto[dto.Length];
@@ -16,8 +32,6 @@ static class DtoMapper
                 Description = dto[i].Description,
                 DurationInMinutes = dto[i].DurationInMinutes,
                 QuestionCount = dto[i].QuestionCount,
-                Color = dto[i].Color,
-                IconName = dto[i].IconName,
             };
         }
 
@@ -28,6 +42,7 @@ static class DtoMapper
     {
         QuestionDto question = new QuestionDto
         {
+            Number = dto.Number,
             TestId = dto.TestId,
             QuestionId = dto.QuestionId,
             TestQuestionId = dto.TestQuestionId,

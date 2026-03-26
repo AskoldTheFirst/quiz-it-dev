@@ -84,18 +84,4 @@ public class AppController(
             Login = user.UserName
         };
     }
-
-    [Authorize]
-    [HttpGet("currentUser")]
-    public async Task<ActionResult<UserModel>> GetCurentUser()
-    {
-        var user = await _userManager.FindByNameAsync(User.Identity.Name);
-
-        return new UserModel
-        {
-            Email = user.Email,
-            Token = await _tokenService.GenerateTokenAsync(user),
-            Login = user.UserName
-        };
-    }
 }

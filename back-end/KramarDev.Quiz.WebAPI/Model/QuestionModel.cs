@@ -2,6 +2,8 @@
 
 public sealed class QuestionModel
 {
+    public int Number {  get; set; }
+
     public int TestId { get; set; }
 
     public int QuestionId { get; set; }
@@ -22,6 +24,7 @@ public sealed class QuestionModel
     {
         return new QuestionModel
         {
+            Number = questionDto.Number,
             QuestionId = questionDto.QuestionId,
             TestId = questionDto.TestId,
             TestQuestionId = questionDto.TestQuestionId,

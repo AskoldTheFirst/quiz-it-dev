@@ -4,6 +4,8 @@ public interface IUnitOfWork
 {
     ITestRepository TestRepository { get; }
 
+    IQuestionRepository QuestionRepository { get; }
+
     ITechnologyRepository TechnologyRepository { get; }
 
     ITestQuestionRepository TestQuestionRepository { get; }

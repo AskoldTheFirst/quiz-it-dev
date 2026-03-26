@@ -109,11 +109,6 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Color")
-                        .IsRequired()
-                        .HasMaxLength(7)
-                        .HasColumnType("nvarchar(7)");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(220)
@@ -121,10 +116,6 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
 
                     b.Property<int>("DurationInMinutes")
                         .HasColumnType("int");
-
-                    b.Property<string>("IconName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -162,8 +153,14 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     b.Property<string>("IpAddress")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<byte>("State")
+                        .HasColumnType("tinyint");
 
                     b.Property<int>("TechnologyId")
                         .HasColumnType("int");
@@ -180,7 +177,10 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
 
                     b.HasIndex("Username");
 
-                    b.ToTable("Tests");
+                    b.ToTable("Tests", t =>
+                        {
+                            t.HasCheckConstraint("CK_Test_State", "[State] in (0, 1, 2)");
+                        });
                 });
 
             modelBuilder.Entity("KramarDev.Quiz.DAL.Database.Tables.TestQuestion", b =>
@@ -318,13 +318,13 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "81aff6ad-fb8d-4f3f-9d43-670ada7a830c",
+                            Id = "d4b4ae03-6b76-4209-b404-de1728480e99",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
-                            Id = "6527c0fe-2281-4c7a-9755-4ce2b0090165",
+                            Id = "8e06977e-328c-4d1f-837b-8eef42dbcc77",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });

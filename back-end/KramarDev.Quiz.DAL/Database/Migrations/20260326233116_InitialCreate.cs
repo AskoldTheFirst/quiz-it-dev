@@ -80,9 +80,7 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     Description = table.Column<string>(type: "nvarchar(220)", maxLength: 220, nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     QuestionCount = table.Column<int>(type: "int", nullable: false),
-                    DurationInMinutes = table.Column<int>(type: "int", nullable: false),
-                    Color = table.Column<string>(type: "nvarchar(7)", maxLength: 7, nullable: false),
-                    IconName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    DurationInMinutes = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -233,11 +231,14 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     TechnologyId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FinishDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    State = table.Column<byte>(type: "tinyint", nullable: false),
+                    IpAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsHidden = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tests", x => x.Id);
+                    table.CheckConstraint("CK_Test_State", "[State] in (0, 1, 2)");
                     table.ForeignKey(
                         name: "FK_Tests_Technologies_TechnologyId",
                         column: x => x.TechnologyId,
@@ -281,8 +282,8 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6527c0fe-2281-4c7a-9755-4ce2b0090165", null, "Admin", "ADMIN" },
-                    { "81aff6ad-fb8d-4f3f-9d43-670ada7a830c", null, "Member", "MEMBER" }
+                    { "8e06977e-328c-4d1f-837b-8eef42dbcc77", null, "Admin", "ADMIN" },
+                    { "d4b4ae03-6b76-4209-b404-de1728480e99", null, "Member", "MEMBER" }
                 });
 
             migrationBuilder.CreateIndex(

@@ -1,7 +1,5 @@
 ﻿using DAL = KramarDev.Quiz.DALAbstractions.Dto;
 using BL = KramarDev.Quiz.BLLAbstractions.Dto;
-using System.ComponentModel;
-using KramarDev.Quiz.DALAbstractions.Dto;
 
 namespace KramarDev.Quiz.BLL;
 
@@ -10,7 +8,7 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
     private readonly IUnitOfWork _uow = uow;
     private readonly IAppCacheService _cache = cacheService;
 
-    public async Task<TestCreatedDto> CreateTestAsync(string technologyName, string userName, string ipAddress)
+    public async Task<BL.TestDto> CreateTestAsync(string technologyName, string userName, string ipAddress)
     {
         BL.TechnologyDto technology = await _cache.GetTechnologyByNameAsync(technologyName);
         NewTestData testData = await GenerateRandomQuestionsForTestAsync(technology);
@@ -27,38 +25,33 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
         int testId = await _uow.TestRepository.CreateTestAsync(newTest);
         BL.QuestionDto firstQuestion = await GetNextQuestionAsync(testId, userName);
 
-        return new TestCreatedDto
+        return new BL.TestDto
         {
             TestId = testId,
             TechnologyName = technologyName,
-            TestColor = technology.Color,
-            QuestionsAmount = testData.Amount,
-            TestDurationInSeconds = technology.DurationInMinutes * 60,
-            FirstQuestion = firstQuestion,
+            QuestionCount = testData.Amount,
+            SecondsLeft = technology.DurationInMinutes * 60,
+            Question = firstQuestion,
         };
     }
 
     public async Task AnswerAsync(int testId, int questionId, byte answerNumber, string username)
     {
-        Task<bool> canAnswer = _uow.TestRepository.CanAnswerQuestionAsync(testId, questionId, username);
-        Task<DAL.QuestionInfoDto> questionInfo = _uow.TestRepository.GetQuestionInfoAsync(questionId);
-
-        bool canAnswerQuestion = await canAnswer;
-
-        if (!canAnswerQuestion)
+        bool canAnswer = await _uow.TestRepository.CanAnswerQuestionAsync(testId, questionId, username);
+        if (!canAnswer)
         {
             throw new InvalidOperationException(
                 $"User {username} cannot answer question {questionId} for test {testId}");
         }
 
-        DAL.QuestionInfoDto info = await questionInfo;
+        DAL.QuestionInfoDto questionInfo = await _uow.TestRepository.GetQuestionInfoAsync(questionId);
 
         DAL.QuestionAnswerDto answer = new()
         {
             TestId = testId,
             QuestionId = questionId,
             AnswerNumber = answerNumber,
-            AnswerPoints = (byte)(answerNumber == info.CorrectAnswerNumber ? 1 : 0),
+            AnswerPoints = (byte)(answerNumber == questionInfo.CorrectAnswerNumber ? 1 : 0),
             AnswerDate = DateTime.UtcNow
         };
 
@@ -79,56 +72,51 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
 
             await taskUpdate;
 
+            await _uow.SaveAsync();
+
             return nextQuestion;
         }
 
         return null;
     }
 
-    public async Task<NextQuestionStateDto> GetNextQuestionStateAsync(string userName, int? testId)
+    public async Task<AnswerResponseDto> AnswerAndNextAsync(int testId, int questionId, byte answerNumber, string userName)
     {
-        TestDto test = await _uow.TestRepository.GetTestByIdAsync(userName, testId);
+        AnswerResponseDto responseDto = new();
 
-        BL.QuestionDto nextQuestion = await GetNextQuestionAsync(test.Id, userName);
+        await AnswerAsync(testId, questionId, answerNumber, userName);
+        responseDto.NextQuestion = await GetNextQuestionAsync(testId, userName);
 
-        BL.TechnologyDto testTechnology = await _cache.GetTechnologyByIdAsync(test.TechnologyId);
-
-        NextQuestionStateDto stateDto = new NextQuestionStateDto
+        /* 
+         * All questions have been answered.
+         * Complete the test and retrieve the final results.
+         */
+        if (responseDto.NextQuestion == null)
         {
-            TechnologyName = testTechnology.Name,
-            Question = nextQuestion,
-            TotalAmount = testTechnology.QuestionCount,
-            SecondsLeft = (int)(test.StartDate.AddMinutes(testTechnology.DurationInMinutes) - DateTime.UtcNow).TotalSeconds,
-            QuestionNumber = await _uow.TestQuestionRepository.GetAmountOfAlreadyAnsweredQuestionsAsync(test.Id) + 1
-        };
+            AnswerDto[] answers = DtoMapper.FromDAL(
+                await _uow.QuestionRepository.GetAnswersAsync(testId, userName));
 
-        return stateDto;
+            responseDto.TestResult = new TestResultDto { Answers = answers };
+
+            CalculateFinalScore(answers,
+                out float finalScore, out int totalPoints, out int earnedPoints, out int answeredCount);
+
+            DAL.TechnologyDto technology = await _uow.TechnologyRepository.GetTechnologyByTestIdAsync(testId);
+
+            responseDto.TestResult.TotalPoints = totalPoints;
+            responseDto.TestResult.FinalScore = finalScore;
+            responseDto.TestResult.EarnedPoints = earnedPoints;
+            responseDto.TestResult.AnsweredCount = answeredCount;
+            responseDto.TestResult.TechnologyName = technology.Name;
+
+            await _uow.TestRepository.CompleteTestAndSaveAsync(
+                userName, testId, finalScore);
+        }
+
+        return responseDto;
     }
 
-    public async Task<BL.TestResultDto> GetTestResultAsync(string userName, int testId)
-    {
-        Task<int> questionAmount =
-            _uow.TestQuestionRepository.GetAmountOfAlreadyAnsweredQuestionsAsync(testId);
-
-        DAL.TestResultDto resultDto =
-            await _uow.TestRepository.GetTestResultAsync(userName, testId);
-
-        BL.TestResultDto result = new()
-        {
-            Score = resultDto.Score,
-            TimeSpentInSeconds = resultDto.TimeSpentInSeconds,
-            QuestionsAmount = await questionAmount,
-        };
-
-        return result;
-    }
-
-    public async Task CompleteTestAsync(string userName, int testId)
-    {
-
-    }
-
-    public async Task<CurrentTestDto> RestoreCurrentTestAsync(string userName)
+    public async Task<BL.TestDto> RestoreCurrentTestAsync(string userName)
     {
         int? testId = await _uow.TestRepository.GetActiveTestByUserAsync(userName);
         if (testId == null)
@@ -137,20 +125,29 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
         }
 
         DAL.CurrentTestStateDto dalTestDto = await _uow.TestRepository.GetCurrentTestStateAsync(testId.Value);
-        BL.TechnologyDto technology = await _cache.GetTechnologyByIdAsync(dalTestDto.TechnologyId);
-
-        BL.CurrentTestDto testDto = new()
+        if (dalTestDto == null)
         {
-            Number = dalTestDto.Number,
-            SpentTimeInSeconds = dalTestDto.SpentTimeInSeconds,
+            return null;
+        }
+
+        BL.TechnologyDto technology = await _cache.GetTechnologyByIdAsync(dalTestDto.TechnologyId);
+        int secondsLeft = technology.DurationInMinutes * 60 - dalTestDto.SpentTimeInSeconds;
+
+        BL.TestDto testDto = new()
+        {
+            SecondsLeft = secondsLeft,
             TestId = dalTestDto.TestId,
-            TotalQuestions = dalTestDto.TotalQuestions,
+            QuestionCount = dalTestDto.TotalQuestions,
             Question = DtoMapper.FromDAL(dalTestDto.CurrentQuestion),
-            TestName = technology.Name,
-            TestColor = technology.Color,
+            TechnologyName = technology.Name,
         };
 
         return testDto;
+    }
+
+    public async Task CancelTestAsync(string userName, int testId)
+    {
+        await _uow.TestRepository.CancelTestAsync(userName, testId);
     }
 
     private async Task<NewTestData> GenerateRandomQuestionsForTestAsync(BL.TechnologyDto technology)
@@ -218,5 +215,25 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
         }
 
         return generatedIds;
+    }
+
+    private static void CalculateFinalScore(AnswerDto[] answers, out float finalScore, out int totalPoints, out int earnedPoints, out int answeredCount)
+    {
+        totalPoints = 0;
+        earnedPoints = 0;
+        answeredCount = 0;
+
+        for (int i = 0; i < answers.Length; ++i)
+        {
+            AnswerDto answer = answers[i];
+            totalPoints += answer.Complexity;
+            if (answer.Answer == answer.CorrectAnswer)
+            {
+                earnedPoints += answer.Complexity;
+                ++answeredCount;
+            }
+        }
+
+        finalScore = (earnedPoints / (float)totalPoints) * 100;
     }
 }

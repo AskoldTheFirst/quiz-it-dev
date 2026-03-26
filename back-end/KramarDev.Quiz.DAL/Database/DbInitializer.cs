@@ -13,13 +13,13 @@ public static class DbInitializer
 
         if (!ctx.Technologies.Any())
         {
-            techArray[0] = new Technology() { Name = "C#", Description = "Test your knowledge of C# fundamentals, OOP concepts, LINQ, and the .NET ecosystem.", IsActive = true, DurationInMinutes = 12, QuestionCount = 10, IconName = "csharp", Color = "#68217a" };
-            techArray[1] = new Technology() { Name = "JavaScript", Description = "Test your knowledge of JavaScript fundamentals, ES6+ features, and browser APIs.", IsActive = true, DurationInMinutes = 8, QuestionCount = 12, IconName = "javascript", Color = "#f0db4f" };
-            techArray[2] = new Technology() { Name = "C/C++", Description = "Test your knowledge of C/C++ fundamentals, memory management, pointers, object-oriented programming, and standard libraries.", IsActive = true, DurationInMinutes = 10, QuestionCount = 12, IconName = "C++", Color = "#aa00aa" };
-            techArray[3] = new Technology() { Name = "SQL", Description = "Test your SQL skills with questions on queries, joins, indexes, and database design.", IsActive = true, DurationInMinutes = 10, QuestionCount = 10, IconName = "database", Color = "#336791" };
-            techArray[4] = new Technology() { Name = ".NET", Description = "Explore your understanding of the .NET framework, ASP.NET Core, Entity Framework, and middleware.", IsActive = true, DurationInMinutes = 12, QuestionCount = 10, IconName = "dotnet", Color = "#512bd4" };
-            techArray[5] = new Technology() { Name = "React", Description = "Challenge yourself on React concepts, hooks, state management, and best practices.", IsActive = true, DurationInMinutes = 12, QuestionCount = 12, IconName = "react", Color = "#61dafb" };
-            techArray[6] = new Technology() { Name = "English Grammar", Description = "Test your understanding of English grammar rules, tenses, parts of speech, and sentence structure.", IsActive = true, DurationInMinutes = 12, QuestionCount = 20, IconName = "language", Color = "#e44d26" };
+            techArray[0] = new Technology() { Name = "C#", Description = "Test your knowledge of C# fundamentals, OOP concepts, LINQ, and the .NET ecosystem.", IsActive = true, DurationInMinutes = 12, QuestionCount = 10 };
+            techArray[1] = new Technology() { Name = "JavaScript", Description = "Test your knowledge of JavaScript fundamentals, ES6+ features, and browser APIs.", IsActive = true, DurationInMinutes = 8, QuestionCount = 12 };
+            techArray[2] = new Technology() { Name = "C/C++", Description = "Test your knowledge of C/C++ fundamentals, memory management, pointers, object-oriented programming, and standard libraries.", IsActive = true, DurationInMinutes = 10, QuestionCount = 12 };
+            techArray[3] = new Technology() { Name = "SQL", Description = "Test your SQL skills with questions on queries, joins, indexes, and database design.", IsActive = true, DurationInMinutes = 10, QuestionCount = 10 };
+            techArray[4] = new Technology() { Name = ".NET", Description = "Explore your understanding of the .NET framework, ASP.NET Core, Entity Framework, and middleware.", IsActive = true, DurationInMinutes = 12, QuestionCount = 10 };
+            techArray[5] = new Technology() { Name = "React", Description = "Challenge yourself on React concepts, hooks, state management, and best practices.", IsActive = true, DurationInMinutes = 12, QuestionCount = 12 };
+            techArray[6] = new Technology() { Name = "English Grammar", Description = "Test your understanding of English grammar rules, tenses, parts of speech, and sentence structure.", IsActive = true, DurationInMinutes = 12, QuestionCount = 20 };
 
             ctx.Technologies.AddRange(techArray);
             shouldWeSubmit = true;

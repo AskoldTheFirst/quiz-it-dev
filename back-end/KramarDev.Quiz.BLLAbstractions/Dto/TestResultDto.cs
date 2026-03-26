@@ -2,9 +2,15 @@
 
 public sealed class TestResultDto
 {
-    public float Score { get; set; }
+    public string TechnologyName { get; set; }
 
-    public int TimeSpentInSeconds { get; set; }
+    public float FinalScore { get; set; }
 
-    public int QuestionsAmount { get; set; }
+    public int TotalPoints { get; set; }
+
+    public int EarnedPoints { get; set; }
+
+    public int AnsweredCount { get; set; }
+
+    public AnswerDto[] Answers { get; set; }
 }

@@ -19,12 +19,6 @@ public class Technology
 
     public int DurationInMinutes { get; set; }
 
-    [StringLength(7), Required]
-    public string Color { get; set; }
-
-    [Required]
-    public string IconName { get; set; }
-
     public ICollection<Question> Questions { get; set; }
 
     public ICollection<Test> Tests { get; set; }

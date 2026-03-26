@@ -1,5 +1,4 @@
-﻿using System.Security.Cryptography;
-
+﻿
 namespace KramarDev.Quiz.DAL.Repositories;
 
 public class TestRepository(QuizDbContext dbCtx) : ITestRepository
@@ -10,12 +9,13 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
     {
         int questionAmount = newTest.QuestionIds.Length;
 
-        Test test = new Test
+        Test test = new ()
         {
             TechnologyId = newTest.TechnologyId,
             Username = newTest.Username,
             StartDate = newTest.StartDate,
             IpAddress = newTest.RemoteIpAddress,
+            State = TestState.Created
         };
 
         Ctx.Tests.Add(test);
@@ -62,53 +62,14 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
             throw new InvalidOperationException("Question was not found");
     }
 
-    public async Task<TestDto> GetTestByIdAsync(string userName, int? testId)
-    {
-        if (testId.HasValue)
-        {
-            return await (from t in Ctx.Tests
-                          where t.Id == testId && t.Username == userName && t.FinishDate == null
-                          select new TestDto
-                          {
-                              Id = t.Id,
-                              TechnologyId = t.TechnologyId,
-                              Username = t.Username,
-                              StartDate = t.StartDate,
-                          }).SingleAsync();
-        }
-        else
-        {
-            return await (from t in Ctx.Tests
-                          where t.Username == userName && t.FinishDate == null && (DateTime.Now - t.StartDate).TotalMinutes < 90
-                          orderby t.StartDate descending
-                          select new TestDto
-                          {
-                              Id = t.Id,
-                              TechnologyId = t.TechnologyId,
-                              Username = t.Username,
-                              StartDate = t.StartDate,
-                          }).FirstOrDefaultAsync();
-        }
-    }
-
-    public async Task<TestResultDto> GetTestResultAsync(string userName, int testId)
-    {
-        return await (from t in Ctx.Tests
-                      where t.Id == testId && t.Username == userName
-                      select new TestResultDto
-                      {
-                          Score = (float)t.FinalScore,
-                          TimeSpentInSeconds = (int)(t.FinishDate.Value - t.StartDate).TotalSeconds,
-                      }).SingleAsync();
-    }
-
     public async Task CompleteTestAndSaveAsync(string userName, int testId, float finalScore)
     {
         int rows = await Ctx.Tests
             .Where(t => t.Id == testId && t.Username == userName)
             .ExecuteUpdateAsync(setters =>
                 setters.SetProperty(t => t.FinalScore, finalScore)
-                        .SetProperty(t => t.FinishDate, DateTime.UtcNow));
+                        .SetProperty(t => t.FinishDate, DateTime.UtcNow)
+                        .SetProperty(t => t.State, TestState.Completed));
 
         if (rows == 0)
             throw new InvalidOperationException("Test was not found");
@@ -123,7 +84,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                         where t.Username == userName &&
                            !t.FinalScore.HasValue &&
                            !t.FinishDate.HasValue &&
-                           EF.Functions.DateDiffMinute(t.StartDate, now) < tt.DurationInMinutes
+                           EF.Functions.DateDiffMinute(now, t.StartDate) < tt.DurationInMinutes
                         orderby t.StartDate descending
                         select t.Id).FirstOrDefaultAsync();
 
@@ -135,9 +96,13 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
         var data = await (from t in Ctx.Tests
                           join tq in Ctx.TestQuestions on t.Id equals tq.TestId
                           join q in Ctx.Questions on tq.QuestionId equals q.Id
-                          where t.Id == testId && tq.AnswerDate == null
-                          orderby tq.Id
-                          select new { Question = q, tqId = tq.Id, t.StartDate, q.TechnologyId }).FirstAsync();
+                          where t.Id == testId && tq.RequestDate.HasValue && tq.AnswerDate == null
+                          select new { Question = q, tqId = tq.Id, t.StartDate, q.TechnologyId }).FirstOrDefaultAsync();
+
+        if (data == null)
+        {
+            return null;
+        }
 
         var tqArray = await (from tq in Ctx.TestQuestions
                              where tq.TestId == testId
@@ -149,6 +114,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
         dto.TechnologyId = data.TechnologyId;
         dto.CurrentQuestion = new QuestionDto
         {
+            Number = tqArray.Count(tq => tq.AnswerDate != null) + 1,
             TestId = testId,
             TestQuestionId = data.tqId,
             QuestionId = data.Question.Id,
@@ -159,7 +125,6 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
             Answer4 = data.Question.Answer4
         };
         dto.TotalQuestions = tqArray.Length;
-        dto.Number = tqArray.Count(tq => tq.AnswerDate != null) + 1;
         dto.SpentTimeInSeconds = (int)(DateTime.UtcNow - data.StartDate).TotalSeconds;
 
         return dto;
@@ -167,8 +132,6 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
 
     public async Task<bool> CanAnswerQuestionAsync(int testId, int questionId, string userName)
     {
-        DateTime now = DateTime.UtcNow;
-
         return await (from t in Ctx.Tests
                       join tq in Ctx.TestQuestions on t.Id equals tq.TestId
                       where t.Id == testId &&
@@ -179,5 +142,17 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                             tq.AnswerDate == null &&
                             tq.RequestDate != null
                       select t.Id).AnyAsync();
+    }
+
+    public async Task CancelTestAsync(string userName, int testId)
+    {
+        int rows = await Ctx.Tests
+            .Where(t => t.Id == testId && t.Username == userName)
+            .ExecuteUpdateAsync(setters =>
+                setters.SetProperty(t => t.State, TestState.Cancelled)
+                        .SetProperty(t => t.FinishDate, DateTime.UtcNow));
+
+        if (rows == 0)
+            throw new InvalidOperationException("Test was not found");
     }
 }

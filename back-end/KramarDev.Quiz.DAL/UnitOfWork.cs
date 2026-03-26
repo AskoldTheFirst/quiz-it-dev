@@ -20,6 +20,8 @@ public sealed class UnitOfWork : IUnitOfWork
 
     public ITestRepository TestRepository => new TestRepository(_ctx);
 
+    public IQuestionRepository QuestionRepository => new QuestionRepository(_ctx);
+
     public ITechnologyRepository TechnologyRepository => new TechnologyRepository(_ctx);
 
     public ITestQuestionRepository TestQuestionRepository => new TestQuestionRepository(_ctx);

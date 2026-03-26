@@ -21,7 +21,11 @@ public class Test
 
     public DateTime? FinishDate { get; set; }
 
+    public TestState State { get; set; }
+
     public ICollection<TestQuestion> TestQuestions { get; set; }
 
     public string IpAddress { get; set; }
+
+    public bool IsHidden { get; set; }
 }

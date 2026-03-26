@@ -14,6 +14,7 @@ public sealed class ComplexQueriesRepository(QuizDbContext dbCtx) : IComplexQuer
                       orderby tq.Id descending
                       select new QuestionDto
                       {
+                          Number = Ctx.TestQuestions.Count(t => t.TestId == testId && t.AnswerDate != null) + 1,
                           Text = q.Text,
                           Answer1 = q.Answer1,
                           Answer2 = q.Answer2,
