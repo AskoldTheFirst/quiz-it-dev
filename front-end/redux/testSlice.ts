@@ -1,18 +1,24 @@
-import { CurrentTest } from "@/biz/dto/CurrentTest";
-import { TestCreated } from "@/biz/dto/TestCreated";
-import { TestQuestion } from "@/biz/dto/TestQuestion";
+import { AnswerRequestDto } from "@/biz/dto/AnswerRequestDto";
+import { AnswerResponseDto } from "@/biz/dto/AnswerResponseDto";
+import { TestDto } from "@/biz/dto/TestDto";
 import Http from "@/biz/Http";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { mapAnswer } from "@/biz/mappers/answerMapper";
+import { mapCurrentTest } from "@/biz/mappers/currentTestMapper";
+import { CurrentTest } from "@/biz/models/CurrentTest";
+import { TestResult } from "@/biz/models/TestResult";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface TestState {
     test: CurrentTest | null;
+    result: TestResult | null;
 }
 
 const initialState: TestState = {
     test: null,
+    result: null,
 };
 
-export const current = createAsyncThunk<CurrentTest>(
+export const current = createAsyncThunk<TestDto>(
     'test/current',
     async (data, thunkAPI) => {
         try {
@@ -22,7 +28,7 @@ export const current = createAsyncThunk<CurrentTest>(
         }
     });
 
-export const createTest = createAsyncThunk<TestCreated, string>(
+export const createTest = createAsyncThunk<TestDto, string>(
     'test/createTest',
     async (technologyName, thunkAPI) => {
         try {
@@ -32,11 +38,21 @@ export const createTest = createAsyncThunk<TestCreated, string>(
         }
     });
 
-export const nextQuestion = createAsyncThunk<TestQuestion, number>(
-    'test/nextQuestion',
-    async (data, thunkAPI) => {
+export const cancelTest = createAsyncThunk<void, number>(
+    'test/cancelTest',
+    async (testId, thunkAPI) => {
         try {
-            return await Http.Test.nextQuestion(data);
+            return await Http.Test.cancel(testId);
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({ error: error.status });
+        }
+    });
+
+export const answer = createAsyncThunk<AnswerResponseDto, AnswerRequestDto>(
+    'test/answer',
+    async (param, thunkAPI) => {
+        try {
+            return await Http.Test.answer(param);
         } catch (error: any) {
             return thunkAPI.rejectWithValue({ error: error.status });
         }
@@ -46,60 +62,73 @@ export const testSlice = createSlice({
     name: 'test',
     initialState,
     reducers: {
-        setTest: (state, action) => {
-            state.test = action.payload;
+        setTestData: (state, action: PayloadAction<{ test: CurrentTest | null; result: TestResult | null }>) => {
+            state.test = action.payload.test;
+            state.result = action.payload.result;
         },
     },
     extraReducers: (builder => {
+
+        // current:
         builder.addCase(current.fulfilled, (state, action) => {
-            state.test = action.payload;
-            // go to quiz page -> quiz/[topicId]
+            state.test = mapCurrentTest(action.payload);
+            state.result = null;
         });
         builder.addCase(current.rejected, (_state, action) => {
             console.log("current.rejected" + action.payload);
         });
 
+        // createTest:
         builder.addCase(createTest.fulfilled, (state, action) => {
-            let ap = action.payload;
-            state.test = {
-                testName: ap.technologyName,
-                testColor: ap.testColor,
-                testId: ap.testId,
-                totalQuestions: ap.totalQuestions,
-                spentTimeInSeconds: ap.secondsLeft,
-                number: 1,
-                questionId: ap.firstQuestion.questionId,
-                testQuestionId: ap.firstQuestion.testQuestionId,
-                questionText: ap.firstQuestion.text,
-                questionAnswer1: ap.firstQuestion.answer1,
-                questionAnswer2: ap.firstQuestion.answer2,
-                questionAnswer3: ap.firstQuestion.answer3,
-                questionAnswer4: ap.firstQuestion.answer4,
-            };
+            state.test = mapCurrentTest(action.payload);
+            state.result = null;
         });
         builder.addCase(createTest.rejected, (_state, action) => {
             console.log("createTest.rejected" + action.payload);
         });
 
-        builder.addCase(nextQuestion.fulfilled, (state, action) => {
+        // cancelTest:
+        builder.addCase(cancelTest.fulfilled, (state, action) => {
+            state.test = null;
+            state.result = null;
+        });
+        builder.addCase(cancelTest.rejected, (_state, action) => {
+            console.log("cancelTest.rejected" + action.payload);
+        });
 
-            if (state.test) {
+        // answer:
+        builder.addCase(answer.fulfilled, (state, action) => {
+            let ap = action.payload;
 
-                let st = state.test;
-                let ap = action.payload;
-                
-                st.number = state.test.number + 1;
-                st.questionId = ap.questionId;
-                st.testQuestionId = ap.testQuestionId;
-                st.questionText = ap.text;
-                st.questionAnswer1 = ap.answer1;
-                st.questionAnswer2 = ap.answer2;
-                st.questionAnswer3 = ap.answer3;
-                st.questionAnswer4 = ap.answer4;
+            if (ap.nextQuestion && state.test) {
+                state.test.questionText = ap.nextQuestion.text;
+                state.test.questionAnswer1 = ap.nextQuestion.answer1;
+                state.test.questionAnswer2 = ap.nextQuestion.answer2;
+                state.test.questionAnswer3 = ap.nextQuestion.answer3;
+                state.test.questionAnswer4 = ap.nextQuestion.answer4;
+                state.test.questionId = ap.nextQuestion.questionId;
+                state.test.testQuestionId = ap.nextQuestion.testQuestionId;
+                state.test.number = ap.nextQuestion.number;
+
+                state.result = null;
+            }
+            else if (ap.testResult) {
+                state.result = {
+                    technologyName: ap.testResult.technologyName,
+                    answeredCount: ap.testResult.answeredCount,
+                    finalScore: ap.testResult.finalScore,
+                    earnedPoints: ap.testResult.earnedPoints,
+                    totalPoints: ap.testResult.totalPoints,
+                    answers: ap.testResult.answers.map(a => mapAnswer(a)),
+                };
+
+                state.test = null;
             }
         });
-        builder.addCase(nextQuestion.rejected, (_state, action) => {
-            console.log("nextQuestion.rejected" + action.payload);
+        builder.addCase(answer.rejected, (state, action) => {
+            console.log("answer.rejected" + action.payload);
         });
     })
 });
+
+export const { setTestData } = testSlice.actions;

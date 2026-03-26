@@ -1,4 +1,5 @@
-export interface TestQuestion {
+export interface QuestionDto {
+    number: number;
     testId: number;
     questionId: number;
     testQuestionId: number;

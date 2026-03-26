@@ -1,8 +1,7 @@
-import { CurrentTest } from "./CurrentTest";
 import { TechnologyDto } from "./TechnologyDto";
-import { userDto } from "./userDto";
+import { UserDto } from "./UserDto";
 
-export interface appStateDto {
+export interface AppStateDto {
     technologies: TechnologyDto[];
-    user: userDto | null;
+    user: UserDto | null;
 }

@@ -19,6 +19,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import { quizTopics } from "@/lib/quizData";
 import type { UserData } from "./Navbar";
+import { UserDto } from "@/biz/dto/UserDto";
 
 export interface QuizAttempt {
   topicId: string;
@@ -35,7 +36,7 @@ interface StatisticsProps {
   attempts: QuizAttempt[];
   onClearHistory: () => void;
   onGoToQuiz: () => void;
-  user: UserData | null;
+  user: UserDto | null;
 }
 
 export default function Statistics({
@@ -143,7 +144,7 @@ export default function Statistics({
               </Box>
               <Box>
                 <Typography variant="h6" sx={{ color: "#f1f5f9", fontWeight: 700 }}>
-                  {user.username}
+                  {user.login}
                 </Typography>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                   <EmailIcon sx={{ fontSize: 14, color: "#64748b" }} />

@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { useAppContext } from "@/components/layout/AppLayout";
 import Statistics from "@/components/quiz/Statistics";
 import type { QuizAttempt } from "@/components/quiz/Statistics";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const STORAGE_KEY = "quizmaster-attempts";
 
@@ -28,7 +30,8 @@ function saveAttempts(attempts: QuizAttempt[]) {
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const { user } = useAppContext();
+  const { user } = useSelector((state: RootState) => state.appState);
+  //const { user } = useAppContext();
   const [attempts, setAttempts] = useState<QuizAttempt[]>([]);
 
   useEffect(() => {

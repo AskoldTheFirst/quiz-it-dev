@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback } from "react";
 import {
   Box,
   Typography,
@@ -14,31 +14,29 @@ import ReplayIcon from "@mui/icons-material/Replay";
 import HomeIcon from "@mui/icons-material/Home";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
-import type { QuizTopic } from "@/lib/quizData";
+import { TestResult } from "@/biz/models/TestResult";
+import { useAppDispatch } from "@/redux/store";
+import { createTest, setTestData } from "@/redux/testSlice";
+import { useNavigate } from "react-router-dom";
 
 interface QuizResultsProps {
-  topic: QuizTopic;
-  score: number;
-  totalWeight: number;
-  earnedWeight: number;
-  answers: (number | null)[];
   onRetry: () => void;
   onHome: () => void;
+  result: TestResult;
 }
 
 export default function QuizResults({
-  topic,
-  score,
-  totalWeight,
-  earnedWeight,
-  answers,
   onRetry,
   onHome,
+  result,
 }: QuizResultsProps) {
-  const percentage = Math.round((score / topic.questions.length) * 100);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const percentage = Math.round((result.answeredCount / result.answers.length) * 100);
   const weightedPercentage =
-    totalWeight > 0
-      ? Math.round((earnedWeight / totalWeight) * 100)
+    result.totalPoints > 0
+      ? Math.round((result.earnedPoints / result.totalPoints) * 100)
       : percentage;
 
   const getGrade = () => {
@@ -51,6 +49,15 @@ export default function QuizResults({
   };
 
   const grade = getGrade();
+
+  const handleRetry = useCallback(async () => {
+    await dispatch(createTest(result.technologyName));
+  }, [result]);
+
+  const handleGoToQuiz = useCallback(() => {
+    //navigate("/");
+    dispatch(setTestData({ test: null, result: null }));
+  }, [navigate]);
 
   return (
     <Box sx={{ maxWidth: 720, mx: "auto" }}>
@@ -97,7 +104,7 @@ export default function QuizResults({
                 Score
               </Typography>
               <Typography variant="h6" sx={{ color: "#f1f5f9", fontWeight: 700 }}>
-                {score}/{topic.questions.length}
+                {result.answeredCount}/{result.answers.length}
               </Typography>
             </Box>
             <Box>
@@ -123,7 +130,7 @@ export default function QuizResults({
             <Button
               variant="contained"
               startIcon={<ReplayIcon />}
-              onClick={onRetry}
+              onClick={handleRetry}
               sx={{
                 backgroundColor: "#10b981",
                 color: "#fff",
@@ -136,7 +143,7 @@ export default function QuizResults({
             <Button
               variant="outlined"
               startIcon={<HomeIcon />}
-              onClick={onHome}
+              onClick={handleGoToQuiz}
               sx={{
                 borderColor: "rgba(148, 163, 184, 0.3)",
                 color: "#94a3b8",
@@ -159,9 +166,8 @@ export default function QuizResults({
       </Typography>
 
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
-        {topic.questions.map((q, index) => {
-          const userAnswer = answers[index];
-          const isCorrect = userAnswer === q.correctAnswer;
+        {result.answers.map((q, index) => {
+          const isCorrect = q.answer === q.correctAnswer;
           const accentColor = isCorrect ? "#10b981" : "#ef4444";
 
           return (
@@ -177,21 +183,21 @@ export default function QuizResults({
                   </Box>
                   <Box sx={{ flex: 1 }}>
                     <Typography variant="body2" sx={{ color: "#e2e8f0", fontWeight: 600, mb: 0.5 }}>
-                      {index + 1}. {q.question}
+                      {index + 1}. {q.questionText}
                     </Typography>
                     {!isCorrect && (
                       <>
                         <Typography variant="caption" sx={{ color: "#ef4444", display: "block" }}>
                           Your answer:{" "}
-                          {userAnswer !== null && userAnswer !== undefined
-                            ? q.options[userAnswer]
+                          {q.answer !== null && q.answer !== undefined
+                            ? q.answer
                             : "No answer"}
                         </Typography>
                         <Divider sx={{ my: 0.5, borderColor: "rgba(148,163,184,0.08)" }} />
                       </>
                     )}
                     <Typography variant="caption" sx={{ color: "#10b981" }}>
-                      Correct: {q.options[q.correctAnswer]}
+                      Correct: {q.correctAnswer}
                     </Typography>
                   </Box>
                   <Box
@@ -206,7 +212,7 @@ export default function QuizResults({
                       flexShrink: 0,
                     }}
                   >
-                    {q.weight}pt
+                    {q.complexity}pt
                   </Box>
                 </Box>
               </CardContent>

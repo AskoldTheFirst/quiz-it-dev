@@ -1,14 +1,15 @@
-import { appStateDto } from "@/biz/dto/appStateDto";
-import { TechnologyDto } from "@/biz/dto/TechnologyDto";
-import { userDto } from "@/biz/dto/userDto";
+import { AppStateDto } from "@/biz/dto/AppStateDto";
+import { UserDto } from "@/biz/dto/UserDto";
 import { Helper } from "@/biz/Helper";
 import Http from "@/biz/Http";
+import { mapTechnology } from "@/biz/mappers/technologyMapper";
+import { Technology } from "@/biz/models/Technology";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { FieldValues } from "react-hook-form";
 
 export interface AppState {
-    technologies: TechnologyDto[];
-    user: userDto | null;
+    technologies: Technology[];
+    user: UserDto | null;
 }
 
 const initialState: AppState = {
@@ -16,25 +17,34 @@ const initialState: AppState = {
     user: null,
 };
 
-export const initState = createAsyncThunk<appStateDto>(
+export const initState = createAsyncThunk<AppState>(
     'appState/initState',
-    async (data, thunkAPI) => {
-
+    async (_, thunkAPI) => {
+        
         let token = localStorage.getItem(Helper.UserKey);
         if (token) {
-            let json = JSON.parse(token);
-            thunkAPI.dispatch(setUser({ user: json })); // Set user from localStorage before API call
+            try {
+                let json = JSON.parse(token);
+                thunkAPI.dispatch(setUser({ user: json })); // Set user from localStorage before API call
+            }
+            catch {
+                localStorage.removeItem(Helper.UserKey);
+            }
         }
 
         try {
-            return await Http.App.initState();
+            const response = await Http.App.initState() as AppStateDto;
+            return {
+                user: response.user,
+                technologies: response.technologies.map(mapTechnology)
+            }
         } catch (error: any) {
             return thunkAPI.rejectWithValue({ error: error.status });
         }
     }
 );
 
-export const registerInUser = createAsyncThunk<userDto, FieldValues>(
+export const registerInUser = createAsyncThunk<UserDto, FieldValues>(
     'appState/registerInUser',
     async (data, thunkAPI) => {
         try {
@@ -45,7 +55,7 @@ export const registerInUser = createAsyncThunk<userDto, FieldValues>(
     }
 );
 
-export const signInUser = createAsyncThunk<userDto, FieldValues>(
+export const signInUser = createAsyncThunk<UserDto, FieldValues>(
     'appState/signInUser',
     async (data, thunkAPI) => {
         try {

@@ -10,7 +10,8 @@ import { quizTopics } from "@/lib/quizData";
 import type { QuizTopic } from "@/lib/quizData";
 import type { QuizAttempt } from "@/components/quiz/Statistics";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { RootState, useAppDispatch } from "@/redux/store";
+import { cancelTest, createTest } from "@/redux/testSlice";
 
 const STORAGE_KEY = "quizmaster-attempts";
 
@@ -34,13 +35,14 @@ function saveAttempts(attempts: QuizAttempt[]) {
 
 export default function QuizPage() {
   const { technologies, user } = useSelector((state: RootState) => state.appState);
-  const { test } = useSelector((state: RootState) => state.testState);
-  
+  const { test, result } = useSelector((state: RootState) => state.testState);
+  const dispatch = useAppDispatch();
+
   const { quizState, setQuizState, openLogin } = useAppContext();
 
   const [selectedTopic, setSelectedTopic] = useState<QuizTopic | null>(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  //const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [score, setScore] = useState(0);
   const [earnedWeight, setEarnedWeight] = useState(0);
@@ -91,7 +93,7 @@ export default function QuizPage() {
   const startQuiz = (topic: QuizTopic) => {
     setSelectedTopic(topic);
     setCurrentQuestionIndex(0);
-    setSelectedAnswer(null);
+    //setSelectedAnswer(null);
     setIsAnswered(false);
     setScore(0);
     setEarnedWeight(0);
@@ -141,45 +143,48 @@ export default function QuizPage() {
   };
 
   const handleSelectTopic = useCallback(
-    (topicId: string) => {
+    async (topicName: string) => {
       if (!user) {
-        setPendingTopicId(topicId);
+        setPendingTopicId(topicName);
         openLogin();
         return;
       }
 
-      const topic = quizTopics.find((t) => t.id === topicId);
-      if (topic) {
-        startQuiz(topic);
-      }
+      await dispatch(createTest(topicName));
+
+      // const topic = quizTopics.find((t) => t.id === topicName);
+      // if (topic) {
+      //   startQuiz(topic);
+      // }
     },
     [user, openLogin]
   );
 
-  const handleAnswer = useCallback(
-    (answerIndex: number) => {
-      if (!selectedTopic) return;
-      setSelectedAnswer(answerIndex);
-      setAnswers((prev) => {
-        const newAnswers = [...prev];
-        newAnswers[currentQuestionIndex] = answerIndex;
-        return newAnswers;
-      });
-    },
-    [selectedTopic, currentQuestionIndex]
-  );
+  // const handleAnswer = useCallback(
+  //   (answerIndex: number) => {
+  //     // if (!selectedTopic) return;
+  //     // setSelectedAnswer(answerIndex);
+  //     // setAnswers((prev) => {
+  //     //   const newAnswers = [...prev];
+  //     //   newAnswers[currentQuestionIndex] = answerIndex;
+  //     //   return newAnswers;
+  //     // });
+  //     setSelectedAnswer(answerIndex);
+  //   },
+  //   []
+  // );
 
-  const handleNext = useCallback(() => {
-    if (!selectedTopic) return;
+  // const handleNext = useCallback(() => {
+  //   if (!selectedTopic) return;
 
-    if (currentQuestionIndex + 1 < selectedTopic.questions.length) {
-      setCurrentQuestionIndex((prev) => prev + 1);
-      setSelectedAnswer(answers[currentQuestionIndex + 1] ?? null);
-      setIsAnswered(false);
-    } else {
-      finishQuiz();
-    }
-  }, [currentQuestionIndex, selectedTopic, answers]);
+  //   if (currentQuestionIndex + 1 < selectedTopic.questions.length) {
+  //     setCurrentQuestionIndex((prev) => prev + 1);
+  //     //setSelectedAnswer(answers[currentQuestionIndex + 1] ?? null);
+  //     setIsAnswered(false);
+  //   } else {
+  //     finishQuiz();
+  //   }
+  // }, [currentQuestionIndex, selectedTopic, answers]);
 
   const handleRetry = useCallback(() => {
     if (!selectedTopic) return;
@@ -191,24 +196,25 @@ export default function QuizPage() {
     setQuizState("topics");
   }, []);
 
-  const handleCancel = useCallback(() => {
-    setSelectedTopic(null);
-    setQuizState("topics");
-    setCurrentQuestionIndex(0);
-    setSelectedAnswer(null);
-    setIsAnswered(false);
-    setScore(0);
-    setEarnedWeight(0);
-    setAnswers([]);
-    setTimeRemaining(600);
-  }, []);
+  // const handleCancel = useCallback(async () => {
+  //   setSelectedTopic(null);
+  //   setQuizState("topics");
+  //   setCurrentQuestionIndex(0);
+  //   //setSelectedAnswer(null);
+  //   setIsAnswered(false);
+  //   setScore(0);
+  //   setEarnedWeight(0);
+  //   setAnswers([]);
+  //   setTimeRemaining(600);
+  // }, [test]);
 
   const totalWeight = selectedTopic
     ? selectedTopic.questions.reduce((sum, q) => sum + q.weight, 0)
     : 0;
 
+    console.log(test);
   // Topics view
-  if (quizState === "topics") {
+  if (!test && !result) {
     return (
       <>
         <Box sx={{ textAlign: "center", mb: 4 }}>
@@ -247,34 +253,22 @@ export default function QuizPage() {
   }
 
   // Question view
-  if (quizState === "active" && selectedTopic) {
+  if (test) {
     return (
       <QuizQuestion
-        question={selectedTopic.questions[currentQuestionIndex]}
-        currentIndex={currentQuestionIndex}
-        totalQuestions={selectedTopic.questions.length}
-        selectedAnswer={selectedAnswer}
-        onAnswer={handleAnswer}
-        onNext={handleNext}
-        onCancel={handleCancel}
-        topicTitle={selectedTopic.title}
-        topicColor={selectedTopic.color}
         timeRemaining={timeRemaining}
+        test={test}
       />
     );
   }
 
   // Results view
-  if (quizState === "results" && selectedTopic) {
+  if (result) {
     return (
       <QuizResults
-        topic={selectedTopic}
-        score={score}
-        totalWeight={totalWeight}
-        earnedWeight={earnedWeight}
-        answers={answers}
         onRetry={handleRetry}
         onHome={handleHome}
+        result={result}
       />
     );
   }

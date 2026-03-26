@@ -14,8 +14,8 @@ import WebIcon from "@mui/icons-material/Web";
 import StorageIcon from "@mui/icons-material/Storage";
 import TerminalIcon from "@mui/icons-material/Terminal";
 import TranslateIcon from "@mui/icons-material/Translate";
-import type { QuizTopic } from "@/lib/quizData";
-import { TechnologyDto } from "@/biz/dto/TechnologyDto";
+import MemoryIcon from "@mui/icons-material/Memory";
+import { Technology } from "@/biz/models/Technology";
 
 const iconMap: Record<string, React.ReactElement> = {
   csharp: <TerminalIcon />,
@@ -25,10 +25,11 @@ const iconMap: Record<string, React.ReactElement> = {
   dotnet: <TerminalIcon />,
   react: <WebIcon />,
   language: <TranslateIcon />,
+  cpp: <MemoryIcon />
 };
 
 interface TopicCardProps {
-  topic: TechnologyDto;
+  topic: Technology;
   onSelect: (topicId: string) => void;
 }
 

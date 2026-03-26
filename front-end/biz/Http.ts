@@ -1,9 +1,10 @@
 import { store } from "@/redux/store";
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { AnswerRequestDto } from "./dto/AnswerRequestDto";
 
 axios.defaults.baseURL = 'https://localhost:7072/api/';
 axios.defaults.withCredentials = true;
-axios.defaults.timeout = 3000;
+axios.defaults.timeout = 60000;
 
 const responseBody = (response: AxiosResponse) => response.data;
 
@@ -56,7 +57,8 @@ const App = {
 const Test = {
     current: () => requests.get('tests/current'),
     create: (technologyName: string) => requests.post(`tests/create?technologyName=${technologyName}`, {}),
-    nextQuestion: (testId: number) => requests.get('tests/next-question', { testId }),
+    cancel: (testId: number) => requests.post(`tests/cancel?testId=${testId}`, {}),
+    answer: (requestModel: AnswerRequestDto) => requests.post('tests/answer', requestModel ),
 }
 
 const Http = {

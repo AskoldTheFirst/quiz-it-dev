@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useCallback, useState } from "react";
 import {
   Box,
   Typography,
@@ -14,35 +14,51 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import CloseIcon from "@mui/icons-material/Close";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import type { Question } from "@/lib/quizData";
+import { useAppDispatch } from "@/redux/store";
+import { answer, cancelTest } from "@/redux/testSlice";
+import { AnswerRequestDto } from "@/biz/dto/AnswerRequestDto";
+import { CurrentTest } from "@/biz/models/CurrentTest";
 
 interface QuizQuestionProps {
-  question: Question;
-  currentIndex: number;
-  totalQuestions: number;
-  selectedAnswer: number | null;
-  onAnswer: (answerIndex: number) => void;
-  onNext: () => void;
-  onCancel: () => void;
-  topicTitle: string;
-  topicColor: string;
   timeRemaining: number;
+  test: CurrentTest;
 }
 
 export default function QuizQuestion({
-  question,
-  currentIndex,
-  totalQuestions,
-  selectedAnswer,
-  onAnswer,
-  onNext,
-  onCancel,
-  topicTitle,
-  topicColor,
   timeRemaining,
+  test,
 }: QuizQuestionProps) {
-  const progress = ((currentIndex + 1) / totalQuestions) * 100;
-  const isLastQuestion = currentIndex + 1 >= totalQuestions;
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const dispatch = useAppDispatch();
+
+  const options = [test.questionAnswer1, test.questionAnswer2, test.questionAnswer3, test.questionAnswer4];
+  const topicColor = test.testColor;
+
+  const progress = ((test.number) / test.totalQuestions) * 100;
+  const isLastQuestion = test.number >= test.totalQuestions;
+
+  const handleCancel = useCallback(
+    async () => {
+      await dispatch(cancelTest(test.testId));
+    }, [test.testId]);
+
+  const handleNext = useCallback(
+    async () => {
+
+      if (selectedAnswer == null) {
+        return;
+      }
+
+      const requestDto = {
+        testId: test.testId,
+        questionId: test.questionId,
+        answerNumber: selectedAnswer + 1,
+      } as AnswerRequestDto;
+
+      await dispatch(answer(requestDto));
+
+      setSelectedAnswer(null);
+    }, [test, selectedAnswer]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -60,10 +76,10 @@ export default function QuizQuestion({
           <Typography variant="body2" sx={{ color: "#94a3b8" }}>
             Question{" "}
             <Box component="span" sx={{ color: topicColor, fontWeight: 700 }}>
-              {currentIndex + 1}
+              {test.number}
             </Box>
             {" of "}
-            {totalQuestions}
+            {test.totalQuestions}
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
             <Box
@@ -80,7 +96,7 @@ export default function QuizQuestion({
               {formatTime(timeRemaining)}
             </Box>
             <Chip
-              label={topicTitle}
+              label={test.testName}
               size="small"
               sx={{
                 backgroundColor: `${topicColor}15`,
@@ -108,19 +124,19 @@ export default function QuizQuestion({
 
       {/* Question */}
       <Typography variant="h5" sx={{ color: "#f1f5f9", mb: 3, fontWeight: 700, lineHeight: 1.4 }}>
-        {question.question}
+        {test.questionText}
       </Typography>
 
       {/* Options */}
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, mb: 3 }}>
-        {question.options.map((option, index) => {
+        {options.map((option, index) => {
           const isSelected = selectedAnswer === index;
           const letter = String.fromCharCode(65 + index);
 
           return (
             <Card
               key={index}
-              onClick={() => onAnswer(index)}
+              onClick={() => setSelectedAnswer(index)}
               sx={{
                 cursor: "pointer",
                 border: `1px solid ${isSelected ? topicColor : "rgba(148, 163, 184, 0.12)"}`,
@@ -170,7 +186,7 @@ export default function QuizQuestion({
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Button
           variant="outlined"
-          onClick={onCancel}
+          onClick={handleCancel}
           startIcon={<CloseIcon />}
           sx={{
             px: 2.5,
@@ -190,7 +206,7 @@ export default function QuizQuestion({
         <Button
           variant="contained"
           disabled={selectedAnswer === null}
-          onClick={onNext}
+          onClick={handleNext}
           endIcon={isLastQuestion ? <EmojiEventsIcon /> : <ArrowForwardIcon />}
           sx={{
             px: 3.5,
