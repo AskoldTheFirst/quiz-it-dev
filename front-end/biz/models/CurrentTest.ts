@@ -4,7 +4,7 @@ export interface CurrentTest {
     testId: number;
     number: number;
     totalQuestions: number;
-    spentTimeInSeconds: number;
+    secondsLeft: number;
     questionId: number;
     testQuestionId: number;
     questionText: string;

@@ -3,15 +3,21 @@
 import { Inter, JetBrains_Mono } from "next/font/google";
 import { Provider } from "react-redux";
 import ThemeRegistry from "@/components/ThemeRegistry";
-import "./globals.css";
+//import "./globals.css";
 import { store } from "@/redux/store";
-import { initState } from "@/redux/appSlice";
+import { initState, setForbidenPages } from "@/redux/appSlice";
 import { current } from "@/redux/testSlice";
+import { NavItem } from "@/biz/models/NavItems";
 
 // Initialize store immediately (outside component for earliest execution)
 if (typeof window !== "undefined") {
   store.dispatch(initState());
   store.dispatch(current());
+
+  // if (store.getState().testState.test)
+  // {
+  //   store.dispatch(setForbidenPages([NavItem.Top, NavItem.Profile, NavItem.About]));
+  // }
 }
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });

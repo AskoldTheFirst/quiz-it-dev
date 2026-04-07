@@ -18,16 +18,13 @@ import { useAppDispatch } from "@/redux/store";
 import { answer, cancelTest } from "@/redux/testSlice";
 import { AnswerRequestDto } from "@/biz/dto/AnswerRequestDto";
 import { CurrentTest } from "@/biz/models/CurrentTest";
+import { setForbidenPages } from "@/redux/appSlice";
 
 interface QuizQuestionProps {
-  timeRemaining: number;
   test: CurrentTest;
 }
 
-export default function QuizQuestion({
-  timeRemaining,
-  test,
-}: QuizQuestionProps) {
+export default function QuizQuestion({ test }: QuizQuestionProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const dispatch = useAppDispatch();
 
@@ -40,6 +37,7 @@ export default function QuizQuestion({
   const handleCancel = useCallback(
     async () => {
       await dispatch(cancelTest(test.testId));
+      dispatch(setForbidenPages([]));
     }, [test.testId]);
 
   const handleNext = useCallback(
@@ -66,7 +64,7 @@ export default function QuizQuestion({
     return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
-  const isTimeLow = timeRemaining <= 60;
+  const isTimeLow = test.secondsLeft < 61;
 
   return (
     <Box sx={{ maxWidth: 720, mx: "auto" }}>
@@ -93,7 +91,7 @@ export default function QuizQuestion({
               }}
             >
               <AccessTimeIcon sx={{ fontSize: 18 }} />
-              {formatTime(timeRemaining)}
+              {formatTime(test.secondsLeft)}
             </Box>
             <Chip
               label={test.testName}

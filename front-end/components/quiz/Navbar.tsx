@@ -32,7 +32,8 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import LogoutIcon from "@mui/icons-material/Logout";
 import LockIcon from "@mui/icons-material/Lock";
 import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
+import { RootState, useAppDispatch } from "@/redux/store";
+import { NavItem } from "@/biz/models/NavItems";
 
 export interface UserData {
   username: string;
@@ -42,19 +43,17 @@ export interface UserData {
 interface NavbarProps {
   currentPage: string;
   onNavigate: (page: string) => void;
-  //user: UserData | null;
   onOpenLogin: () => void;
   onOpenRegister: () => void;
-  onLogout: () => void;
   isQuizActive?: boolean;
   isInitialized?: boolean;
 }
 
 const navItems = [
-  { id: "quiz", label: "Quiz", icon: <QuizIcon fontSize="small" />, requiresAuth: false },
-  { id: "top", label: "Top", icon: <LeaderboardIcon fontSize="small" />, requiresAuth: false },
-  { id: "profile", label: "Profile", icon: <PersonIcon fontSize="small" />, requiresAuth: true },
-  { id: "about", label: "About", icon: <InfoIcon fontSize="small" />, requiresAuth: false },
+  { id: "quiz", label: NavItem.Quiz, icon: <QuizIcon fontSize="small" /> },
+  { id: "top", label: NavItem.Top, icon: <LeaderboardIcon fontSize="small" /> },
+  { id: "profile", label: NavItem.Profile, icon: <PersonIcon fontSize="small" /> },
+  { id: "about", label: NavItem.About, icon: <InfoIcon fontSize="small" /> },
 ];
 
 export default function Navbar({
@@ -62,12 +61,13 @@ export default function Navbar({
   onNavigate,
   onOpenLogin,
   onOpenRegister,
-  onLogout,
   isQuizActive = false,
   isInitialized = false,
 }: NavbarProps) {
 
-  const { user } = useSelector((state: RootState) => state.appState);
+  const { user, forbidenPages } = useSelector((state: RootState) => state.appState);
+  const dispatch = useAppDispatch();
+
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
@@ -79,10 +79,7 @@ export default function Navbar({
     if (isQuizActive && val !== "quiz") {
       return;
     }
-    if (item?.requiresAuth && !user) {
-      onOpenLogin();
-      return;
-    }
+    
     onNavigate(val);
   };
 
@@ -91,16 +88,11 @@ export default function Navbar({
     if (isQuizActive && id !== "quiz") {
       return;
     }
-    const item = navItems.find((n) => n.id === id);
-    if (item?.requiresAuth && !user) {
-      onOpenLogin();
-      setDrawerOpen(false);
-      return;
-    }
+    
     onNavigate(id);
     setDrawerOpen(false);
   };
-
+console.log(user);
   return (
     <AppBar
       position="sticky"
@@ -145,9 +137,7 @@ export default function Navbar({
             }}
           >
             {navItems.map((item) => {
-              const isAuthDisabled = item.requiresAuth && !user;
-              const isQuizDisabled = isQuizActive && item.id !== "quiz";
-              const isDisabled = isAuthDisabled || isQuizDisabled;
+              const isDisabled = forbidenPages.includes(item.label as NavItem);
               return (
                 <Tab
                   key={item.id}
@@ -156,7 +146,7 @@ export default function Navbar({
                   label={
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                       {item.label}
-                      {isAuthDisabled && <LockIcon sx={{ fontSize: 12, color: "#475569" }} />}
+                      {isDisabled && <LockIcon sx={{ fontSize: 12, color: "#475569" }} />}
                     </Box>
                   }
                   icon={item.icon}
@@ -188,7 +178,7 @@ export default function Navbar({
                   variant="outlined"
                   size="small"
                   startIcon={<LogoutIcon sx={{ fontSize: 16 }} />}
-                  onClick={onLogout}
+                  onClick={() => dispatch({ type: "appState/logOut" })}
                   sx={{
                     borderColor: "rgba(148, 163, 184, 0.2)",
                     color: "#94a3b8",
@@ -293,9 +283,7 @@ export default function Navbar({
             <Divider sx={{ borderColor: "rgba(148, 163, 184, 0.1)", mb: 1 }} />
             <List>
               {navItems.map((item) => {
-                const isAuthDisabled = item.requiresAuth && !user;
-                const isQuizDisabled = isQuizActive && item.id !== "quiz";
-                const isDisabled = isAuthDisabled || isQuizDisabled;
+                const isDisabled = forbidenPages.includes(item.label as NavItem);
                 return (
                   <Box key={item.id}>
                     <ListItemButton
@@ -326,7 +314,7 @@ export default function Navbar({
                         primary={
                           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                             {item.label}
-                            {isAuthDisabled && <LockIcon sx={{ fontSize: 12, color: "#475569" }} />}
+                            {isDisabled && <LockIcon sx={{ fontSize: 12, color: "#475569" }} />}
                           </Box>
                         }
                         primaryTypographyProps={{
@@ -356,7 +344,7 @@ export default function Navbar({
                     size="small"
                     startIcon={<LogoutIcon sx={{ fontSize: 16 }} />}
                     onClick={() => {
-                      onLogout();
+                      dispatch({ type: "appState/logOut" });
                       setDrawerOpen(false);
                     }}
                     sx={{

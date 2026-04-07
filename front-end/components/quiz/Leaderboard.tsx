@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Typography,
@@ -18,40 +18,13 @@ import {
   TableHead,
   TableRow,
   Avatar,
+  TablePagination,
 } from "@mui/material";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import type { QuizAttempt } from "./Statistics";
-import { quizTopics } from "@/lib/quizData";
-
-interface LeaderboardEntry {
-  rank: number;
-  username: string;
-  topicTitle: string;
-  topicColor: string;
-  score: number;
-  totalQuestions: number;
-  percentage: number;
-  weightedPercentage: number;
-  date: string;
-}
-
-interface LeaderboardProps {
-  attempts: QuizAttempt[];
-}
-
-const MOCK_LEADERBOARD: LeaderboardEntry[] = [
-  { rank: 1, username: "AlexDev", topicTitle: "TypeScript", topicColor: "#3178c6", score: 10, totalQuestions: 10, percentage: 100, weightedPercentage: 100, date: "Feb 18, 2026" },
-  { rank: 2, username: "SarahCode", topicTitle: "React", topicColor: "#61dafb", score: 10, totalQuestions: 10, percentage: 100, weightedPercentage: 100, date: "Feb 17, 2026" },
-  { rank: 3, username: "MaxSharp", topicTitle: "C#", topicColor: "#68217a", score: 9, totalQuestions: 10, percentage: 90, weightedPercentage: 93, date: "Feb 17, 2026" },
-  { rank: 4, username: "LiamJS", topicTitle: "JavaScript", topicColor: "#f0db4f", score: 9, totalQuestions: 10, percentage: 90, weightedPercentage: 88, date: "Feb 16, 2026" },
-  { rank: 5, username: "EmmaDB", topicTitle: "SQL", topicColor: "#336791", score: 9, totalQuestions: 10, percentage: 90, weightedPercentage: 87, date: "Feb 16, 2026" },
-  { rank: 6, username: "NoahNet", topicTitle: ".NET", topicColor: "#512bd4", score: 8, totalQuestions: 10, percentage: 80, weightedPercentage: 85, date: "Feb 15, 2026" },
-  { rank: 7, username: "OliverTS", topicTitle: "TypeScript", topicColor: "#3178c6", score: 8, totalQuestions: 10, percentage: 80, weightedPercentage: 82, date: "Feb 15, 2026" },
-  { rank: 8, username: "SophiaLang", topicTitle: "English Grammar", topicColor: "#e44d26", score: 8, totalQuestions: 10, percentage: 80, weightedPercentage: 80, date: "Feb 14, 2026" },
-  { rank: 9, username: "JamesReact", topicTitle: "React", topicColor: "#61dafb", score: 8, totalQuestions: 10, percentage: 80, weightedPercentage: 78, date: "Feb 14, 2026" },
-  { rank: 10, username: "AvaSQL", topicTitle: "SQL", topicColor: "#336791", score: 7, totalQuestions: 10, percentage: 70, weightedPercentage: 75, date: "Feb 13, 2026" },
-];
+import { useSelector } from "react-redux";
+import { RootState, useAppDispatch } from "@/redux/store";
+import { getPage, setPageNumber, setPageSize, setScore, setTopic } from "@/redux/statSlice";
 
 const getRankColor = (rank: number) => {
   if (rank === 1) return "#fbbf24";
@@ -75,53 +48,15 @@ const getGradeColor = (pct: number) => {
   return "#ef4444";
 };
 
-export default function Leaderboard({ attempts }: LeaderboardProps) {
-  const [topicFilter, setTopicFilter] = React.useState<string>("all");
-  const [scoreFilter, setScoreFilter] = React.useState<string>("all");
+export default function Leaderboard() {
+  const dispatch = useAppDispatch();
 
-  // Merge user attempts with mock data
-  const userEntries: LeaderboardEntry[] = attempts.map((a) => ({
-    rank: 0,
-    username: "You",
-    topicTitle: a.topicTitle,
-    topicColor: a.topicColor,
-    score: a.score,
-    totalQuestions: a.totalQuestions,
-    percentage: a.percentage,
-    weightedPercentage: a.weightedPercentage,
-    date: a.date,
-  }));
+  const { rows, topicId, scoreThreshold, pageSize, pageNumber, totalCount } = useSelector((state: RootState) => state.statState);
+  const { topics } = useSelector((state: RootState) => state.appState);
 
-  const allEntries = [...MOCK_LEADERBOARD, ...userEntries];
-
-  // Apply filters
-  let filtered = allEntries;
-  if (topicFilter !== "all") {
-    filtered = filtered.filter((e) => e.topicTitle === topicFilter);
-  }
-  if (scoreFilter === "90+") {
-    filtered = filtered.filter((e) => e.percentage >= 90);
-  } else if (scoreFilter === "80+") {
-    filtered = filtered.filter((e) => e.percentage >= 80);
-  } else if (scoreFilter === "70+") {
-    filtered = filtered.filter((e) => e.percentage >= 70);
-  }
-
-  // Sort by weighted percentage, then percentage, then score
-  filtered.sort((a, b) => {
-    if (b.weightedPercentage !== a.weightedPercentage)
-      return b.weightedPercentage - a.weightedPercentage;
-    if (b.percentage !== a.percentage) return b.percentage - a.percentage;
-    return b.score - a.score;
-  });
-
-  // Assign ranks
-  const ranked = filtered.map((entry, i) => ({ ...entry, rank: i + 1 }));
-
-  const topicOptions = quizTopics.map((t) => ({
-    label: t.title,
-    value: t.title,
-  }));
+  useEffect(() => {
+    dispatch(getPage());
+  }, [dispatch, topicId, scoreThreshold, pageSize, pageNumber]);
 
   const selectSx = {
     color: "#f1f5f9",
@@ -180,16 +115,16 @@ export default function Leaderboard({ attempts }: LeaderboardProps) {
             <FormControl size="small" sx={{ minWidth: 160 }}>
               <InputLabel sx={{ color: "#64748b" }}>Topic</InputLabel>
               <Select
-                value={topicFilter}
+                value={topicId}
                 label="Topic"
-                onChange={(e) => setTopicFilter(e.target.value)}
+                onChange={(e) => dispatch(setTopic(Number(e.target.value)))}
                 sx={selectSx}
                 MenuProps={menuPropsSx}
               >
-                <MenuItem value="all">All Topics</MenuItem>
-                {topicOptions.map((t) => (
-                  <MenuItem key={t.value} value={t.value}>
-                    {t.label}
+                <MenuItem value={0}>All Topics</MenuItem>
+                {topics.map((t) => (
+                  <MenuItem key={t.id} value={t.id}>
+                    {t.name}
                   </MenuItem>
                 ))}
               </Select>
@@ -197,16 +132,16 @@ export default function Leaderboard({ attempts }: LeaderboardProps) {
             <FormControl size="small" sx={{ minWidth: 130 }}>
               <InputLabel sx={{ color: "#64748b" }}>Score</InputLabel>
               <Select
-                value={scoreFilter}
+                value={scoreThreshold}
                 label="Score"
-                onChange={(e) => setScoreFilter(e.target.value)}
+                onChange={(e) => dispatch(setScore(Number(e.target.value)))}
                 sx={selectSx}
                 MenuProps={menuPropsSx}
               >
-                <MenuItem value="all">All Scores</MenuItem>
-                <MenuItem value="90+">90%+</MenuItem>
-                <MenuItem value="80+">80%+</MenuItem>
-                <MenuItem value="70+">70%+</MenuItem>
+                <MenuItem value={0}>All Scores</MenuItem>
+                <MenuItem value={90}>90%+</MenuItem>
+                <MenuItem value={80}>80%+</MenuItem>
+                <MenuItem value={70}>70%+</MenuItem>
               </Select>
             </FormControl>
           </Box>
@@ -243,11 +178,11 @@ export default function Leaderboard({ attempts }: LeaderboardProps) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {ranked.map((entry) => {
-                const isUser = entry.username === "You";
+              {rows.map((entry) => {
+                const isUser = entry.name === "You";
                 return (
                   <TableRow
-                    key={`${entry.username}-${entry.date}-${entry.topicTitle}`}
+                    key={entry.rank}
                     sx={{
                       backgroundColor: isUser ? "rgba(16, 185, 129, 0.05)" : "transparent",
                       "&:hover": { backgroundColor: "rgba(148, 163, 184, 0.04)" },
@@ -272,10 +207,10 @@ export default function Leaderboard({ attempts }: LeaderboardProps) {
                             color: isUser ? "#10b981" : "#94a3b8",
                           }}
                         >
-                          {entry.username[0]}
+                          {entry.name[0]}
                         </Avatar>
                         <Typography variant="body2" sx={{ color: isUser ? "#10b981" : "#e2e8f0", fontWeight: isUser ? 700 : 500 }}>
-                          {entry.username}
+                          {entry.name}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -293,17 +228,17 @@ export default function Leaderboard({ attempts }: LeaderboardProps) {
                     </TableCell>
                     <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
                       <Typography variant="body2" sx={{ color: "#e2e8f0" }}>
-                        {entry.score}/{entry.totalQuestions}
+                        {entry.answeredCount}/{entry.questionCount}
                       </Typography>
                     </TableCell>
                     <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
-                      <Typography variant="body2" sx={{ color: getGradeColor(entry.percentage), fontWeight: 700 }}>
-                        {entry.percentage}%
+                      <Typography variant="body2" sx={{ color: getGradeColor(entry.score), fontWeight: 700 }}>
+                        {entry.score}%
                       </Typography>
                     </TableCell>
                     <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
-                      <Typography variant="body2" sx={{ color: getGradeColor(entry.weightedPercentage), fontWeight: 600 }}>
-                        {entry.weightedPercentage}%
+                      <Typography variant="body2" sx={{ color: getGradeColor(entry.weightedScore), fontWeight: 600 }}>
+                        {entry.weightedScore}%
                       </Typography>
                     </TableCell>
                     <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
@@ -314,7 +249,7 @@ export default function Leaderboard({ attempts }: LeaderboardProps) {
                   </TableRow>
                 );
               })}
-              {ranked.length === 0 && (
+              {rows.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={7} sx={{ textAlign: "center", py: 4, borderColor: "rgba(148,163,184,0.06)" }}>
                     <Typography variant="body2" sx={{ color: "#64748b" }}>
@@ -325,6 +260,37 @@ export default function Leaderboard({ attempts }: LeaderboardProps) {
               )}
             </TableBody>
           </Table>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50]}
+            component="div"
+            count={totalCount}
+            rowsPerPage={pageSize}
+            page={pageNumber - 1}
+            onPageChange={(event, newPage) => dispatch(setPageNumber(newPage))}
+            onRowsPerPageChange={(event) => {
+              dispatch(setPageSize(Number(event.target.value)));
+            }}
+            sx={{
+              backgroundColor: "#1e293b",
+              borderTop: "1px solid rgba(148,163,184,0.06)",
+              "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows": {
+                color: "#64748b",
+                fontSize: "0.85rem",
+              },
+              "& .MuiSelect-root": {
+                color: "#e2e8f0",
+              },
+              "& .MuiIconButton-root": {
+                color: "#64748b",
+              },
+              "& .MuiIconButton-root:hover": {
+                backgroundColor: "rgba(16, 185, 129, 0.1)",
+              },
+              "& .Mui-disabled": {
+                color: "rgba(148, 163, 184, 0.3)",
+              },
+            }}
+          />
         </TableContainer>
       </Card>
     </Box>

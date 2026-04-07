@@ -1,7 +1,7 @@
 import { Answer } from "./Answer";
 
 export interface TestResult {
-    technologyName: string;
+    topicName: string;
     finalScore: number;
     totalPoints: number;
     earnedPoints: number;

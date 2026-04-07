@@ -1,6 +1,7 @@
 import { AnswerRequestDto } from "@/biz/dto/AnswerRequestDto";
 import { AnswerResponseDto } from "@/biz/dto/AnswerResponseDto";
 import { TestDto } from "@/biz/dto/TestDto";
+import { TestResultDto } from "@/biz/dto/TestResultDto";
 import Http from "@/biz/Http";
 import { mapAnswer } from "@/biz/mappers/answerMapper";
 import { mapCurrentTest } from "@/biz/mappers/currentTestMapper";
@@ -30,9 +31,9 @@ export const current = createAsyncThunk<TestDto>(
 
 export const createTest = createAsyncThunk<TestDto, string>(
     'test/createTest',
-    async (technologyName, thunkAPI) => {
+    async (topicName, thunkAPI) => {
         try {
-            return await Http.Test.create(encodeURIComponent(technologyName));
+            return await Http.Test.create(encodeURIComponent(topicName));
         } catch (error: any) {
             return thunkAPI.rejectWithValue({ error: error.status });
         }
@@ -58,6 +59,16 @@ export const answer = createAsyncThunk<AnswerResponseDto, AnswerRequestDto>(
         }
     });
 
+export const complete = createAsyncThunk<TestResultDto, number>(
+    'test/complete',
+    async (param, thunkAPI) => {
+        try {
+            return await Http.Test.complete(param);
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({ error: error.status });
+        }
+    });
+
 export const testSlice = createSlice({
     name: 'test',
     initialState,
@@ -65,6 +76,14 @@ export const testSlice = createSlice({
         setTestData: (state, action: PayloadAction<{ test: CurrentTest | null; result: TestResult | null }>) => {
             state.test = action.payload.test;
             state.result = action.payload.result;
+        },
+        decrementTime: (state) => {
+            if (state.test) {
+                const secondsLeft = state.test.secondsLeft;
+                if (secondsLeft > 0) {
+                    state.test.secondsLeft = secondsLeft - 1;
+                }
+            }
         },
     },
     extraReducers: (builder => {
@@ -114,7 +133,7 @@ export const testSlice = createSlice({
             }
             else if (ap.testResult) {
                 state.result = {
-                    technologyName: ap.testResult.technologyName,
+                    topicName: ap.testResult.topicName,
                     answeredCount: ap.testResult.answeredCount,
                     finalScore: ap.testResult.finalScore,
                     earnedPoints: ap.testResult.earnedPoints,
@@ -128,7 +147,23 @@ export const testSlice = createSlice({
         builder.addCase(answer.rejected, (state, action) => {
             console.log("answer.rejected" + action.payload);
         });
+
+        // complete:
+        builder.addCase(complete.fulfilled, (state, action) => {
+            state.test = null;
+            state.result = {
+                topicName: action.payload.topicName,
+                answeredCount: action.payload.answeredCount,
+                finalScore: action.payload.finalScore,
+                earnedPoints: action.payload.earnedPoints,
+                totalPoints: action.payload.totalPoints,
+                answers: action.payload.answers.map(a => mapAnswer(a)),
+            };
+        });
+        builder.addCase(complete.rejected, (_state, action) => {
+            console.log("complete.rejected" + action.payload);
+        });
     })
 });
 
-export const { setTestData } = testSlice.actions;
+export const { setTestData, decrementTime } = testSlice.actions;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback } from "react";
+import { useCallback } from "react";
 import {
   Box,
   Typography,
@@ -17,21 +17,15 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { TestResult } from "@/biz/models/TestResult";
 import { useAppDispatch } from "@/redux/store";
 import { createTest, setTestData } from "@/redux/testSlice";
-import { useNavigate } from "react-router-dom";
+import { setForbidenPages } from "@/redux/appSlice";
+import { NavItem } from "@/biz/models/NavItems";
 
 interface QuizResultsProps {
-  onRetry: () => void;
-  onHome: () => void;
   result: TestResult;
 }
 
-export default function QuizResults({
-  onRetry,
-  onHome,
-  result,
-}: QuizResultsProps) {
+export default function QuizResults({ result }: QuizResultsProps) {
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
 
   const percentage = Math.round((result.answeredCount / result.answers.length) * 100);
   const weightedPercentage =
@@ -51,13 +45,13 @@ export default function QuizResults({
   const grade = getGrade();
 
   const handleRetry = useCallback(async () => {
-    await dispatch(createTest(result.technologyName));
-  }, [result]);
+    await dispatch(createTest(result.topicName));
+    dispatch(setForbidenPages([NavItem.Top, NavItem.Profile, NavItem.About]));
+  }, [dispatch, result]);
 
   const handleGoToQuiz = useCallback(() => {
-    //navigate("/");
     dispatch(setTestData({ test: null, result: null }));
-  }, [navigate]);
+  }, [dispatch]);
 
   return (
     <Box sx={{ maxWidth: 720, mx: "auto" }}>

@@ -1,9 +1,8 @@
-export interface Technology {
+export interface TopicDto {
     id: number;
     name: string;
     description: string;
     questionCount: number;
     durationInMinute: number;
-    color: string;
-    icon: string;
+    themeColor: string;
 }

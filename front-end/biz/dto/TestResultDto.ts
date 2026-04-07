@@ -1,7 +1,7 @@
 import { AnswerDto } from "./AnswerDto";
 
 export interface TestResultDto {
-    technologyName: string;
+    topicName: string;
     finalScore: number;
     totalPoints: number;
     earnedPoints: number;

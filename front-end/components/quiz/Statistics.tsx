@@ -9,6 +9,7 @@ import {
   Chip,
   Button,
   Divider,
+  CircularProgress,
 } from "@mui/material";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
@@ -17,9 +18,9 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import QuizIcon from "@mui/icons-material/Quiz";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
-import { quizTopics } from "@/lib/quizData";
-import type { UserData } from "./Navbar";
-import { UserDto } from "@/biz/dto/UserDto";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 export interface QuizAttempt {
   topicId: string;
@@ -32,53 +33,22 @@ export interface QuizAttempt {
   date: string;
 }
 
-interface StatisticsProps {
-  attempts: QuizAttempt[];
-  onClearHistory: () => void;
-  onGoToQuiz: () => void;
-  user: UserDto | null;
-}
+export default function Statistics() {
 
-export default function Statistics({
-  attempts,
-  onClearHistory,
-  onGoToQuiz,
-  user,
-}: StatisticsProps) {
-  const totalAttempts = attempts.length;
-  const avgPercentage =
-    totalAttempts > 0
-      ? Math.round(
-          attempts.reduce((sum, a) => sum + a.percentage, 0) / totalAttempts
-        )
-      : 0;
-  const bestScore =
-    totalAttempts > 0 ? Math.max(...attempts.map((a) => a.percentage)) : 0;
-  const totalQuestions = attempts.reduce(
-    (sum, a) => sum + a.totalQuestions,
-    0
-  );
+  const user = useSelector((state: RootState) => state.appState.user);
+  const profile = useSelector((state: RootState) => state.statState.profile);
+  const navigate = useNavigate();
 
-  const topicStats = quizTopics.map((topic) => {
-    const topicAttempts = attempts.filter((a) => a.topicId === topic.id);
-    const best =
-      topicAttempts.length > 0
-        ? Math.max(...topicAttempts.map((a) => a.percentage))
-        : null;
-    const avg =
-      topicAttempts.length > 0
-        ? Math.round(
-            topicAttempts.reduce((s, a) => s + a.percentage, 0) /
-              topicAttempts.length
-          )
-        : null;
-    return {
-      ...topic,
-      attemptCount: topicAttempts.length,
-      bestScore: best,
-      avgScore: avg,
-    };
-  });
+  if (!profile) {
+    return <CircularProgress />;
+  }
+
+  const totalAttempts = profile.profileSummary.totalAttemptCount;
+  const avgPercentage = profile.profileSummary.averageScore;
+  const bestScore = profile.profileSummary.bestScore;
+  const totalQuestions = profile.profileSummary.answerCount;
+  const topicStats = profile.topics;
+  const attempts = profile.attempts;
 
   const getGradeColor = (pct: number) => {
     if (pct >= 80) return "#10b981";
@@ -108,7 +78,7 @@ export default function Statistics({
         </Typography>
         <Button
           variant="contained"
-          onClick={onGoToQuiz}
+          onClick={() => navigate("/")}
           sx={{
             backgroundColor: "#10b981",
             color: "#fff",
@@ -165,7 +135,7 @@ export default function Statistics({
               </Box>
               <Box>
                 <Typography variant="h6" sx={{ color: "#10b981", fontWeight: 700 }}>
-                  {avgPercentage}%
+                  {profile.profileSummary.averageScore}%
                 </Typography>
                 <Typography variant="caption" sx={{ color: "#64748b" }}>
                   Average
@@ -189,7 +159,7 @@ export default function Statistics({
           variant="outlined"
           size="small"
           startIcon={<DeleteOutlineIcon />}
-          onClick={onClearHistory}
+          onClick={() => { }}
           sx={{
             borderColor: "rgba(239, 68, 68, 0.3)",
             color: "#ef4444",
@@ -234,7 +204,7 @@ export default function Statistics({
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, mb: 3 }}>
         {topicStats.map((t) => (
           <Card
-            key={t.id}
+            key={t.topic}
             sx={{
               backgroundColor: "#1e293b",
               border: `1px solid ${t.attemptCount > 0 ? `${t.color}20` : "rgba(148,163,184,0.06)"}`,
@@ -244,7 +214,7 @@ export default function Statistics({
             <CardContent sx={{ py: 2, px: 2.5, "&:last-child": { pb: 2 } }}>
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
                 <Typography variant="body1" sx={{ color: "#f1f5f9", fontWeight: 600 }}>
-                  {t.title}
+                  {t.topic}
                 </Typography>
                 {t.attemptCount > 0 && (
                   <Chip
@@ -260,16 +230,16 @@ export default function Statistics({
                     <Typography variant="caption" sx={{ color: "#64748b" }}>
                       Best
                     </Typography>
-                    <Typography variant="body2" sx={{ color: getGradeColor(t.bestScore!), fontWeight: 700 }}>
-                      {t.bestScore}%
+                    <Typography variant="body2" sx={{ color: getGradeColor(t.best), fontWeight: 700 }}>
+                      {t.best}%
                     </Typography>
                   </Box>
                   <Box>
                     <Typography variant="caption" sx={{ color: "#64748b" }}>
                       Average
                     </Typography>
-                    <Typography variant="body2" sx={{ color: getGradeColor(t.avgScore!), fontWeight: 700 }}>
-                      {t.avgScore}%
+                    <Typography variant="body2" sx={{ color: getGradeColor(t.average), fontWeight: 700 }}>
+                      {t.average}%
                     </Typography>
                   </Box>
                 </Box>
@@ -289,8 +259,6 @@ export default function Statistics({
       </Typography>
       <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
         {[...attempts]
-          .reverse()
-          .slice(0, 20)
           .map((attempt, index) => (
             <Card key={index} sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(148, 163, 184, 0.06)" }}>
               <CardContent sx={{ py: 1.5, px: 2.5, "&:last-child": { pb: 1.5 }, display: "flex", alignItems: "center", gap: 2 }}>
@@ -299,20 +267,20 @@ export default function Statistics({
                     width: 36,
                     height: 36,
                     borderRadius: "50%",
-                    backgroundColor: `${getGradeColor(attempt.percentage)}15`,
+                    backgroundColor: `${getGradeColor(attempt.score)}15`,
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
                     flexShrink: 0,
                   }}
                 >
-                  <Typography variant="caption" sx={{ color: getGradeColor(attempt.percentage), fontWeight: 800 }}>
-                    {getGradeLabel(attempt.percentage)}
+                  <Typography variant="caption" sx={{ color: getGradeColor(attempt.score), fontWeight: 800 }}>
+                    {getGradeLabel(attempt.score)}
                   </Typography>
                 </Box>
                 <Box sx={{ flex: 1 }}>
                   <Typography variant="body2" sx={{ color: "#e2e8f0", fontWeight: 600 }}>
-                    {attempt.topicTitle}
+                    {attempt.topic}
                   </Typography>
                   <Typography variant="caption" sx={{ color: "#64748b" }}>
                     {attempt.date}
@@ -320,13 +288,13 @@ export default function Statistics({
                 </Box>
                 <Box sx={{ textAlign: "right" }}>
                   <Typography variant="body2" sx={{ color: "#e2e8f0", fontWeight: 600 }}>
-                    {attempt.score}/{attempt.totalQuestions}
+                    {attempt.score}/{attempt.questionCount}
                   </Typography>
                   <Typography
                     variant="caption"
-                    sx={{ color: getGradeColor(attempt.percentage), fontWeight: 700 }}
+                    sx={{ color: getGradeColor(attempt.score), fontWeight: 700 }}
                   >
-                    {attempt.percentage}%
+                    {attempt.score}%
                   </Typography>
                 </Box>
               </CardContent>

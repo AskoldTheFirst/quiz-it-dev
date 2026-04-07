@@ -57,18 +57,13 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   
-  const { technologies, user } = useSelector((state: RootState) => state.appState);
-  const { test } = useSelector((state: RootState) => state.testState);
-  const dispatch = useAppDispatch();
-
-  //const [user, setUser] = useState<UserData | null>(null);
+  const { user } = useSelector((state: RootState) => state.appState);
   const [isInitialized, setIsInitialized] = useState(false);
   const [authDialog, setAuthDialog] = useState<"login" | "register" | null>(null);
   const [quizState, setQuizState] = useState<QuizState>("topics");
   const [pendingNavigation, setPendingNavigation] = useState<string | null>(null);
 
   useEffect(() => {
-    //setUser(loadUser());
     setIsInitialized(true);
   }, []);
 
@@ -82,18 +77,8 @@ export default function AppLayout() {
     setAuthDialog("register");
   }, []);
 
-  const handleLogout = useCallback(() => {
-    //setUser(null);
-    //saveUser(null);
-    if (location.pathname === "/profile") {
-      navigate("/");
-    }
-  }, [location.pathname, navigate]);
-
   const handleAuthSuccess = useCallback(
     (userData: UserData) => {
-      //setUser(userData);
-      //saveUser(userData);
       setAuthDialog(null);
 
       if (pendingNavigation) {
@@ -115,6 +100,7 @@ export default function AppLayout() {
 
   const handleNavigate = useCallback(
     (page: string) => {
+      
       // Disable navigation during active quiz
       if (quizState === "active" && page !== "quiz") {
         return;
@@ -146,10 +132,8 @@ export default function AppLayout() {
         <Navbar
           currentPage={currentPage}
           onNavigate={handleNavigate}
-          //user={user}
           onOpenLogin={openLogin}
           onOpenRegister={openRegister}
-          onLogout={handleLogout}
           isQuizActive={isQuizActive}
           isInitialized={isInitialized}
         />

@@ -1,6 +1,7 @@
 import { store } from "@/redux/store";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { AnswerRequestDto } from "./dto/AnswerRequestDto";
+import { StatisticsRequestDto } from "./dto/StatisticsRequestDto";
 
 axios.defaults.baseURL = 'https://localhost:7072/api/';
 axios.defaults.withCredentials = true;
@@ -56,14 +57,21 @@ const App = {
 
 const Test = {
     current: () => requests.get('tests/current'),
-    create: (technologyName: string) => requests.post(`tests/create?technologyName=${technologyName}`, {}),
+    create: (topicName: string) => requests.post(`tests/create?topicName=${topicName}`, {}),
     cancel: (testId: number) => requests.post(`tests/cancel?testId=${testId}`, {}),
-    answer: (requestModel: AnswerRequestDto) => requests.post('tests/answer', requestModel ),
+    answer: (requestModel: AnswerRequestDto) => requests.post('tests/answer', requestModel),
+    complete: (testId: number) => requests.post(`tests/complete?testId=${testId}`, {}),
+}
+
+const Statistics = {
+    page: (requestMode: StatisticsRequestDto) => requests.get('statistics/page', requestMode),
+    profile: () => requests.get('statistics/profile'),
 }
 
 const Http = {
     App,
     Test,
+    Statistics,
 }
 
 export default Http;

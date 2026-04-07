@@ -2,19 +2,26 @@ import { AppStateDto } from "@/biz/dto/AppStateDto";
 import { UserDto } from "@/biz/dto/UserDto";
 import { Helper } from "@/biz/Helper";
 import Http from "@/biz/Http";
-import { mapTechnology } from "@/biz/mappers/technologyMapper";
-import { Technology } from "@/biz/models/Technology";
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { mapTopic } from "@/biz/mappers/topicMapper";
+import { NavItem } from "@/biz/models/NavItems";
+import { Topic } from "@/biz/models/Topic";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { set } from "date-fns";
 import { FieldValues } from "react-hook-form";
+import { start } from "repl";
 
 export interface AppState {
-    technologies: Technology[];
+    topics: Topic[];
     user: UserDto | null;
+    forbidenPages: NavItem[];
+    currentPage: NavItem;
 }
 
 const initialState: AppState = {
-    technologies: [],
+    topics: [],
     user: null,
+    forbidenPages: [NavItem.Profile],
+    currentPage: NavItem.Quiz,
 };
 
 export const initState = createAsyncThunk<AppState>(
@@ -36,7 +43,9 @@ export const initState = createAsyncThunk<AppState>(
             const response = await Http.App.initState() as AppStateDto;
             return {
                 user: response.user,
-                technologies: response.technologies.map(mapTechnology)
+                topics: response.topics.map(mapTopic),
+                forbidenPages: response.user == null ? [NavItem.Profile] : [],
+                currentPage: NavItem.Quiz
             }
         } catch (error: any) {
             return thunkAPI.rejectWithValue({ error: error.status });
@@ -73,27 +82,32 @@ export const appSlice = createSlice({
         setUser: (state, action) => {
             state.user = action.payload.user;
             localStorage.setItem(Helper.UserKey, JSON.stringify(state.user));
+            state.forbidenPages = [];
         },
-        signOut: (state) => {
+        logOut: (state) => {
             state.user = null;
             localStorage.removeItem(Helper.UserKey);
+            state.forbidenPages = [NavItem.Profile];
         },
-        setState: (state, action) => {
-            state.technologies = action.payload.technologies;
-            state.user = action.payload.user;
-            localStorage.setItem(Helper.UserKey, JSON.stringify(state.user));
+        setCurrentPage: (state, action: PayloadAction<NavItem>) => {
+            state.currentPage = action.payload;
+        },
+        setForbidenPages: (state, action: PayloadAction<NavItem[]>) => {
+            state.forbidenPages = action.payload;
         }
     },
     extraReducers: (builder => {
 
         // initState
         builder.addCase(initState.fulfilled, (state, action) => {
-            state.technologies = action.payload.technologies;
+            state.topics = action.payload.topics;
             state.user = action.payload.user;
             if (state.user) {
                 localStorage.setItem(Helper.UserKey, JSON.stringify(state.user));
+                state.forbidenPages = [];
             } else {
                 localStorage.removeItem(Helper.UserKey);
+                state.forbidenPages = [NavItem.Profile];
             }
         });
         builder.addCase(initState.rejected, (_, action) => {
@@ -105,8 +119,10 @@ export const appSlice = createSlice({
             state.user = action.payload;
             if (state.user) {
                 localStorage.setItem(Helper.UserKey, JSON.stringify(state.user));
+                state.forbidenPages = [];
             } else {
                 localStorage.removeItem(Helper.UserKey);
+                state.forbidenPages = [NavItem.Profile];
             }
         });
         builder.addCase(registerInUser.rejected, (_state, action) => {
@@ -118,8 +134,10 @@ export const appSlice = createSlice({
             state.user = action.payload;
             if (state.user) {
                 localStorage.setItem(Helper.UserKey, JSON.stringify(state.user));
+                state.forbidenPages = [];
             } else {
                 localStorage.removeItem(Helper.UserKey);
+                state.forbidenPages = [NavItem.Profile];
             }
         });
         builder.addCase(signInUser.rejected, (_state, action) => {
@@ -128,4 +146,4 @@ export const appSlice = createSlice({
     })
 });
 
-export const { setUser, signOut } = appSlice.actions;
+export const { setUser, logOut, setCurrentPage, setForbidenPages } = appSlice.actions;

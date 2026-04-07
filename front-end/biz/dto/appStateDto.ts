@@ -1,7 +1,7 @@
-import { TechnologyDto } from "./TechnologyDto";
+import { TopicDto } from "./TopicDto";
 import { UserDto } from "./UserDto";
 
 export interface AppStateDto {
-    technologies: TechnologyDto[];
+    topics: TopicDto[];
     user: UserDto | null;
 }

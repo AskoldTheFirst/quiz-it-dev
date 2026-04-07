@@ -15,7 +15,7 @@ import StorageIcon from "@mui/icons-material/Storage";
 import TerminalIcon from "@mui/icons-material/Terminal";
 import TranslateIcon from "@mui/icons-material/Translate";
 import MemoryIcon from "@mui/icons-material/Memory";
-import { Technology } from "@/biz/models/Technology";
+import { Topic } from "@/biz/models/Topic";
 
 const iconMap: Record<string, React.ReactElement> = {
   csharp: <TerminalIcon />,
@@ -29,7 +29,7 @@ const iconMap: Record<string, React.ReactElement> = {
 };
 
 interface TopicCardProps {
-  topic: Technology;
+  topic: Topic;
   onSelect: (topicId: string) => void;
 }
 
@@ -41,9 +41,9 @@ export default function TopicCard({ topic, onSelect }: TopicCardProps) {
         border: "1px solid rgba(148, 163, 184, 0.1)",
         transition: "all 0.3s ease",
         "&:hover": {
-          borderColor: `${topic.color}60`,
+          borderColor: `${topic.themeColor}60`,
           transform: "translateY(-4px)",
-          boxShadow: `0 8px 30px ${topic.color}15`,
+          boxShadow: `0 8px 30px ${topic.themeColor}15`,
         },
       }}
     >
@@ -63,11 +63,11 @@ export default function TopicCard({ topic, onSelect }: TopicCardProps) {
                 width: 40,
                 height: 40,
                 borderRadius: 2,
-                backgroundColor: `${topic.color}15`,
+                backgroundColor: `${topic.themeColor}15`,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: topic.color,
+                color: topic.themeColor,
                 flexShrink: 0,
               }}
             >
@@ -86,7 +86,7 @@ export default function TopicCard({ topic, onSelect }: TopicCardProps) {
             <Typography variant="caption" sx={{ color: "#64748b" }}>
               {topic.questionCount} questions
             </Typography>
-            <Typography variant="caption" sx={{ color: topic.color, fontWeight: 600 }}>
+            <Typography variant="caption" sx={{ color: topic.themeColor, fontWeight: 600 }}>
               {"Start ->"}
             </Typography>
           </Box>

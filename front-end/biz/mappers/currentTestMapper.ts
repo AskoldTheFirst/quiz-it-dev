@@ -1,6 +1,5 @@
 import { TestDto } from "../dto/TestDto";
 import { CurrentTest } from "../models/CurrentTest";
-import { mapTechnologyNameToColor } from "./technologyMapper";
 
 export function mapCurrentTest(dto: TestDto): CurrentTest {
     return {
@@ -10,12 +9,12 @@ export function mapCurrentTest(dto: TestDto): CurrentTest {
         questionAnswer3: dto.question.answer3,
         questionAnswer4: dto.question.answer4,
         testId: dto.testId,
-        testName: dto.technologyName,
+        testName: dto.topicName,
         number: dto.question.number,
         questionId: dto.question.questionId,
         testQuestionId: dto.question.testQuestionId,
-        spentTimeInSeconds: dto.secondsLeft,
+        secondsLeft: dto.secondsLeft,
         totalQuestions: dto.questionCount,
-        testColor: mapTechnologyNameToColor(dto.technologyName),
+        testColor: dto.topicColor,
     } as CurrentTest
 }
