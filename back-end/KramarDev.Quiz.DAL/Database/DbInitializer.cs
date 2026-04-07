@@ -9,24 +9,24 @@ public static class DbInitializer
     public static void Initialize(QuizDbContext ctx)
     {
         bool shouldWeSubmit = false;
-        Technology[] techArray = new Technology[7];
+        Topic[] techArray = new Topic[7];
 
-        if (!ctx.Technologies.Any())
+        if (!ctx.Topics.Any())
         {
-            techArray[0] = new Technology() { Name = "C#", Description = "Test your knowledge of C# fundamentals, OOP concepts, LINQ, and the .NET ecosystem.", IsActive = true, DurationInMinutes = 12, QuestionCount = 10 };
-            techArray[1] = new Technology() { Name = "JavaScript", Description = "Test your knowledge of JavaScript fundamentals, ES6+ features, and browser APIs.", IsActive = true, DurationInMinutes = 8, QuestionCount = 12 };
-            techArray[2] = new Technology() { Name = "C/C++", Description = "Test your knowledge of C/C++ fundamentals, memory management, pointers, object-oriented programming, and standard libraries.", IsActive = true, DurationInMinutes = 10, QuestionCount = 12 };
-            techArray[3] = new Technology() { Name = "SQL", Description = "Test your SQL skills with questions on queries, joins, indexes, and database design.", IsActive = true, DurationInMinutes = 10, QuestionCount = 10 };
-            techArray[4] = new Technology() { Name = ".NET", Description = "Explore your understanding of the .NET framework, ASP.NET Core, Entity Framework, and middleware.", IsActive = true, DurationInMinutes = 12, QuestionCount = 10 };
-            techArray[5] = new Technology() { Name = "React", Description = "Challenge yourself on React concepts, hooks, state management, and best practices.", IsActive = true, DurationInMinutes = 12, QuestionCount = 12 };
-            techArray[6] = new Technology() { Name = "English Grammar", Description = "Test your understanding of English grammar rules, tenses, parts of speech, and sentence structure.", IsActive = true, DurationInMinutes = 12, QuestionCount = 20 };
+            techArray[0] = new Topic() { Name = "C#", Description = "Test your knowledge of C# fundamentals, OOP concepts, LINQ, and the .NET ecosystem.", IsActive = true, DurationInMinutes = 12, QuestionCount = 10, ThemeColor = "#68217a" };
+            techArray[1] = new Topic() { Name = "JavaScript", Description = "Test your knowledge of JavaScript fundamentals, ES6+ features, and browser APIs.", IsActive = true, DurationInMinutes = 8, QuestionCount = 12, ThemeColor = "#f0db4f" };
+            techArray[2] = new Topic() { Name = "C/C++", Description = "Test your knowledge of C/C++ fundamentals, memory management, pointers, object-oriented programming, and standard libraries.", IsActive = true, DurationInMinutes = 10, QuestionCount = 12, ThemeColor = "#12bd87" };
+            techArray[3] = new Topic() { Name = "SQL", Description = "Test your SQL skills with questions on queries, joins, indexes, and database design.", IsActive = true, DurationInMinutes = 10, QuestionCount = 10, ThemeColor = "#336791" };
+            techArray[4] = new Topic() { Name = ".NET", Description = "Explore your understanding of the .NET framework, ASP.NET Core, Entity Framework, and middleware.", IsActive = true, DurationInMinutes = 12, QuestionCount = 10, ThemeColor = "#512bd4" };
+            techArray[5] = new Topic() { Name = "React", Description = "Challenge yourself on React concepts, hooks, state management, and best practices.", IsActive = true, DurationInMinutes = 12, QuestionCount = 12, ThemeColor = "#61dafb" };
+            techArray[6] = new Topic() { Name = "English Grammar", Description = "Test your understanding of English grammar rules, tenses, parts of speech, and sentence structure.", IsActive = true, DurationInMinutes = 12, QuestionCount = 20, ThemeColor = "#e44d26" };
 
-            ctx.Technologies.AddRange(techArray);
+            ctx.Topics.AddRange(techArray);
             shouldWeSubmit = true;
         }
         else
         {
-            techArray = ctx.Technologies.Take(3).ToArray();
+            techArray = ctx.Topics.Take(3).ToArray();
         }
 
         if (!ctx.Questions.Any())
@@ -43,8 +43,8 @@ public static class DbInitializer
                     Answer4 = "It makes the collection thread-safe",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Which statement about deferred execution in LINQ is correct?",
@@ -54,8 +54,8 @@ public static class DbInitializer
                     Answer4 = "Deferred execution means the query runs on another thread",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "When should you prefer 'StringBuilder' over string concatenation in C#?",
@@ -65,8 +65,8 @@ public static class DbInitializer
                     Answer4 = "Only inside async methods",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "What is the main purpose of 'IDisposable'?",
@@ -76,8 +76,8 @@ public static class DbInitializer
                     Answer4 = "To make an object immutable",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Which statement about 'record' types in C# is most accurate?",
@@ -87,8 +87,8 @@ public static class DbInitializer
                     Answer4 = "They replace all classes in modern C#",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Why can exposing 'List<T>' directly from a class be problematic?",
@@ -98,8 +98,8 @@ public static class DbInitializer
                     Answer4 = "Because List<T> cannot be serialized",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "What is the difference between overriding and overloading?",
@@ -109,8 +109,8 @@ public static class DbInitializer
                     Answer4 = "Overloading requires inheritance; overriding does not",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Why is catching 'Exception' broadly often discouraged?",
@@ -120,8 +120,8 @@ public static class DbInitializer
                     Answer4 = "Because broad catches automatically terminate the process",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Which statement about 'async' and 'await' is correct?",
@@ -131,8 +131,8 @@ public static class DbInitializer
                     Answer4 = "Await can only be used in console applications",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "What is the main reason to use interfaces in application design?",
@@ -142,8 +142,8 @@ public static class DbInitializer
                     Answer4 = "To improve CPU clock speed",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Which keyword prevents a class from being inherited in C#?",
@@ -153,8 +153,8 @@ public static class DbInitializer
                     Answer4 = "readonly",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Which keyword is used to explicitly implement an interface member in C#?",
@@ -164,8 +164,8 @@ public static class DbInitializer
                     Answer4 = "No special keyword is required",
                     CorrectAnswerNumber = 4,
                     Difficulty = 3,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "What is the default value of an int field in C#?",
@@ -175,8 +175,8 @@ public static class DbInitializer
                     Answer4 = "undefined",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Which keyword is used to define a method that can be overridden in a derived class?",
@@ -186,8 +186,8 @@ public static class DbInitializer
                     Answer4 = "sealed",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "What does the 'null-coalescing' operator '??' do in C#?",
@@ -197,8 +197,8 @@ public static class DbInitializer
                     Answer4 = "Converts null to zero",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Which collection is best suited for Last-In-First-Out behavior?",
@@ -208,8 +208,8 @@ public static class DbInitializer
                     Answer4 = "Stack",
                     CorrectAnswerNumber = 4,
                     Difficulty = 1,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "What is method overloading in C#?",
@@ -219,8 +219,8 @@ public static class DbInitializer
                     Answer4 = "Using too many parameters in one method",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Which statement about structs in C# is correct?",
@@ -230,8 +230,8 @@ public static class DbInitializer
                     Answer4 = "Structs support inheritance from classes",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "What does 'ToString()' do by default when overridden in a class?",
@@ -241,8 +241,8 @@ public static class DbInitializer
                     Answer4 = "Clones the object",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Which keyword is used to define a member that belongs to the type itself rather than an instance?",
@@ -252,8 +252,8 @@ public static class DbInitializer
                     Answer4 = "static",
                     CorrectAnswerNumber = 4,
                     Difficulty = 1,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Which keyword is used to define a class in C#?",
@@ -263,8 +263,8 @@ public static class DbInitializer
                     Answer4 = "object",
                     CorrectAnswerNumber = 1,
                     Difficulty = 1,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "What does the 'var' keyword do in C#?",
@@ -274,8 +274,8 @@ public static class DbInitializer
                     Answer4 = "Declares a static variable",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Which collection type stores key-value pairs in C#?",
@@ -285,8 +285,8 @@ public static class DbInitializer
                     Answer4 = "Stack",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "What is the base class for all types in C#?",
@@ -296,8 +296,8 @@ public static class DbInitializer
                     Answer4 = "System.Root",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Which LINQ method is used to filter a sequence?",
@@ -307,8 +307,8 @@ public static class DbInitializer
                     Answer4 = "GroupBy",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "What is an interface in C#?",
@@ -318,8 +318,8 @@ public static class DbInitializer
                     Answer4 = "A sealed struct",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "Which access modifier allows access only within the same class?",
@@ -329,8 +329,8 @@ public static class DbInitializer
                     Answer4 = "private",
                     CorrectAnswerNumber = 4,
                     Difficulty = 1,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "What is the purpose of the 'async' keyword in C#?",
@@ -340,8 +340,8 @@ public static class DbInitializer
                     Answer4 = "It locks the method",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "What does the 'using' statement do when used with IDisposable objects?",
@@ -351,8 +351,8 @@ public static class DbInitializer
                     Answer4 = "Makes the object global",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
                 new() {
                     Text = "What happens when an exception is thrown and not caught in a method?",
@@ -362,8 +362,8 @@ public static class DbInitializer
                     Answer4 = "The method returns null",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[0].Id,
-                    Technology = techArray[0]
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
                 },
 
                 // JavaScript / TypeScript — techArray[1]
@@ -376,8 +376,8 @@ public static class DbInitializer
                     Answer4 = "Because it compares object references by value",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What is a common reason to prefer 'unknown' over 'any' in TypeScript?",
@@ -387,8 +387,8 @@ public static class DbInitializer
                     Answer4 = "Unknown is faster at runtime",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What problem do closures help solve in JavaScript?",
@@ -398,8 +398,8 @@ public static class DbInitializer
                     Answer4 = "They convert arrays to objects",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "Why can mutating objects directly in frontend state management be risky?",
@@ -409,8 +409,8 @@ public static class DbInitializer
                     Answer4 = "Because objects can no longer be serialized",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What does 'Promise.race()' do?",
@@ -420,8 +420,8 @@ public static class DbInitializer
                     Answer4 = "Cancels all slower promises automatically",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What is the main benefit of optional chaining '?.'?",
@@ -431,8 +431,8 @@ public static class DbInitializer
                     Answer4 = "It forces strict typing at runtime",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "Which statement about interfaces and type aliases in TypeScript is most accurate?",
@@ -442,8 +442,8 @@ public static class DbInitializer
                     Answer4 = "Type aliases cannot represent unions",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "Why can using 'var' be problematic in JavaScript?",
@@ -453,8 +453,8 @@ public static class DbInitializer
                     Answer4 = "Because modern browsers do not support it",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What is the purpose of a discriminated union in TypeScript?",
@@ -464,8 +464,8 @@ public static class DbInitializer
                     Answer4 = "To replace interfaces with enums only",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "Why might a developer use 'Map' instead of a plain object in JavaScript?",
@@ -475,8 +475,8 @@ public static class DbInitializer
                     Answer4 = "Because Map is immutable by default",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What is event bubbling in the browser?",
@@ -486,8 +486,8 @@ public static class DbInitializer
                     Answer4 = "An event that repeats every second",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What is the main advantage of generics in TypeScript?",
@@ -497,8 +497,8 @@ public static class DbInitializer
                     Answer4 = "They replace all interfaces",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What is the primary benefit of TypeScript over JavaScript?",
@@ -508,8 +508,8 @@ public static class DbInitializer
                     Answer4 = "Better DOM access",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "Which keyword is used to define an interface in TypeScript?",
@@ -519,8 +519,8 @@ public static class DbInitializer
                     Answer4 = "struct",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What is a generic type in TypeScript?",
@@ -530,8 +530,8 @@ public static class DbInitializer
                     Answer4 = "A runtime type check",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What does the 'readonly' modifier do in TypeScript?",
@@ -541,8 +541,8 @@ public static class DbInitializer
                     Answer4 = "Removes the property",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "Which utility type makes all properties optional?",
@@ -552,8 +552,8 @@ public static class DbInitializer
                     Answer4 = "Readonly<T>",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What is a union type in TypeScript?",
@@ -563,8 +563,8 @@ public static class DbInitializer
                     Answer4 = "A special numeric type",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What does the 'never' type represent?",
@@ -574,8 +574,8 @@ public static class DbInitializer
                     Answer4 = "Any value",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "How do you type a function that returns nothing in TypeScript?",
@@ -585,8 +585,8 @@ public static class DbInitializer
                     Answer4 = "never",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What is type narrowing?",
@@ -596,8 +596,8 @@ public static class DbInitializer
                     Answer4 = "Converting all values to strings",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What is a tuple in TypeScript?",
@@ -607,8 +607,8 @@ public static class DbInitializer
                     Answer4 = "A set of unique values",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "Which keyword declares a block-scoped variable in JavaScript?",
@@ -618,8 +618,8 @@ public static class DbInitializer
                     Answer4 = "static",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What is the result of 'typeof null' in JavaScript?",
@@ -629,8 +629,8 @@ public static class DbInitializer
                     Answer4 = "boolean",
                     CorrectAnswerNumber = 3,
                     Difficulty = 3,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "Which JavaScript method adds an element to the end of an array?",
@@ -640,8 +640,8 @@ public static class DbInitializer
                     Answer4 = "unshift()",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What is the result of '===' in JavaScript?",
@@ -651,8 +651,8 @@ public static class DbInitializer
                     Answer4 = "Type conversion",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "Which TypeScript feature allows a property to be omitted?",
@@ -662,8 +662,8 @@ public static class DbInitializer
                     Answer4 = "const",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What does 'const' guarantee for an object in JavaScript?",
@@ -673,8 +673,8 @@ public static class DbInitializer
                     Answer4 = "The object is deeply frozen",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "Which array method creates a new array by transforming each element?",
@@ -684,8 +684,8 @@ public static class DbInitializer
                     Answer4 = "find()",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What is the purpose of 'Promise.all()'?",
@@ -695,8 +695,8 @@ public static class DbInitializer
                     Answer4 = "It delays promise execution",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "Which TypeScript utility type picks a subset of properties from a type?",
@@ -706,8 +706,8 @@ public static class DbInitializer
                     Answer4 = "Exclude<T, U>",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What does 'async' before a function mean in JavaScript?",
@@ -717,8 +717,8 @@ public static class DbInitializer
                     Answer4 = "The function blocks the event loop",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "Which statement about 'any' in TypeScript is correct?",
@@ -728,8 +728,8 @@ public static class DbInitializer
                     Answer4 = "It is the same as never",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What does the spread operator '...' do in JavaScript?",
@@ -739,8 +739,8 @@ public static class DbInitializer
                     Answer4 = "It creates a Promise",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "Which TypeScript type is safer than 'any' because it requires narrowing before use?",
@@ -750,8 +750,8 @@ public static class DbInitializer
                     Answer4 = "object",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
                 new() {
                     Text = "What does 'filter()' return in JavaScript?",
@@ -761,8 +761,8 @@ public static class DbInitializer
                     Answer4 = "The number of matching elements",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[1].Id,
-                    Technology = techArray[1]
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
                 },
 
                 // C/C++ — techArray[2]
@@ -775,8 +775,8 @@ public static class DbInitializer
                     Answer4 = "Because pointers are forbidden in production code",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What is the main benefit of RAII in C++?",
@@ -786,8 +786,8 @@ public static class DbInitializer
                     Answer4 = "It prevents the use of exceptions",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Why are smart pointers preferred over raw owning pointers in modern C++?",
@@ -797,8 +797,8 @@ public static class DbInitializer
                     Answer4 = "Because smart pointers are always faster than raw pointers",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What is undefined behavior in C/C++ a warning sign for?",
@@ -808,8 +808,8 @@ public static class DbInitializer
                     Answer4 = "Compiler optimization being disabled",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Why can buffer overflows be dangerous in C/C++ programs?",
@@ -819,8 +819,8 @@ public static class DbInitializer
                     Answer4 = "Because they prevent compilation",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What is the difference between a reference and a pointer in C++?",
@@ -830,8 +830,8 @@ public static class DbInitializer
                     Answer4 = "Pointers cannot be passed to functions",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Why is const-correctness important in C++ APIs?",
@@ -841,8 +841,8 @@ public static class DbInitializer
                     Answer4 = "It guarantees multithreaded safety automatically",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What problem does std::vector usually solve better than a raw dynamic array?",
@@ -852,8 +852,8 @@ public static class DbInitializer
                     Answer4 = "It stores mixed types without wrappers",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What is a dangling pointer?",
@@ -863,8 +863,8 @@ public static class DbInitializer
                     Answer4 = "A pointer with address zero",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Why can mixing 'new/delete' with 'malloc/free' be problematic in C++?",
@@ -874,8 +874,8 @@ public static class DbInitializer
                     Answer4 = "Because delete can free only stack memory",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What is the main reason to pass large objects by const reference in C++?",
@@ -885,8 +885,8 @@ public static class DbInitializer
                     Answer4 = "To convert the object into a pointer automatically",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What is one major advantage of templates in C++?",
@@ -896,8 +896,8 @@ public static class DbInitializer
                     Answer4 = "They avoid all code generation",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Which header is commonly used for input and output streams in C++?",
@@ -907,8 +907,8 @@ public static class DbInitializer
                     Answer4 = "<inputoutput>",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What does 'nullptr' represent in modern C++?",
@@ -918,8 +918,8 @@ public static class DbInitializer
                     Answer4 = "An invalid reference",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Which keyword is used to define a constant variable in C/C++?",
@@ -929,8 +929,8 @@ public static class DbInitializer
                     Answer4 = "immutable",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What is the purpose of 'delete' in C++?",
@@ -940,8 +940,8 @@ public static class DbInitializer
                     Answer4 = "To destroy all pointers automatically",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What does a reference in C++ provide?",
@@ -951,8 +951,8 @@ public static class DbInitializer
                     Answer4 = "A copy of a variable",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Which container in the C++ Standard Library stores elements in dynamic contiguous memory?",
@@ -962,8 +962,8 @@ public static class DbInitializer
                     Answer4 = "std::stack",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What is the purpose of 'const' after a member function declaration in C++?",
@@ -973,8 +973,8 @@ public static class DbInitializer
                     Answer4 = "It returns a constant value",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Which statement about arrays in C is correct?",
@@ -984,8 +984,8 @@ public static class DbInitializer
                     Answer4 = "They can contain mixed types",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What can happen if you access memory outside array bounds in C/C++?",
@@ -995,8 +995,8 @@ public static class DbInitializer
                     Answer4 = "The program safely ignores it",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Which operator dereferences a pointer?",
@@ -1006,8 +1006,8 @@ public static class DbInitializer
                     Answer4 = "::",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What is function overloading in C++?",
@@ -1017,8 +1017,8 @@ public static class DbInitializer
                     Answer4 = "Running too many functions at once",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Why are smart pointers used in modern C++?",
@@ -1028,8 +1028,8 @@ public static class DbInitializer
                     Answer4 = "To allocate only stack memory",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What symbol is used to declare a pointer in C/C++?",
@@ -1039,8 +1039,8 @@ public static class DbInitializer
                     Answer4 = "%",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Which operator is used to get the address of a variable?",
@@ -1050,8 +1050,8 @@ public static class DbInitializer
                     Answer4 = "::",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Which keyword allocates memory dynamically in C++?",
@@ -1061,8 +1061,8 @@ public static class DbInitializer
                     Answer4 = "create",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Which function is traditionally used for dynamic memory allocation in C?",
@@ -1072,8 +1072,8 @@ public static class DbInitializer
                     Answer4 = "create",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What does RAII stand for in C++?",
@@ -1083,8 +1083,8 @@ public static class DbInitializer
                     Answer4 = "Runtime Access Is Initialization",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Which of these is used to define a class in C++?",
@@ -1094,8 +1094,8 @@ public static class DbInitializer
                     Answer4 = "structonly",
                     CorrectAnswerNumber = 1,
                     Difficulty = 1,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What is the main purpose of a destructor in C++?",
@@ -1105,8 +1105,8 @@ public static class DbInitializer
                     Answer4 = "To define inheritance",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Which symbol is commonly used to access a member through a pointer in C++?",
@@ -1116,8 +1116,8 @@ public static class DbInitializer
                     Answer4 = "#",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What is a memory leak?",
@@ -1127,8 +1127,8 @@ public static class DbInitializer
                     Answer4 = "When a pointer points to a valid object",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What is the difference between stack and heap memory in C/C++?",
@@ -1138,8 +1138,8 @@ public static class DbInitializer
                     Answer4 = "Stack stores only pointers",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "What is undefined behavior in C/C++?",
@@ -1149,8 +1149,8 @@ public static class DbInitializer
                     Answer4 = "Behavior that only occurs in debug mode",
                     CorrectAnswerNumber = 3,
                     Difficulty = 3,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
                 new() {
                     Text = "Which of the following best describes a dangling pointer?",
@@ -1160,8 +1160,8 @@ public static class DbInitializer
                     Answer4 = "A pointer stored on the stack",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[2].Id,
-                    Technology = techArray[2]
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
                 },
 
                 // SQL — techArray[3]
@@ -1174,8 +1174,8 @@ public static class DbInitializer
                     Answer4 = "Because it prevents WHERE clauses",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What is the main purpose of an index?",
@@ -1185,8 +1185,8 @@ public static class DbInitializer
                     Answer4 = "To replace normalization",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Why can too many indexes hurt performance?",
@@ -1196,8 +1196,8 @@ public static class DbInitializer
                     Answer4 = "Because indexes prevent sorting",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What problem does normalization primarily try to reduce?",
@@ -1207,8 +1207,8 @@ public static class DbInitializer
                     Answer4 = "SQL syntax errors",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "When can denormalization be considered?",
@@ -1218,8 +1218,8 @@ public static class DbInitializer
                     Answer4 = "Only when no primary keys exist",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What is the difference between WHERE and HAVING?",
@@ -1229,8 +1229,8 @@ public static class DbInitializer
                     Answer4 = "WHERE can be used only with ORDER BY",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Why are transactions important in databases?",
@@ -1240,8 +1240,8 @@ public static class DbInitializer
                     Answer4 = "They automatically normalize tables",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What is a deadlock in SQL systems?",
@@ -1251,8 +1251,8 @@ public static class DbInitializer
                     Answer4 = "A table without a primary key",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Why is parameterized SQL preferred over string-concatenated SQL?",
@@ -1262,8 +1262,8 @@ public static class DbInitializer
                     Answer4 = "Because parameterized queries cannot fail",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What is the main advantage of a primary key?",
@@ -1273,8 +1273,8 @@ public static class DbInitializer
                     Answer4 = "It guarantees perfect query performance",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Which SQL statement is used to retrieve data from a table?",
@@ -1284,8 +1284,8 @@ public static class DbInitializer
                     Answer4 = "FETCHROW",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Which clause is used to filter rows before grouping?",
@@ -1295,8 +1295,8 @@ public static class DbInitializer
                     Answer4 = "GROUP BY",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Which clause is used to filter grouped results?",
@@ -1306,8 +1306,8 @@ public static class DbInitializer
                     Answer4 = "LIMIT",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Which JOIN returns all matching rows from both tables when possible, and unmatched rows from the left table as well?",
@@ -1317,8 +1317,8 @@ public static class DbInitializer
                     Answer4 = "CROSS JOIN",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What does the COUNT(*) function do?",
@@ -1328,8 +1328,8 @@ public static class DbInitializer
                     Answer4 = "Counts only indexed rows",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What is the purpose of an index in SQL?",
@@ -1339,8 +1339,8 @@ public static class DbInitializer
                     Answer4 = "To replace primary keys",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Which SQL command is used to modify existing rows?",
@@ -1350,8 +1350,8 @@ public static class DbInitializer
                     Answer4 = "ALTER",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What does a PRIMARY KEY do?",
@@ -1361,8 +1361,8 @@ public static class DbInitializer
                     Answer4 = "Sorts the table automatically",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What is normalization in database design?",
@@ -1372,8 +1372,8 @@ public static class DbInitializer
                     Answer4 = "Encrypting related tables",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What is a transaction in SQL?",
@@ -1383,8 +1383,8 @@ public static class DbInitializer
                     Answer4 = "A read-only query",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Which SQL clause is used to sort query results?",
@@ -1394,8 +1394,8 @@ public static class DbInitializer
                     Answer4 = "SORT BY",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Which aggregate function returns the average value?",
@@ -1405,8 +1405,8 @@ public static class DbInitializer
                     Answer4 = "MEAN()",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What does INNER JOIN return?",
@@ -1416,8 +1416,8 @@ public static class DbInitializer
                     Answer4 = "Only rows with null values",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Which SQL command adds new rows to a table?",
@@ -1427,8 +1427,8 @@ public static class DbInitializer
                     Answer4 = "PUT",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What does DISTINCT do in SQL?",
@@ -1438,8 +1438,8 @@ public static class DbInitializer
                     Answer4 = "Creates an index",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Which constraint prevents duplicate values and usually disallows nulls?",
@@ -1449,8 +1449,8 @@ public static class DbInitializer
                     Answer4 = "INDEX",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What is a foreign key used for?",
@@ -1460,8 +1460,8 @@ public static class DbInitializer
                     Answer4 = "To store JSON data",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Which SQL statement removes a table definition and its data?",
@@ -1471,8 +1471,8 @@ public static class DbInitializer
                     Answer4 = "TRUNCATE TABLE",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "What is the difference between DELETE and TRUNCATE in SQL?",
@@ -1482,8 +1482,8 @@ public static class DbInitializer
                     Answer4 = "DELETE removes the table structure",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
                 new() {
                     Text = "Which normal form aims to eliminate partial dependency on a composite key?",
@@ -1493,8 +1493,8 @@ public static class DbInitializer
                     Answer4 = "Boyce-Codd Normal Form",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[3].Id,
-                    Technology = techArray[3]
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
                 },
 
                 // .NET — techArray[4]
@@ -1507,8 +1507,8 @@ public static class DbInitializer
                     Answer4 = "It replaces middleware",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What is the main risk of registering a non-thread-safe service as Singleton when it should be Scoped?",
@@ -1518,8 +1518,8 @@ public static class DbInitializer
                     Answer4 = "It disables model binding",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Why is middleware order important in ASP.NET Core?",
@@ -1529,8 +1529,8 @@ public static class DbInitializer
                     Answer4 = "Because only the last middleware executes",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What is a good reason to separate DTOs from domain or entity models in Web APIs?",
@@ -1540,8 +1540,8 @@ public static class DbInitializer
                     Answer4 = "To force all properties to be public fields",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Why is async I/O beneficial in high-concurrency web applications?",
@@ -1551,8 +1551,8 @@ public static class DbInitializer
                     Answer4 = "Because it disables the thread pool",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What is one main purpose of middleware such as exception handling middleware?",
@@ -1562,8 +1562,8 @@ public static class DbInitializer
                     Answer4 = "To remove HTTP status codes",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Why can exposing EF Core entities directly from API endpoints be risky?",
@@ -1573,8 +1573,8 @@ public static class DbInitializer
                     Answer4 = "Because APIs only support tuples",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What is the benefit of using configuration providers in .NET?",
@@ -1584,8 +1584,8 @@ public static class DbInitializer
                     Answer4 = "They make secrets safe to commit to source control",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Why should secrets generally not be stored in appsettings.json for production?",
@@ -1595,8 +1595,8 @@ public static class DbInitializer
                     Answer4 = "Because secrets can only exist in code constants",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What is the main reason to use health checks in production services?",
@@ -1606,8 +1606,8 @@ public static class DbInitializer
                     Answer4 = "To avoid using HTTP",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Which file contains the entry point configuration for many modern minimal ASP.NET Core apps?",
@@ -1617,8 +1617,8 @@ public static class DbInitializer
                     Answer4 = "Global.asax",
                     CorrectAnswerNumber = 1,
                     Difficulty = 1,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What is Kestrel in ASP.NET Core?",
@@ -1628,8 +1628,8 @@ public static class DbInitializer
                     Answer4 = "An ORM tool",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What does configuration in .NET commonly support?",
@@ -1639,8 +1639,8 @@ public static class DbInitializer
                     Answer4 = "Only appsettings.production.txt",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Why is dependency injection useful in .NET applications?",
@@ -1650,8 +1650,8 @@ public static class DbInitializer
                     Answer4 = "It removes the need for interfaces",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What is model binding in ASP.NET Core?",
@@ -1661,8 +1661,8 @@ public static class DbInitializer
                     Answer4 = "Registering services in DI",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Which result is commonly returned from a Web API action for a successful resource creation?",
@@ -1672,8 +1672,8 @@ public static class DbInitializer
                     Answer4 = "401 Unauthorized",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What is the purpose of app.UseAuthorization()?",
@@ -1683,8 +1683,8 @@ public static class DbInitializer
                     Answer4 = "It enables CORS automatically",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What is a hosted service in .NET commonly used for?",
@@ -1694,8 +1694,8 @@ public static class DbInitializer
                     Answer4 = "Managing CSS files",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Which attribute is commonly used to map an HTTP GET request to an API action?",
@@ -1705,8 +1705,8 @@ public static class DbInitializer
                     Answer4 = "[ApiGet]",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Why should a DbContext in EF Core usually not be registered as a singleton?",
@@ -1716,8 +1716,8 @@ public static class DbInitializer
                     Answer4 = "Because EF Core only works in console apps",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Which framework is commonly used to build web APIs in modern .NET?",
@@ -1727,8 +1727,8 @@ public static class DbInitializer
                     Answer4 = "MAUI only",
                     CorrectAnswerNumber = 1,
                     Difficulty = 1,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What is middleware in ASP.NET Core?",
@@ -1738,8 +1738,8 @@ public static class DbInitializer
                     Answer4 = "A testing framework",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Which built-in container feature is heavily used in ASP.NET Core?",
@@ -1749,8 +1749,8 @@ public static class DbInitializer
                     Answer4 = "Thread abortion",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What is Entity Framework Core primarily used for?",
@@ -1760,8 +1760,8 @@ public static class DbInitializer
                     Answer4 = "Network monitoring",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Which file commonly contains ASP.NET Core configuration settings?",
@@ -1771,8 +1771,8 @@ public static class DbInitializer
                     Answer4 = "runtime.yaml",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What does the built-in logging abstraction in .NET help you do?",
@@ -1782,8 +1782,8 @@ public static class DbInitializer
                     Answer4 = "Eliminate dependency injection",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What is the purpose of app.UseAuthentication() in ASP.NET Core?",
@@ -1793,8 +1793,8 @@ public static class DbInitializer
                     Answer4 = "It starts a background job",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "What is a migration in Entity Framework Core?",
@@ -1804,8 +1804,8 @@ public static class DbInitializer
                     Answer4 = "A logging strategy",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Which service lifetime creates one instance per HTTP request in ASP.NET Core?",
@@ -1815,8 +1815,8 @@ public static class DbInitializer
                     Answer4 = "Static",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
                 new() {
                     Text = "Why is middleware order important in ASP.NET Core?",
@@ -1826,8 +1826,8 @@ public static class DbInitializer
                     Answer4 = "Because order matters only in development",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[4].Id,
-                    Technology = techArray[4]
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
                 },
 
                 // React — techArray[5]
@@ -1840,8 +1840,8 @@ public static class DbInitializer
                     Answer4 = "Because hooks require primitive values only",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What is a common reason for unnecessary re-renders in React?",
@@ -1851,8 +1851,8 @@ public static class DbInitializer
                     Answer4 = "Returning null from a component",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "When can useMemo be helpful?",
@@ -1862,8 +1862,8 @@ public static class DbInitializer
                     Answer4 = "To guarantee that child components never render",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "Why should useEffect cleanup functions be used when appropriate?",
@@ -1873,8 +1873,8 @@ public static class DbInitializer
                     Answer4 = "To make components class-based",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What problem does lifting state up solve?",
@@ -1884,8 +1884,8 @@ public static class DbInitializer
                     Answer4 = "It eliminates props completely",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "Why can using array index as a React key cause bugs?",
@@ -1895,8 +1895,8 @@ public static class DbInitializer
                     Answer4 = "Because React ignores numeric keys",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What is the main purpose of React.memo?",
@@ -1906,8 +1906,8 @@ public static class DbInitializer
                     Answer4 = "To fetch cached server responses automatically",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "When might useReducer be preferred over useState?",
@@ -1917,8 +1917,8 @@ public static class DbInitializer
                     Answer4 = "When the component has no state",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What is a controlled input in React?",
@@ -1928,8 +1928,8 @@ public static class DbInitializer
                     Answer4 = "An input created with useMemo",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "Why can stale closures cause bugs in React components?",
@@ -1939,8 +1939,8 @@ public static class DbInitializer
                     Answer4 = "Because closures always trigger infinite loops",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What does separation of presentational and stateful concerns usually improve in React codebases?",
@@ -1950,8 +1950,8 @@ public static class DbInitializer
                     Answer4 = "It removes the need for hooks",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "Why can excessive context usage become a performance concern?",
@@ -1961,8 +1961,8 @@ public static class DbInitializer
                     Answer4 = "Because context disables routing",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What does React use to decide which parts of the UI need updating efficiently?",
@@ -1972,8 +1972,8 @@ public static class DbInitializer
                     Answer4 = "CSS compilation",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "Which prop is commonly used to pass nested UI content into a component?",
@@ -1983,8 +1983,8 @@ public static class DbInitializer
                     Answer4 = "template",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What is the purpose of useRef in React?",
@@ -1994,8 +1994,8 @@ public static class DbInitializer
                     Answer4 = "To fetch data from the server",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "Which statement about state updates in React is correct?",
@@ -2005,8 +2005,8 @@ public static class DbInitializer
                     Answer4 = "State is global by default",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What is a custom hook in React?",
@@ -2016,8 +2016,8 @@ public static class DbInitializer
                     Answer4 = "A browser API",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "When does useEffect run if its dependency array is empty?",
@@ -2027,8 +2027,8 @@ public static class DbInitializer
                     Answer4 = "Never",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "Why is immutability important in React state updates?",
@@ -2038,8 +2038,8 @@ public static class DbInitializer
                     Answer4 = "Because it prevents all bugs",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What is prop drilling?",
@@ -2049,8 +2049,8 @@ public static class DbInitializer
                     Answer4 = "Debugging props with DevTools",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What is the main purpose of React.memo?",
@@ -2060,8 +2060,8 @@ public static class DbInitializer
                     Answer4 = "To style components automatically",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "Which hook is useful when state logic becomes more complex than simple setters?",
@@ -2071,8 +2071,8 @@ public static class DbInitializer
                     Answer4 = "useLayoutEffect",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What should usually be used for navigation in a React SPA?",
@@ -2082,8 +2082,8 @@ public static class DbInitializer
                     Answer4 = "Database redirects",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "Why can using array index as a key sometimes be problematic?",
@@ -2093,8 +2093,8 @@ public static class DbInitializer
                     Answer4 = "Because keys are only needed in TypeScript",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "Which hook is used to manage local state in a functional React component?",
@@ -2104,8 +2104,8 @@ public static class DbInitializer
                     Answer4 = "useContext",
                     CorrectAnswerNumber = 1,
                     Difficulty = 1,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What does JSX stand for?",
@@ -2115,8 +2115,8 @@ public static class DbInitializer
                     Answer4 = "Joined Syntax eXtension",
                     CorrectAnswerNumber = 1,
                     Difficulty = 1,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "Which hook is used to perform side effects in React?",
@@ -2126,8 +2126,8 @@ public static class DbInitializer
                     Answer4 = "useRef",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What is the purpose of the 'key' prop when rendering a list in React?",
@@ -2137,8 +2137,8 @@ public static class DbInitializer
                     Answer4 = "To store component state",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What does useMemo help with?",
@@ -2148,8 +2148,8 @@ public static class DbInitializer
                     Answer4 = "Sending HTTP requests",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What is the main purpose of useCallback?",
@@ -2159,8 +2159,8 @@ public static class DbInitializer
                     Answer4 = "To fetch remote data automatically",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "Which statement about props in React is correct?",
@@ -2170,8 +2170,8 @@ public static class DbInitializer
                     Answer4 = "Props replace state completely",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What is lifting state up in React?",
@@ -2181,8 +2181,8 @@ public static class DbInitializer
                     Answer4 = "Making state global by default",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What does React StrictMode do in development?",
@@ -2192,8 +2192,8 @@ public static class DbInitializer
                     Answer4 = "It replaces TypeScript",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What is a controlled component in React?",
@@ -2203,8 +2203,8 @@ public static class DbInitializer
                     Answer4 = "A component rendered only once",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "Why can unnecessary re-renders be a problem in React?",
@@ -2214,8 +2214,8 @@ public static class DbInitializer
                     Answer4 = "They disable hooks",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
                 new() {
                     Text = "What is the main rule about calling hooks in React?",
@@ -2225,8 +2225,8 @@ public static class DbInitializer
                     Answer4 = "Hooks must be called after return",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[5].Id,
-                    Technology = techArray[5]
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
                 },
 
                 // English Grammar — techArray[6]
@@ -2239,8 +2239,8 @@ public static class DbInitializer
                     Answer4 = "Had I was knowing about the issue, I would have acted sooner.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is grammatically correct?",
@@ -2250,8 +2250,8 @@ public static class DbInitializer
                     Answer4 = "Neither manager nor the employees was available.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2261,8 +2261,8 @@ public static class DbInitializer
                     Answer4 = "The report, along with the notes, are sent yesterday.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which option correctly completes the sentence: 'No sooner ___ the meeting started than the fire alarm went off.'",
@@ -2272,8 +2272,8 @@ public static class DbInitializer
                     Answer4 = "has",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2283,8 +2283,8 @@ public static class DbInitializer
                     Answer4 = "She is one of the best engineers whom has worked here.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence uses the subjunctive mood correctly?",
@@ -2294,8 +2294,8 @@ public static class DbInitializer
                     Answer4 = "I suggest that he is going now.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2305,8 +2305,8 @@ public static class DbInitializer
                     Answer4 = "If I have saw it, I would have told you.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is correct?",
@@ -2316,8 +2316,8 @@ public static class DbInitializer
                     Answer4 = "He explained me about the problem in detail.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2327,8 +2327,8 @@ public static class DbInitializer
                     Answer4 = "The number of applicants increase.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is grammatically correct?",
@@ -2338,8 +2338,8 @@ public static class DbInitializer
                     Answer4 = "Scarcely he entered when everyone had stood up.",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2349,8 +2349,8 @@ public static class DbInitializer
                     Answer4 = "She denied that take the money.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is correct?",
@@ -2360,8 +2360,8 @@ public static class DbInitializer
                     Answer4 = "Not only missed he the deadline, but he also ignored the messages.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct option: 'I would rather you ___ me earlier.'",
@@ -2371,8 +2371,8 @@ public static class DbInitializer
                     Answer4 = "to tell",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is correct?",
@@ -2382,8 +2382,8 @@ public static class DbInitializer
                     Answer4 = "He is capable for solving the issue.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2393,8 +2393,8 @@ public static class DbInitializer
                     Answer4 = "The proposal needs revising before submit.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is correct?",
@@ -2404,8 +2404,8 @@ public static class DbInitializer
                     Answer4 = "Every one of solution has drawbacks.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2415,8 +2415,8 @@ public static class DbInitializer
                     Answer4 = "It was so an useful advice that I wrote it down immediately.",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which option correctly completes the sentence: 'By next month, she ___ here for ten years.'",
@@ -2426,8 +2426,8 @@ public static class DbInitializer
                     Answer4 = "is working",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2437,8 +2437,8 @@ public static class DbInitializer
                     Answer4 = "Rarely see we such dedication in junior candidates.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is correct?",
@@ -2448,8 +2448,8 @@ public static class DbInitializer
                     Answer4 = "Having been finished the task, she sent the report.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2459,8 +2459,8 @@ public static class DbInitializer
                     Answer4 = "She gone to the store.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence uses the Present Continuous tense?",
@@ -2470,8 +2470,8 @@ public static class DbInitializer
                     Answer4 = "They have played football.",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct plural form.",
@@ -2481,8 +2481,8 @@ public static class DbInitializer
                     Answer4 = "manes",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which word is a noun?",
@@ -2492,8 +2492,8 @@ public static class DbInitializer
                     Answer4 = "Running",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2503,8 +2503,8 @@ public static class DbInitializer
                     Answer4 = "I didn't seen him.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is correct?",
@@ -2514,8 +2514,8 @@ public static class DbInitializer
                     Answer4 = "Much persons came to the meeting.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct article: 'He is ___ honest man.'",
@@ -2525,8 +2525,8 @@ public static class DbInitializer
                     Answer4 = "no article",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is correct?",
@@ -2536,8 +2536,8 @@ public static class DbInitializer
                     Answer4 = "She cans sing very well.",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct form: 'I am interested ___ learning English.'",
@@ -2547,8 +2547,8 @@ public static class DbInitializer
                     Answer4 = "to",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "What is the superlative form of 'small'?",
@@ -2558,8 +2558,8 @@ public static class DbInitializer
                     Answer4 = "more small",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2569,8 +2569,8 @@ public static class DbInitializer
                     Answer4 = "There isn't no milk in the fridge.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is correct?",
@@ -2580,8 +2580,8 @@ public static class DbInitializer
                     Answer4 = "My brother is tallest than me.",
                     CorrectAnswerNumber = 1,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct reported speech.",
@@ -2591,8 +2591,8 @@ public static class DbInitializer
                     Answer4 = "He said he tired.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence uses a modal verb correctly?",
@@ -2602,8 +2602,8 @@ public static class DbInitializer
                     Answer4 = "You must finished your work.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct form: 'By the time we arrived, the film ___.'",
@@ -2613,8 +2613,8 @@ public static class DbInitializer
                     Answer4 = "was start",
                     CorrectAnswerNumber = 3,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is correct?",
@@ -2624,8 +2624,8 @@ public static class DbInitializer
                     Answer4 = "Each students has a book.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2635,8 +2635,8 @@ public static class DbInitializer
                     Answer4 = "If it rained, we will stay home.",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which word is a conjunction?",
@@ -2646,8 +2646,8 @@ public static class DbInitializer
                     Answer4 = "Table",
                     CorrectAnswerNumber = 1,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2657,8 +2657,8 @@ public static class DbInitializer
                     Answer4 = "I look forward for meeting you.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is grammatically correct?",
@@ -2668,8 +2668,8 @@ public static class DbInitializer
                     Answer4 = "Hardly I arrived when it started to rain.",
                     CorrectAnswerNumber = 1,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is grammatically correct?",
@@ -2679,8 +2679,8 @@ public static class DbInitializer
                     Answer4 = "She isn't like coffee.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which tense is used in the sentence: 'I have finished my work'?",
@@ -2690,8 +2690,8 @@ public static class DbInitializer
                     Answer4 = "Past Continuous",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which word is an adjective?",
@@ -2701,8 +2701,8 @@ public static class DbInitializer
                     Answer4 = "Running",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2712,8 +2712,8 @@ public static class DbInitializer
                     Answer4 = "He gone to work every day.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which word is a pronoun?",
@@ -2723,8 +2723,8 @@ public static class DbInitializer
                     Answer4 = "Blue",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence uses the Past Simple tense?",
@@ -2734,8 +2734,8 @@ public static class DbInitializer
                     Answer4 = "I will eat dinner.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "What is the plural of 'child'?",
@@ -2745,8 +2745,8 @@ public static class DbInitializer
                     Answer4 = "childrens",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct article: '___ apple a day keeps the doctor away.'",
@@ -2756,8 +2756,8 @@ public static class DbInitializer
                     Answer4 = "No article",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is in the Future Simple tense?",
@@ -2767,8 +2767,8 @@ public static class DbInitializer
                     Answer4 = "She read.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which word is a preposition?",
@@ -2778,8 +2778,8 @@ public static class DbInitializer
                     Answer4 = "Slowly",
                     CorrectAnswerNumber = 1,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct form: 'If I ___ time, I will help you.'",
@@ -2789,8 +2789,8 @@ public static class DbInitializer
                     Answer4 = "having",
                     CorrectAnswerNumber = 1,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is correct?",
@@ -2800,8 +2800,8 @@ public static class DbInitializer
                     Answer4 = "There was many books on the table.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "What is the comparative form of 'good'?",
@@ -2811,8 +2811,8 @@ public static class DbInitializer
                     Answer4 = "best",
                     CorrectAnswerNumber = 3,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2822,8 +2822,8 @@ public static class DbInitializer
                     Answer4 = "I am living here since five years.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is in the passive voice?",
@@ -2833,8 +2833,8 @@ public static class DbInitializer
                     Answer4 = "The chef cooks dinner.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct form: 'She suggested ___ earlier.'",
@@ -2844,8 +2844,8 @@ public static class DbInitializer
                     Answer4 = "left",
                     CorrectAnswerNumber = 3,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which word is an adverb?",
@@ -2855,8 +2855,8 @@ public static class DbInitializer
                     Answer4 = "Caring",
                     CorrectAnswerNumber = 2,
                     Difficulty = 1,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct sentence.",
@@ -2866,8 +2866,8 @@ public static class DbInitializer
                     Answer4 = "Neither answer are correct.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Which sentence is correct?",
@@ -2877,8 +2877,8 @@ public static class DbInitializer
                     Answer4 = "He asked me where going I was.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 2,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
                 new() {
                     Text = "Choose the correct conditional sentence.",
@@ -2888,8 +2888,8 @@ public static class DbInitializer
                     Answer4 = "If I had knew, I would tell you.",
                     CorrectAnswerNumber = 2,
                     Difficulty = 3,
-                    TechnologyId = techArray[6].Id,
-                    Technology = techArray[6]
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
                 },
             };
 
@@ -2903,208 +2903,208 @@ public static class DbInitializer
 
             tests.Add(new Test
             {
-                FinalScore = 88.5f,
+                FinalScore = 88,
                 FinishDate = DateTime.Now.AddHours(-234),
                 StartDate = DateTime.Now.AddHours(-234),
-                Technology = techArray[0],
+                Topic = techArray[0],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 34.2f,
+                FinalScore = 34,
                 FinishDate = DateTime.Now.AddHours(-101),
                 StartDate = DateTime.Now.AddHours(-101),
-                Technology = techArray[0],
+                Topic = techArray[0],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 49.0f,
+                FinalScore = 49,
                 FinishDate = DateTime.Now.AddHours(-76),
                 StartDate = DateTime.Now.AddHours(-76),
-                Technology = techArray[0],
+                Topic = techArray[0],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 99.45f,
+                FinalScore = 99,
                 FinishDate = DateTime.Now.AddHours(-34),
                 StartDate = DateTime.Now.AddHours(-34),
-                Technology = techArray[0],
+                Topic = techArray[0],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 65.5f,
+                FinalScore = 65,
                 FinishDate = DateTime.Now.AddHours(-2004),
                 StartDate = DateTime.Now.AddHours(-2004),
-                Technology = techArray[1],
+                Topic = techArray[1],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 88.5f,
+                FinalScore = 88,
                 FinishDate = DateTime.Now.AddHours(-349),
                 StartDate = DateTime.Now.AddHours(-349),
-                Technology = techArray[1],
+                Topic = techArray[1],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 17.0f,
+                FinalScore = 17,
                 FinishDate = DateTime.Now.AddHours(-16),
                 StartDate = DateTime.Now.AddHours(-16),
-                Technology = techArray[2],
+                Topic = techArray[2],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 88.5f,
+                FinalScore = 88,
                 FinishDate = DateTime.Now.AddHours(-700),
                 StartDate = DateTime.Now.AddHours(-700),
-                Technology = techArray[2],
+                Topic = techArray[2],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 91.4f,
+                FinalScore = 91,
                 FinishDate = DateTime.Now.AddHours(-435),
                 StartDate = DateTime.Now.AddHours(-435),
-                Technology = techArray[2],
+                Topic = techArray[2],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 76.5f,
+                FinalScore = 76,
                 FinishDate = DateTime.Now.AddHours(-555),
                 StartDate = DateTime.Now.AddHours(-555),
-                Technology = techArray[2],
+                Topic = techArray[2],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 4.9f,
+                FinalScore = 4,
                 FinishDate = DateTime.Now.AddHours(-198),
                 StartDate = DateTime.Now.AddHours(-198),
-                Technology = techArray[2],
+                Topic = techArray[2],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 0.0f,
+                FinalScore = 0,
                 FinishDate = DateTime.Now.AddHours(-56),
                 StartDate = DateTime.Now.AddHours(-56),
-                Technology = techArray[4],
+                Topic = techArray[4],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 0.0f,
+                FinalScore = 0,
                 FinishDate = DateTime.Now.AddHours(-56),
                 StartDate = DateTime.Now.AddHours(-56),
-                Technology = techArray[4],
+                Topic = techArray[4],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 0.0f,
+                FinalScore = 0,
                 FinishDate = DateTime.Now.AddHours(-56),
                 StartDate = DateTime.Now.AddHours(-56),
-                Technology = techArray[4],
+                Topic = techArray[4],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 0.0f,
+                FinalScore = 0,
                 FinishDate = DateTime.Now.AddHours(-56),
                 StartDate = DateTime.Now.AddHours(-56),
-                Technology = techArray[4],
+                Topic = techArray[4],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 0.0f,
+                FinalScore = 0,
                 FinishDate = DateTime.Now.AddHours(-56),
                 StartDate = DateTime.Now.AddHours(-56),
-                Technology = techArray[4],
+                Topic = techArray[4],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 0.0f,
+                FinalScore = 0,
                 FinishDate = DateTime.Now.AddHours(-56),
                 StartDate = DateTime.Now.AddHours(-56),
-                Technology = techArray[4],
+                Topic = techArray[4],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 0.0f,
+                FinalScore = 0,
                 FinishDate = DateTime.Now.AddHours(-56),
                 StartDate = DateTime.Now.AddHours(-56),
-                Technology = techArray[4],
+                Topic = techArray[4],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 0.0f,
+                FinalScore = 0,
                 FinishDate = DateTime.Now.AddHours(-56),
                 StartDate = DateTime.Now.AddHours(-56),
-                Technology = techArray[4],
+                Topic = techArray[4],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 0.0f,
+                FinalScore = 0,
                 FinishDate = DateTime.Now.AddHours(-56),
                 StartDate = DateTime.Now.AddHours(-56),
-                Technology = techArray[4],
+                Topic = techArray[4],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 100.0f,
+                FinalScore = 100,
                 FinishDate = DateTime.Now.AddHours(-56),
                 StartDate = DateTime.Now.AddHours(-56),
-                Technology = techArray[4],
+                Topic = techArray[4],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 2.3f,
+                FinalScore = 2,
                 FinishDate = DateTime.Now.AddHours(-56),
                 StartDate = DateTime.Now.AddHours(-56),
-                Technology = techArray[4],
+                Topic = techArray[4],
                 Username = "testUser"
             });
 
             tests.Add(new Test
             {
-                FinalScore = 6.6f,
+                FinalScore = 6,
                 FinishDate = DateTime.Now.AddHours(-56),
                 StartDate = DateTime.Now.AddHours(-56),
-                Technology = techArray[4],
+                Topic = techArray[4],
                 Username = "testUser"
             });
 

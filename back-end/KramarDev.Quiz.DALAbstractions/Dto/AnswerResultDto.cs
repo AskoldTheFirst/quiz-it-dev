@@ -1,13 +1,13 @@
 ﻿
 namespace KramarDev.Quiz.DALAbstractions.Dto;
 
-public sealed class AnswerResultDto
+public sealed record AnswerResultDto
 {
-    public string QuestionText { get; set; }
+    public string QuestionText { get; init; }
 
-    public string Answer { get; set; }
+    public string Answer { get; init; }
 
-    public string CorrectAnswer { get; set; }
+    public string CorrectAnswer { get; init; }
 
-    public byte Complexity { get; set; }
+    public byte Complexity { get; init; }
 }

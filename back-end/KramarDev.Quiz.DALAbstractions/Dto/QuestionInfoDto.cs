@@ -1,8 +1,8 @@
 ﻿namespace KramarDev.Quiz.DALAbstractions.Dto;
 
-public sealed class QuestionInfoDto
+public sealed record QuestionInfoDto
 {
-    public int CorrectAnswerNumber { get; set; }
+    public int CorrectAnswerNumber { get; init; }
 
-    public int TechnologyId { get; set; }
+    public int TopicId { get; init; }
 }

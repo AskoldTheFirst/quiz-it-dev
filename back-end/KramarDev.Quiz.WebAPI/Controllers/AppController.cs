@@ -1,5 +1,4 @@
 ﻿using KramarDev.Quiz.DAL.Database.Tables;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,12 +19,12 @@ public class AppController(
     {
         AppStateModel model = new();
 
-        TechnologyDto[] technologies = await _cacheService.GetTechnologiesAsync();
-        model.Technologies = DtoMapper.FromBLL(technologies);
+        TopicDto[] topics = await _cacheService.GetTopicsAsync();
+        model.Topics = DtoMapper.FromBLL(topics);
 
-        if (User?.Identity?.Name != null)
+        if (UserName != null)
         {
-            var user = await _userManager.FindByNameAsync(User.Identity.Name);
+            var user = await _userManager.FindByNameAsync(UserName);
 
             if (user != null)
             {

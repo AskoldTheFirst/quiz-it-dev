@@ -1,14 +1,16 @@
 ﻿namespace KramarDev.Quiz.DALAbstractions.Dto;
 
-public sealed class NewTestDto
+public sealed record NewTestDto
 {
-    public int TechnologyId { get; set; }
+    public int TopicId { get; init; }
 
-    public string Username { get; set; }
+    public string Username { get; init; }
 
-    public DateTime StartDate { get; set; }
+    public DateTime StartDate { get; init; }
 
-    public string RemoteIpAddress { get; set; }
+    public string RemoteIpAddress { get; init; }
 
-    public int[] QuestionIds { get; set; }
+    public int TotalPoints { get; init; }
+
+    public int[] QuestionIds { get; init; }
 }

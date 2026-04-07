@@ -1,10 +1,10 @@
 ﻿namespace KramarDev.Quiz.WebAPI.Model;
 
-public class UserModel
+public sealed record UserModel
 {
-    public string Login { get; set; }
+    public string Login { get; init; }
 
-    public string Email { get; set; }
+    public string Email { get; init; }
 
-    public string Token { get; set; }
+    public string Token { get; init; }
 }

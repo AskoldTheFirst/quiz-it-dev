@@ -5,11 +5,11 @@ public sealed class TestQuestionRepository(QuizDbContext dbCtx) : ITestQuestionR
 {
     private readonly QuizDbContext Ctx = dbCtx;
 
-    public async Task<int[]> GetAllQuestionsAsync(string technologyName, Difficulty difficulty)
+    public async Task<int[]> GetAllQuestionsAsync(string topicName, Difficulty difficulty)
     {
-        return await (from t in Ctx.Technologies
-                      join q in Ctx.Questions on t.Id equals q.TechnologyId
-                      where t.Name == technologyName && q.Difficulty == (byte)difficulty && q.IsActive
+        return await (from t in Ctx.Topics
+                      join q in Ctx.Questions on t.Id equals q.TopicId
+                      where t.Name == topicName && q.Difficulty == (byte)difficulty && q.IsActive
                       select q.Id).ToArrayAsync();
     }
 

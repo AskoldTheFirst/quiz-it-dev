@@ -1,4 +1,4 @@
-using KramarDev.Quiz.BLL;
+using KramarDev.Quiz.BLL.Services;
 using KramarDev.Quiz.DAL;
 using KramarDev.Quiz.DAL.Database;
 using KramarDev.Quiz.DAL.Database.Tables;
@@ -89,6 +89,7 @@ public class Program
 
         builder.Services.AddScoped<IUnitOfWork>(_ => new UnitOfWork());
         builder.Services.AddScoped<ITestService, TestService>();
+        builder.Services.AddScoped<IStatisticsService, StatisticsService>();
         builder.Services.AddSingleton<IAppCacheService, AppCacheService>();
         builder.Services.AddMemoryCache();
 
@@ -119,6 +120,7 @@ public class Program
         });
 
         //app.UseHttpsRedirection();
+        app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
 

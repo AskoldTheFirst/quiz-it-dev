@@ -10,8 +10,8 @@ public class QuestionRepository(QuizDbContext dbCtx) : IQuestionRepository
         return await (from tq in Ctx.TestQuestions
                       join q in Ctx.Questions on tq.QuestionId equals q.Id
                       join t in Ctx.Tests on tq.TestId equals t.Id
-                      where tq.TestId == testId && t.Username == userName && tq.AnswerDate != null
-                      orderby tq.Id
+                      where tq.TestId == testId && t.Username == userName
+                      orderby tq.Id descending
                       select new AnswerResultDto
                       {
                           QuestionText = q.Text,

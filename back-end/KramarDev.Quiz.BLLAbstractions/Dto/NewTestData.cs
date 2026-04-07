@@ -1,11 +1,11 @@
 ﻿
 namespace KramarDev.Quiz.BLLAbstractions.Dto;
 
-public sealed class NewTestData
+public sealed record NewTestData
 {
-    public int[] QuestionIds { get; set; }
+    public int[] QuestionIds { get; init; }
 
-    public int Amount { get; set; }
+    public int TotalPoints { get; init; }
 
-    public int TechnologyId { get; set; }
+    public int TopicId { get; init; }
 }

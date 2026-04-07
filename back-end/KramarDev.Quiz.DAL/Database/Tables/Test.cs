@@ -10,11 +10,21 @@ public class Test
     [Required]
     public string Username { get; set; }
 
-    public float? FinalScore { get; set; }
+    public int FinalScore { get; set; }
 
-    public int TechnologyId { get; set; }
+    public int FinalWeightedScore { get; set; }
 
-    public Technology Technology { get; set; }
+    public int QuestionCount { get; set; }
+
+    public int AnsweredCount { get; set; }
+
+    public int TotalPoints { get; set; }
+
+    public int EarnedPoints { get; set; }
+
+    public int TopicId { get; set; }
+
+    public Topic Topic { get; set; }
 
     [DefaultValue("getdate()")]
     public DateTime StartDate { get; set; }

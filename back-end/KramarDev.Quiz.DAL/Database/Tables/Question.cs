@@ -27,9 +27,9 @@ public class Question
 
     public bool IsActive { get; set; } = true;
 
-    public int TechnologyId { get; set; }
+    public int TopicId { get; set; }
 
-    public Technology Technology { get; set; }
+    public Topic Topic { get; set; }
 
     public ICollection<TestQuestion> TestQuestions { get; set; }
 }

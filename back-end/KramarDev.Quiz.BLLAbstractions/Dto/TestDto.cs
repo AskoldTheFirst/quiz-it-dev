@@ -1,15 +1,17 @@
 ﻿
 namespace KramarDev.Quiz.BLLAbstractions.Dto;
 
-public sealed class TestDto
+public sealed record TestDto
 {
-    public int TestId { get; set; }
+    public int TestId { get; init; }
 
-    public int QuestionCount { get; set; }
+    public int QuestionCount { get; init; }
 
-    public int SecondsLeft { get; set; }
+    public int SecondsLeft { get; init; }
 
-    public string TechnologyName { get; set; }
+    public string TopicName { get; init; }
 
-    public QuestionDto Question { get; set; }
+    public string TopicColor { get; init; }
+
+    public QuestionDto Question { get; init; }
 }

@@ -71,7 +71,7 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Technologies",
+                name: "Topics",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -80,11 +80,12 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     Description = table.Column<string>(type: "nvarchar(220)", maxLength: 220, nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     QuestionCount = table.Column<int>(type: "int", nullable: false),
-                    DurationInMinutes = table.Column<int>(type: "int", nullable: false)
+                    DurationInMinutes = table.Column<int>(type: "int", nullable: false),
+                    ThemeColor = table.Column<string>(type: "nvarchar(7)", maxLength: 7, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Technologies", x => x.Id);
+                    table.PrimaryKey("PK_Topics", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -207,15 +208,15 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     CorrectAnswerNumber = table.Column<byte>(type: "tinyint", nullable: false),
                     Difficulty = table.Column<byte>(type: "tinyint", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    TechnologyId = table.Column<int>(type: "int", nullable: false)
+                    TopicId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Questions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Questions_Technologies_TechnologyId",
-                        column: x => x.TechnologyId,
-                        principalTable: "Technologies",
+                        name: "FK_Questions_Topics_TopicId",
+                        column: x => x.TopicId,
+                        principalTable: "Topics",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -227,8 +228,13 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FinalScore = table.Column<float>(type: "real", nullable: true),
-                    TechnologyId = table.Column<int>(type: "int", nullable: false),
+                    FinalScore = table.Column<int>(type: "int", nullable: false),
+                    FinalWeightedScore = table.Column<int>(type: "int", nullable: false),
+                    QuestionCount = table.Column<int>(type: "int", nullable: false),
+                    AnsweredCount = table.Column<int>(type: "int", nullable: false),
+                    TotalPoints = table.Column<int>(type: "int", nullable: false),
+                    EarnedPoints = table.Column<int>(type: "int", nullable: false),
+                    TopicId = table.Column<int>(type: "int", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     FinishDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     State = table.Column<byte>(type: "tinyint", nullable: false),
@@ -240,9 +246,9 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     table.PrimaryKey("PK_Tests", x => x.Id);
                     table.CheckConstraint("CK_Test_State", "[State] in (0, 1, 2)");
                     table.ForeignKey(
-                        name: "FK_Tests_Technologies_TechnologyId",
-                        column: x => x.TechnologyId,
-                        principalTable: "Technologies",
+                        name: "FK_Tests_Topics_TopicId",
+                        column: x => x.TopicId,
+                        principalTable: "Topics",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -282,8 +288,8 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "8e06977e-328c-4d1f-837b-8eef42dbcc77", null, "Admin", "ADMIN" },
-                    { "d4b4ae03-6b76-4209-b404-de1728480e99", null, "Member", "MEMBER" }
+                    { "49f61428-8112-4547-8676-61fcf7ff7b72", null, "Admin", "ADMIN" },
+                    { "6d1a959e-44e1-422b-aec6-703c087838ea", null, "Member", "MEMBER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -331,15 +337,9 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                 column: "Username");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Questions_TechnologyId",
+                name: "IX_Questions_TopicId",
                 table: "Questions",
-                column: "TechnologyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Technologies_Name",
-                table: "Technologies",
-                column: "Name",
-                unique: true);
+                column: "TopicId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TestQuestions_QuestionId",
@@ -357,14 +357,20 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                 column: "FinalScore");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tests_TechnologyId",
+                name: "IX_Tests_TopicId",
                 table: "Tests",
-                column: "TechnologyId");
+                column: "TopicId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tests_Username",
                 table: "Tests",
                 column: "Username");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Topics_Name",
+                table: "Topics",
+                column: "Name",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -404,7 +410,7 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                 name: "Tests");
 
             migrationBuilder.DropTable(
-                name: "Technologies");
+                name: "Topics");
         }
     }
 }

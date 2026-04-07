@@ -1,10 +1,10 @@
 ﻿namespace KramarDev.Quiz.WebAPI.Model;
 
-public class AnswerRequestModel
+public sealed record AnswerRequestModel
 {
-    public int TestId { get; set; }
+    public int TestId { get; init; }
 
-    public int QuestionId { get; set; }
+    public int QuestionId { get; init; }
 
-    public byte AnswerNumber { get; set; }
+    public byte AnswerNumber { get; init; }
 }

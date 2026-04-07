@@ -1,27 +1,30 @@
 ﻿
 namespace KramarDev.Quiz.WebAPI.Model;
 
-public sealed class TestModel
+public sealed record TestModel
 {
-    public int TestId { get; set; }
+    public int TestId { get; init; }
 
-    public string TechnologyName { get; set; }
+    public string TopicName { get; init; }
 
-    public int SecondsLeft { get; set; }
+    public int SecondsLeft { get; init; }
 
-    public int QuestionCount { get; set; }
+    public int QuestionCount { get; init; }
 
-    public QuestionModel Question { get; set; }
+    public QuestionModel Question { get; init; }
 
-    public static TestModel FromBL(TestDto testDto)
+    public string TopicColor { get; init; }
+
+    public static TestModel FromBL(KramarDev.Quiz.BLLAbstractions.Dto.TestDto testDto)
     {
         return new TestModel
         {
             TestId = testDto.TestId,
-            TechnologyName = testDto.TechnologyName,
+            TopicName = testDto.TopicName,
             SecondsLeft = testDto.SecondsLeft,
             QuestionCount = testDto.QuestionCount,
             Question = QuestionModel.FromBLL(testDto.Question),
+            TopicColor = testDto.TopicColor,
         };
     }
 }

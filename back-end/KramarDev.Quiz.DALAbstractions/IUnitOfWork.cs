@@ -1,4 +1,6 @@
-﻿namespace KramarDev.Quiz.DALAbstractions;
+﻿using KramarDev.Quiz.DALAbstractions.Interfaces;
+
+namespace KramarDev.Quiz.DALAbstractions;
 
 public interface IUnitOfWork
 {
@@ -6,11 +8,13 @@ public interface IUnitOfWork
 
     IQuestionRepository QuestionRepository { get; }
 
-    ITechnologyRepository TechnologyRepository { get; }
+    ITopicRepository TopicRepository { get; }
 
     ITestQuestionRepository TestQuestionRepository { get; }
 
     IComplexQueriesRepository ComplexQueriesRepository { get; }
+
+    IStatisticsRepository StatistcsRepository { get; }
 
     Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
 

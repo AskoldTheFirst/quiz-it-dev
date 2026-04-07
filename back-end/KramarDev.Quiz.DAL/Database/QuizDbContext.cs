@@ -40,17 +40,17 @@ public class QuizDbContext : IdentityDbContext<User>
             .HasPrincipalKey(e => e.Id)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<Technology>()
+        builder.Entity<Topic>()
             .HasMany(e => e.Questions)
-            .WithOne(e => e.Technology)
-            .HasForeignKey(e => e.TechnologyId)
+            .WithOne(e => e.Topic)
+            .HasForeignKey(e => e.TopicId)
             .HasPrincipalKey(e => e.Id)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<Technology>()
+        builder.Entity<Topic>()
             .HasMany(e => e.Tests)
-            .WithOne(e => e.Technology)
-            .HasForeignKey(e => e.TechnologyId)
+            .WithOne(e => e.Topic)
+            .HasForeignKey(e => e.TopicId)
             .HasPrincipalKey(e => e.Id)
             .OnDelete(DeleteBehavior.Restrict);
 
@@ -69,7 +69,7 @@ public class QuizDbContext : IdentityDbContext<User>
 
     public DbSet<Question> Questions { get; set; }
 
-    public DbSet<Technology> Technologies { get; set; }
+    public DbSet<Topic> Topics { get; set; }
 
     public DbSet<Test> Tests { get; set; }
 

@@ -8,7 +8,7 @@ public interface ITestRepository
 
     Task AnswerAndSaveAsync(QuestionAnswerDto answer);
 
-    Task CompleteTestAndSaveAsync(string userName, int testId, float finalScore);
+    Task CompleteTestAndSaveAsync(string userName, int testId, int finalScore, int finalWeightedScore, int answeredCount, int earnedPoints);
 
     Task<int?> GetActiveTestByUserAsync(string userName);
 

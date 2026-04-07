@@ -1,23 +1,23 @@
-﻿namespace KramarDev.Quiz.WebAPI.Model
+﻿namespace KramarDev.Quiz.WebAPI.Model;
+
+public sealed record AnswerModel
 {
-    public class AnswerModel
+    public string QuestionText { get; init; }
+
+    public string Answer { get; init; }
+
+    public string CorrectAnswer { get; init; }
+
+    public byte Complexity { get; init; }
+
+    public static AnswerModel FromBLL(KramarDev.Quiz.BLLAbstractions.Dto.AnswerDto dto)
     {
-        public string QuestionText { get; set; }
-
-        public string Answer { get; set; }
-
-        public string CorrectAnswer { get; set; }
-
-        public byte Complexity { get; set; }
-
-        public static AnswerModel FromBLL(AnswerDto dto)
+        return new AnswerModel
         {
-            return new AnswerModel {
-                QuestionText = dto.QuestionText,
-                Answer = dto.Answer,
-                CorrectAnswer = dto.CorrectAnswer,
-                Complexity = dto.Complexity,
-            };
-        }
+            QuestionText = dto.QuestionText,
+            Answer = dto.Answer,
+            CorrectAnswer = dto.CorrectAnswer,
+            Complexity = dto.Complexity,
+        };
     }
 }

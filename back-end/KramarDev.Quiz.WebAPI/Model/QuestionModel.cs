@@ -1,26 +1,26 @@
 ﻿namespace KramarDev.Quiz.WebAPI.Model;
 
-public sealed class QuestionModel
+public sealed record QuestionModel
 {
-    public int Number {  get; set; }
+    public int Number { get; init; }
 
-    public int TestId { get; set; }
+    public int TestId { get; init; }
 
-    public int QuestionId { get; set; }
+    public int QuestionId { get; init; }
 
-    public int TestQuestionId { get; set; }
+    public int TestQuestionId { get; init; }
 
-    public string Text { get; set; }
+    public string Text { get; init; }
 
-    public string Answer1 { get; set; }
+    public string Answer1 { get; init; }
 
-    public string Answer2 { get; set; }
+    public string Answer2 { get; init; }
 
-    public string Answer3 { get; set; }
+    public string Answer3 { get; init; }
 
-    public string Answer4 { get; set; }
+    public string Answer4 { get; init; }
 
-    public static QuestionModel FromBLL(QuestionDto questionDto)
+    public static QuestionModel FromBLL(KramarDev.Quiz.BLLAbstractions.Dto.QuestionDto questionDto)
     {
         return new QuestionModel
         {

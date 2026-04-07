@@ -1,35 +1,37 @@
 ﻿namespace KramarDev.Quiz.DAL.Repositories;
 
-public sealed class TechnologyRepository(QuizDbContext dbCtx) : ITechnologyRepository
+public sealed class TopicRepository(QuizDbContext dbCtx) : ITopicRepository
 {
     private readonly QuizDbContext Ctx = dbCtx;
 
-    public async Task<TechnologyDto[]> GetTechnologiesAsync()
+    public async Task<TopicDto[]> GetTopicsAsync()
     {
-        return await (from t in Ctx.Technologies
+        return await (from t in Ctx.Topics
                       where t.IsActive
-                      select new TechnologyDto
+                      select new TopicDto
                       {
                           Id = t.Id,
                           Name = t.Name,
                           Description = t.Description,
                           QuestionCount = t.QuestionCount,
-                          DurationInMinutes = t.DurationInMinutes
+                          DurationInMinutes = t.DurationInMinutes,
+                          ThemeColor = t.ThemeColor,
                       }).ToArrayAsync();
     }
 
-    public async Task<TechnologyDto> GetTechnologyByTestIdAsync(int testId)
+    public async Task<TopicDto> GetTopicByTestIdAsync(int testId)
     {
-        return await (from te in Ctx.Technologies
-                      join t in Ctx.Tests on te.Id equals t.TechnologyId
+        return await (from te in Ctx.Topics
+                      join t in Ctx.Tests on te.Id equals t.TopicId
                       where t.Id == testId
-                      select new TechnologyDto
+                      select new TopicDto
                       {
                           Id = te.Id,
                           Name = te.Name,
                           Description = te.Description,
                           QuestionCount = te.QuestionCount,
-                          DurationInMinutes = te.DurationInMinutes
+                          DurationInMinutes = te.DurationInMinutes,
+                          ThemeColor = te.ThemeColor,
                       }).SingleAsync();
     }
 }

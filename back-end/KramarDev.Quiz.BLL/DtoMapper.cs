@@ -7,9 +7,10 @@ static class DtoMapper
     public static AnswerDto[] FromDAL(DAL.AnswerResultDto[] dto)
     {
         AnswerDto[] answers = new AnswerDto[dto.Length];
-        for(int i = 0; i < dto.Length; ++i)
+        for (int i = 0; i < dto.Length; ++i)
         {
-            answers[i] = new AnswerDto() {
+            answers[i] = new AnswerDto()
+            {
                 Answer = dto[i].Answer,
                 Complexity = dto[i].Complexity,
                 CorrectAnswer = dto[i].CorrectAnswer,
@@ -20,22 +21,23 @@ static class DtoMapper
         return answers;
     }
 
-    public static TechnologyDto[] FromDAL(DAL.TechnologyDto[] dto)
+    public static TopicDto[] FromDAL(DAL.TopicDto[] dto)
     {
-        TechnologyDto[] technologies = new TechnologyDto[dto.Length];
-        for (int i = 0; i < technologies.Length; ++i)
+        TopicDto[] topics = new TopicDto[dto.Length];
+        for (int i = 0; i < topics.Length; ++i)
         {
-            technologies[i] = new TechnologyDto
+            topics[i] = new TopicDto
             {
                 Id = dto[i].Id,
                 Name = dto[i].Name,
                 Description = dto[i].Description,
                 DurationInMinutes = dto[i].DurationInMinutes,
                 QuestionCount = dto[i].QuestionCount,
+                ThemeColor = dto[i].ThemeColor,
             };
         }
 
-        return technologies;
+        return topics;
     }
 
     public static QuestionDto FromDAL(DAL.QuestionDto dto)
@@ -55,4 +57,62 @@ static class DtoMapper
 
         return question;
     }
+
+    public static RowDto[] FromDAL(DAL.RowDto[] dto, int initialRankNumber)
+    {
+        RowDto[] rows = new RowDto[dto.Length];
+
+        for (int i = 0; i < dto.Length; ++i)
+        {
+            DAL.RowDto dalRow = dto[i];
+            rows[i] = new RowDto
+            {
+                Rank = initialRankNumber++,
+                TopicName = dalRow.TopicName,
+                TopicThemeColor = dalRow.TopicThemeColor,
+                User = dalRow.User,
+                AnsweredCount = dalRow.AnsweredCount,
+                FinalScore = dalRow.FinalScore,
+                FinalWeightedScore = dalRow.FinalWeightedScore,
+                Date = dalRow.Date,
+                QuestionTotal = dalRow.QuestionTotal,
+            };
+        }
+
+        return rows;
+    }
+
+    public static BLLAbstractions.Dto.ProfileDto FromDAL(DAL.ProfileDto dto)
+    {
+        if (dto == null) return null;
+
+        return new BLLAbstractions.Dto.ProfileDto
+        {
+            Summary = new BLLAbstractions.Dto.ProfileSummaryDto
+            {
+                TotalAttemptCount = dto.Summary.TotalAttemptCount,
+                AverageScore = dto.Summary.AverageScore,
+                BestScore = dto.Summary.BestScore,
+                AnswerCount = dto.Summary.AnswerCount
+            },
+            Topics = dto.Topics?.Select(t => new BLLAbstractions.Dto.PerformanceByTopicDto
+            {
+                Topic = t.Topic,
+                Best = t.Best,
+                Average = t.Average,
+                AttemptCount = t.AttemptCount,
+                Color = t.Color
+            }).ToArray(),
+            Attempts = dto.Attempts?.Select(a => new BLLAbstractions.Dto.AttemptDto
+            {
+                Topic = a.Topic,
+                Date = a.Date,
+                AnsweredCount = a.AnsweredCount,
+                QuestionCount = a.QuestionCount,
+                Score = a.Score
+            }).ToArray()
+        };
+    }
+
+
 }

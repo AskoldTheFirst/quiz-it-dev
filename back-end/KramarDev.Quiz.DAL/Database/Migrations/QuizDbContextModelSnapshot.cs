@@ -87,53 +87,18 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("TechnologyId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TopicId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("TechnologyId");
+                    b.HasIndex("TopicId");
 
                     b.ToTable("Questions");
-                });
-
-            modelBuilder.Entity("KramarDev.Quiz.DAL.Database.Tables.Technology", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(220)
-                        .HasColumnType("nvarchar(220)");
-
-                    b.Property<int>("DurationInMinutes")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
-
-                    b.Property<int>("QuestionCount")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("Technologies");
                 });
 
             modelBuilder.Entity("KramarDev.Quiz.DAL.Database.Tables.Test", b =>
@@ -144,8 +109,17 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<float?>("FinalScore")
-                        .HasColumnType("real");
+                    b.Property<int>("AnsweredCount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EarnedPoints")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FinalScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("FinalWeightedScore")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("FinishDate")
                         .HasColumnType("datetime2");
@@ -156,13 +130,19 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     b.Property<bool>("IsHidden")
                         .HasColumnType("bit");
 
+                    b.Property<int>("QuestionCount")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
                     b.Property<byte>("State")
                         .HasColumnType("tinyint");
 
-                    b.Property<int>("TechnologyId")
+                    b.Property<int>("TopicId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TotalPoints")
                         .HasColumnType("int");
 
                     b.Property<string>("Username")
@@ -173,7 +153,7 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
 
                     b.HasIndex("FinalScore");
 
-                    b.HasIndex("TechnologyId");
+                    b.HasIndex("TopicId");
 
                     b.HasIndex("Username");
 
@@ -216,6 +196,46 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     b.HasIndex("TestId");
 
                     b.ToTable("TestQuestions");
+                });
+
+            modelBuilder.Entity("KramarDev.Quiz.DAL.Database.Tables.Topic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(220)
+                        .HasColumnType("nvarchar(220)");
+
+                    b.Property<int>("DurationInMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.Property<int>("QuestionCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ThemeColor")
+                        .IsRequired()
+                        .HasMaxLength(7)
+                        .HasColumnType("nvarchar(7)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Topics");
                 });
 
             modelBuilder.Entity("KramarDev.Quiz.DAL.Database.Tables.User", b =>
@@ -318,13 +338,13 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d4b4ae03-6b76-4209-b404-de1728480e99",
+                            Id = "6d1a959e-44e1-422b-aec6-703c087838ea",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
-                            Id = "8e06977e-328c-4d1f-837b-8eef42dbcc77",
+                            Id = "49f61428-8112-4547-8676-61fcf7ff7b72",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -438,24 +458,24 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
 
             modelBuilder.Entity("KramarDev.Quiz.DAL.Database.Tables.Question", b =>
                 {
-                    b.HasOne("KramarDev.Quiz.DAL.Database.Tables.Technology", "Technology")
+                    b.HasOne("KramarDev.Quiz.DAL.Database.Tables.Topic", "Topic")
                         .WithMany("Questions")
-                        .HasForeignKey("TechnologyId")
+                        .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Technology");
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("KramarDev.Quiz.DAL.Database.Tables.Test", b =>
                 {
-                    b.HasOne("KramarDev.Quiz.DAL.Database.Tables.Technology", "Technology")
+                    b.HasOne("KramarDev.Quiz.DAL.Database.Tables.Topic", "Topic")
                         .WithMany("Tests")
-                        .HasForeignKey("TechnologyId")
+                        .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Technology");
+                    b.Navigation("Topic");
                 });
 
             modelBuilder.Entity("KramarDev.Quiz.DAL.Database.Tables.TestQuestion", b =>
@@ -533,16 +553,16 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     b.Navigation("TestQuestions");
                 });
 
-            modelBuilder.Entity("KramarDev.Quiz.DAL.Database.Tables.Technology", b =>
+            modelBuilder.Entity("KramarDev.Quiz.DAL.Database.Tables.Test", b =>
+                {
+                    b.Navigation("TestQuestions");
+                });
+
+            modelBuilder.Entity("KramarDev.Quiz.DAL.Database.Tables.Topic", b =>
                 {
                     b.Navigation("Questions");
 
                     b.Navigation("Tests");
-                });
-
-            modelBuilder.Entity("KramarDev.Quiz.DAL.Database.Tables.Test", b =>
-                {
-                    b.Navigation("TestQuestions");
                 });
 #pragma warning restore 612, 618
         }

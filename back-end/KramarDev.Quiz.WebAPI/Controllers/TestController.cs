@@ -10,9 +10,10 @@ public class TestsController(ITestService testService) : BaseController
 {
     private readonly ITestService _testService = testService;
 
+
     [Authorize]
     [HttpGet("current")]
-    public async Task<ActionResult<TestModel>> GetCurrentTest()
+    public async Task<ActionResult<TestModel>> Current()
     {
         TestDto testDto = await _testService.RestoreCurrentTestAsync(UserName);
 
@@ -24,12 +25,12 @@ public class TestsController(ITestService testService) : BaseController
 
     [Authorize]
     [HttpPost("create")]
-    public async Task<ActionResult<TestModel>> CreateTest([FromQuery] string technologyName)
+    public async Task<ActionResult<TestModel>> Create([FromQuery] string topicName)
     {
-        TestDto test = await _testService.CreateTestAsync(
-            technologyName, UserName, IpAddress);
+        TestDto testDto = await _testService.CreateTestAsync(
+            topicName, UserName, IpAddress);
 
-        return Ok(TestModel.FromBL(test));
+        return Ok(TestModel.FromBL(testDto));
     }
 
     [Authorize]
@@ -44,11 +45,17 @@ public class TestsController(ITestService testService) : BaseController
 
     [Authorize]
     [HttpPost("cancel")]
-    public async Task<ActionResult> CancelTest(int testId)
+    public async Task<ActionResult> Cancel(int testId)
     {
-        string userName = User.Identity.Name;
-
-        await _testService.CancelTestAsync(userName, testId);
+        await _testService.CancelTestAsync(UserName, testId);
         return Ok();
+    }
+
+    [Authorize]
+    [HttpPost("complete")]
+    public async Task<ActionResult<TestResultModel>> Complete(int testId)
+    {
+        TestResultDto resultDto = await _testService.CompleteAsync(testId, UserName);
+        return Ok(TestResultModel.FromBLL(resultDto));
     }
 }

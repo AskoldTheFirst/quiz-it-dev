@@ -1,5 +1,6 @@
 ﻿using KramarDev.Quiz.DAL.Repositories;
 using KramarDev.Quiz.DALAbstractions;
+using KramarDev.Quiz.DALAbstractions.Interfaces;
 using System.Data;
 
 namespace KramarDev.Quiz.DAL;
@@ -22,11 +23,13 @@ public sealed class UnitOfWork : IUnitOfWork
 
     public IQuestionRepository QuestionRepository => new QuestionRepository(_ctx);
 
-    public ITechnologyRepository TechnologyRepository => new TechnologyRepository(_ctx);
+    public ITopicRepository TopicRepository => new TopicRepository(_ctx);
 
     public ITestQuestionRepository TestQuestionRepository => new TestQuestionRepository(_ctx);
 
     public IComplexQueriesRepository ComplexQueriesRepository => new ComplexQueriesRepository(_ctx);
+
+    public IStatisticsRepository StatistcsRepository => new StatisticsRepository(_ctx);
 
     public async Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
     {

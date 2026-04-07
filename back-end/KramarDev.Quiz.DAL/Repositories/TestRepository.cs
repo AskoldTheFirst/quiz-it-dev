@@ -5,16 +5,19 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
 {
     private readonly QuizDbContext Ctx = dbCtx;
 
+
     public async Task<int> CreateTestAsync(NewTestDto newTest)
     {
         int questionAmount = newTest.QuestionIds.Length;
 
         Test test = new ()
         {
-            TechnologyId = newTest.TechnologyId,
+            TopicId = newTest.TopicId,
             Username = newTest.Username,
             StartDate = newTest.StartDate,
             IpAddress = newTest.RemoteIpAddress,
+            QuestionCount = questionAmount,
+            TotalPoints = newTest.TotalPoints,
             State = TestState.Created
         };
 
@@ -45,7 +48,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                       select new QuestionInfoDto
                       {
                           CorrectAnswerNumber = q.CorrectAnswerNumber,
-                          TechnologyId = q.TechnologyId
+                          TopicId = q.TopicId
                       }).SingleAsync();
     }
 
@@ -62,12 +65,16 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
             throw new InvalidOperationException("Question was not found");
     }
 
-    public async Task CompleteTestAndSaveAsync(string userName, int testId, float finalScore)
+    public async Task CompleteTestAndSaveAsync(string userName, int testId,
+        int finalScore, int finalWeightedScore, int answeredCount, int earnedPoints)
     {
         int rows = await Ctx.Tests
             .Where(t => t.Id == testId && t.Username == userName)
             .ExecuteUpdateAsync(setters =>
                 setters.SetProperty(t => t.FinalScore, finalScore)
+                        .SetProperty(t => t.FinalWeightedScore, finalWeightedScore)
+                        .SetProperty(t => t.AnsweredCount, answeredCount)
+                        .SetProperty(t => t.EarnedPoints, earnedPoints)
                         .SetProperty(t => t.FinishDate, DateTime.UtcNow)
                         .SetProperty(t => t.State, TestState.Completed));
 
@@ -80,10 +87,10 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
         DateTime now = DateTime.UtcNow;
 
         int id = await (from t in Ctx.Tests
-                        join tt in Ctx.Technologies on t.TechnologyId equals tt.Id
+                        join tt in Ctx.Topics on t.TopicId equals tt.Id
                         where t.Username == userName &&
-                           !t.FinalScore.HasValue &&
                            !t.FinishDate.HasValue &&
+                           t.State == TestState.Created &&
                            EF.Functions.DateDiffMinute(now, t.StartDate) < tt.DurationInMinutes
                         orderby t.StartDate descending
                         select t.Id).FirstOrDefaultAsync();
@@ -97,7 +104,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                           join tq in Ctx.TestQuestions on t.Id equals tq.TestId
                           join q in Ctx.Questions on tq.QuestionId equals q.Id
                           where t.Id == testId && tq.RequestDate.HasValue && tq.AnswerDate == null
-                          select new { Question = q, tqId = tq.Id, t.StartDate, q.TechnologyId }).FirstOrDefaultAsync();
+                          select new { Question = q, tqId = tq.Id, t.StartDate, q.TopicId }).FirstOrDefaultAsync();
 
         if (data == null)
         {
@@ -108,24 +115,25 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                              where tq.TestId == testId
                              select new { tq.Id, tq.AnswerDate }).ToArrayAsync();
 
-        CurrentTestStateDto dto = new();
-
-        dto.TestId = testId;
-        dto.TechnologyId = data.TechnologyId;
-        dto.CurrentQuestion = new QuestionDto
+        CurrentTestStateDto dto = new CurrentTestStateDto
         {
-            Number = tqArray.Count(tq => tq.AnswerDate != null) + 1,
             TestId = testId,
-            TestQuestionId = data.tqId,
-            QuestionId = data.Question.Id,
-            Text = data.Question.Text,
-            Answer1 = data.Question.Answer1,
-            Answer2 = data.Question.Answer2,
-            Answer3 = data.Question.Answer3,
-            Answer4 = data.Question.Answer4
+            TopicId = data.TopicId,
+            CurrentQuestion = new QuestionDto
+            {
+                Number = tqArray.Count(tq => tq.AnswerDate != null) + 1,
+                TestId = testId,
+                TestQuestionId = data.tqId,
+                QuestionId = data.Question.Id,
+                Text = data.Question.Text,
+                Answer1 = data.Question.Answer1,
+                Answer2 = data.Question.Answer2,
+                Answer3 = data.Question.Answer3,
+                Answer4 = data.Question.Answer4
+            },
+            TotalQuestions = tqArray.Length,
+            SpentTimeInSeconds = (int)(DateTime.UtcNow - data.StartDate).TotalSeconds
         };
-        dto.TotalQuestions = tqArray.Length;
-        dto.SpentTimeInSeconds = (int)(DateTime.UtcNow - data.StartDate).TotalSeconds;
 
         return dto;
     }
@@ -135,8 +143,8 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
         return await (from t in Ctx.Tests
                       join tq in Ctx.TestQuestions on t.Id equals tq.TestId
                       where t.Id == testId &&
+                            t.State == TestState.Created &&
                             t.Username == userName &&
-                            t.FinalScore == null &&
                             t.FinishDate == null &&
                             tq.QuestionId == questionId &&
                             tq.AnswerDate == null &&

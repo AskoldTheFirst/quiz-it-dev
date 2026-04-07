@@ -3,7 +3,7 @@
 namespace KramarDev.Quiz.DAL.Database.Tables;
 
 [Index(nameof(Name), IsUnique = true)]
-public class Technology
+public class Topic
 {
     public int Id { get; set; }
 
@@ -18,6 +18,9 @@ public class Technology
     public int QuestionCount { get; set; }
 
     public int DurationInMinutes { get; set; }
+
+    [StringLength(7), Required]
+    public string ThemeColor { get; set; }
 
     public ICollection<Question> Questions { get; set; }
 

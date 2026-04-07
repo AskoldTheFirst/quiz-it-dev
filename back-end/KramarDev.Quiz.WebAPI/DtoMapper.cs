@@ -2,25 +2,26 @@
 
 public static class DtoMapper
 {
-    public static TechnologyModel FromBLL(TechnologyDto technologyDto)
+    public static TopicModel FromBLL(TopicDto topicDto)
     {
-        return new TechnologyModel
+        return new TopicModel
         {
-            Id = technologyDto.Id,
-            Name = technologyDto.Name,
-            Description = technologyDto.Description,
-            QuestionCount = technologyDto.QuestionCount,
-            DurationInMinute = technologyDto.DurationInMinutes,
+            Id = topicDto.Id,
+            Name = topicDto.Name,
+            Description = topicDto.Description,
+            QuestionCount = topicDto.QuestionCount,
+            DurationInMinute = topicDto.DurationInMinutes,
+            ThemeColor = topicDto.ThemeColor,
         };
     }
 
-    public static TechnologyModel[] FromBLL(TechnologyDto[] technologiesDto)
+    public static TopicModel[] FromBLL(TopicDto[] topicsDto)
     {
-        TechnologyModel[] technologies = new TechnologyModel[technologiesDto.Length];
+        TopicModel[] topics = new TopicModel[topicsDto.Length];
 
-        for(int i = 0; i < technologiesDto.Length; i++)
-            technologies[i] = FromBLL(technologiesDto[i]);
+        for(int i = 0; i < topicsDto.Length; i++)
+            topics[i] = FromBLL(topicsDto[i]);
 
-        return technologies;
+        return topics;
     }
 }

@@ -1,6 +1,10 @@
 ﻿namespace KramarDev.Quiz.WebAPI.Model;
 
-public class RegisterModel : LoginModel
+public sealed record RegisterModel
 {
-    public string Email { get; set; }
+    public string Username { get; init; }
+
+    public string Password { get; init; }
+
+    public string Email { get; init; }
 }
