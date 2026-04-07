@@ -288,8 +288,8 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "49f61428-8112-4547-8676-61fcf7ff7b72", null, "Admin", "ADMIN" },
-                    { "6d1a959e-44e1-422b-aec6-703c087838ea", null, "Member", "MEMBER" }
+                    { "7B4E9D6D-41C3-4E22-9B28-111111111111", "A1C7E8D4-1111-4444-8888-111111111111", "Member", "MEMBER" },
+                    { "8C5F0E7E-52D4-5F33-AB39-222222222222", "B2D8F9E5-2222-5555-9999-222222222222", "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

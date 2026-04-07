@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using System.Text;
 
 namespace KramarDev.Quiz.WebAPI;
@@ -18,39 +18,35 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-
         builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
-        //builder.Services.AddSwaggerGen();
+
         builder.Services.AddSwaggerGen(c =>
         {
-            var jwtSecurityScheme = new OpenApiSecurityScheme
+            c.SwaggerDoc("v1", new OpenApiInfo
             {
-                BearerFormat = "JWT",
+                Title = "Quiz API",
+                Version = "v1"
+            });
+
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
                 Name = "Authorization",
+                Description = "Enter: Bearer {your JWT token}",
                 In = ParameterLocation.Header,
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
-                Description = "Put Bearer + your token in the box below",
-                Reference = new OpenApiReference
-                {
-                    Id = JwtBearerDefaults.AuthenticationScheme,
-                    Type = ReferenceType.SecurityScheme
-                }
-            };
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT",
+            });
 
-            c.AddSecurityDefinition(jwtSecurityScheme.Reference.Id, jwtSecurityScheme);
-
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
+            c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
             {
                 {
-                    jwtSecurityScheme, Array.Empty<string>()
+                    new OpenApiSecuritySchemeReference("Bearer", document),
+                    new List<string>()
                 }
             });
         });
-
 
         builder.Services.AddDbContext<QuizDbContext>(opt =>
         {
@@ -95,12 +91,12 @@ public class Program
 
         var app = builder.Build();
 
-        // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Quiz API V1");
                 c.ConfigObject.AdditionalItems.Add("persistAuthorization", "true");
             });
         }
@@ -116,10 +112,10 @@ public class Program
                     "http://localhost:3004",
                     "http://127.0.0.1:3004",
                     "http://quiz-it.online"
-                ]).SetPreflightMaxAge(TimeSpan.FromDays(7));
+                ])
+                .SetPreflightMaxAge(TimeSpan.FromDays(7));
         });
 
-        //app.UseHttpsRedirection();
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();

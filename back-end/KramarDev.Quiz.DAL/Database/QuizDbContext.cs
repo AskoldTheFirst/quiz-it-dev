@@ -56,8 +56,20 @@ public class QuizDbContext : IdentityDbContext<User>
 
         builder.Entity<IdentityRole>()
             .HasData(
-                new IdentityRole { Name = "Member", NormalizedName = "MEMBER" },
-                new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" }
+                new IdentityRole
+                {
+                    Id = "7B4E9D6D-41C3-4E22-9B28-111111111111",
+                    Name = "Member",
+                    NormalizedName = "MEMBER",
+                    ConcurrencyStamp = "A1C7E8D4-1111-4444-8888-111111111111"
+                },
+                new IdentityRole
+                {
+                    Id = "8C5F0E7E-52D4-5F33-AB39-222222222222",
+                    Name = "Admin",
+                    NormalizedName = "ADMIN",
+                    ConcurrencyStamp = "B2D8F9E5-2222-5555-9999-222222222222"
+                }
             );
 
         builder.Entity<Test>().HasIndex(e => e.Username);

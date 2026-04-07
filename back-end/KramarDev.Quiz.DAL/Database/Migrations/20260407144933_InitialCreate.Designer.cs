@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KramarDev.Quiz.DAL.Database.Migrations
 {
     [DbContext(typeof(QuizDbContext))]
-    [Migration("20260328002404_InitialCreate")]
+    [Migration("20260407144933_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -20,7 +20,7 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.19")
+                .HasAnnotation("ProductVersion", "10.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -341,13 +341,15 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6d1a959e-44e1-422b-aec6-703c087838ea",
+                            Id = "7B4E9D6D-41C3-4E22-9B28-111111111111",
+                            ConcurrencyStamp = "A1C7E8D4-1111-4444-8888-111111111111",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         },
                         new
                         {
-                            Id = "49f61428-8112-4547-8676-61fcf7ff7b72",
+                            Id = "8C5F0E7E-52D4-5F33-AB39-222222222222",
+                            ConcurrencyStamp = "B2D8F9E5-2222-5555-9999-222222222222",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
