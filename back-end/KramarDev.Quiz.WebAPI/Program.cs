@@ -27,10 +27,7 @@ public class Program
 
             var csb = new SqlConnectionStringBuilder(connectionString);
 
-            //Console.WriteLine(
-            //    $"SQL Server={csb.DataSource}; Database={csb.InitialCatalog}; Encrypt={csb.Encrypt}; TrustServerCertificate={csb.TrustServerCertificate}");
-
-            throw new InvalidOperationException(
+            Console.WriteLine(
                 $"SQL Server={csb.DataSource}; Database={csb.InitialCatalog}; Encrypt={csb.Encrypt}; TrustServerCertificate={csb.TrustServerCertificate}");
 
             opt.UseSqlServer(connectionString, sqlOptions =>
