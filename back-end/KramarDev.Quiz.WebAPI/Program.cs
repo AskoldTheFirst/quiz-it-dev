@@ -4,6 +4,7 @@ using KramarDev.Quiz.DAL.Database;
 using KramarDev.Quiz.DAL.Database.Tables;
 using KramarDev.Quiz.DALAbstractions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace KramarDev.Quiz.WebAPI;
@@ -24,7 +25,15 @@ public class Program
             var connectionString = builder.Configuration.GetConnectionString("QuizDbConnection")
                 ?? throw new InvalidOperationException("Connection string 'QuizDbConnection' was not found.");
 
-            opt.UseSqlServer(connectionString);
+            var csb = new SqlConnectionStringBuilder(connectionString);
+
+            Console.WriteLine(
+                $"SQL Server={csb.DataSource}; Database={csb.InitialCatalog}; Encrypt={csb.Encrypt}; TrustServerCertificate={csb.TrustServerCertificate}");
+
+            opt.UseSqlServer(connectionString, sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure();
+            });
         });
         
         builder.Services.AddAppCors(CorsPolicyName);
