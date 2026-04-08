@@ -3,57 +3,31 @@ using KramarDev.Quiz.DAL;
 using KramarDev.Quiz.DAL.Database;
 using KramarDev.Quiz.DAL.Database.Tables;
 using KramarDev.Quiz.DALAbstractions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
-using System.Text;
 
 namespace KramarDev.Quiz.WebAPI;
 
 public class Program
 {
-    public static void Main(string[] args)
+    private const string CorsPolicyName = "AllowAllDev";
+
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
-
-        builder.Services.AddSwaggerGen(c =>
-        {
-            c.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "Quiz API",
-                Version = "v1"
-            });
-
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-            {
-                Name = "Authorization",
-                Description = "Enter: Bearer {your JWT token}",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer",
-                BearerFormat = "JWT",
-            });
-
-            c.AddSecurityRequirement(document => new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecuritySchemeReference("Bearer", document),
-                    new List<string>()
-                }
-            });
-        });
-
+        builder.Services.AddCustomSwagger();
         builder.Services.AddDbContext<QuizDbContext>(opt =>
         {
-            opt.UseSqlServer(DatabaseConfig.GetConnectionString());
-        });
+            var connectionString = builder.Configuration.GetConnectionString("QuizDbConnection")
+                ?? throw new InvalidOperationException("Connection string 'QuizDbConnection' was not found.");
 
-        builder.Services.AddCors();
+            opt.UseSqlServer(connectionString);
+        });
+        
+        builder.Services.AddAppCors(CorsPolicyName);
         builder.Services.AddIdentityCore<User>(opt =>
         {
             opt.Password.RequireUppercase = false;
@@ -66,63 +40,27 @@ public class Program
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<QuizDbContext>();
 
-        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer(opt =>
-            {
-                opt.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(
-                        Encoding.UTF8.GetBytes(builder.Configuration["JWTSettings:TokenKey"]))
-                };
-            });
-
+        builder.Services.AddJwtAuthentication(builder.Configuration);
         builder.Services.AddAuthorization();
         builder.Services.AddScoped<TokenService>();
 
-        builder.Services.AddScoped<IUnitOfWork>(_ => new UnitOfWork());
+        builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<ITestService, TestService>();
         builder.Services.AddScoped<IStatisticsService, StatisticsService>();
         builder.Services.AddSingleton<IAppCacheService, AppCacheService>();
         builder.Services.AddMemoryCache();
 
         var app = builder.Build();
-
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Quiz API V1");
-                c.ConfigObject.AdditionalItems.Add("persistAuthorization", "true");
-            });
-        }
-
-        app.UseCors(opt =>
-        {
-            opt.AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials()
-                .WithOrigins([
-                    "https://localhost:3000",
-                    "http://localhost:3000",
-                    "http://localhost:3004",
-                    "http://127.0.0.1:3004",
-                    "http://quiz-it.online"
-                ])
-                .SetPreflightMaxAge(TimeSpan.FromDays(7));
-        });
-
+        app.UseCustomSwagger(app.Environment);
+        app.UseHttpsRedirection();
+        app.UseCors(CorsPolicyName);
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
 
-        var scope = app.Services.CreateScope();
+        using var scope = app.Services.CreateScope();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        uow.UpdateDbAsync().Wait();
+        await uow.UpdateDbAsync();
 
         app.Run();
     }
