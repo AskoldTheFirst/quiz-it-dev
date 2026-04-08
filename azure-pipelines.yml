@@ -42,3 +42,11 @@ steps:
   inputs:
     targetPath: '$(Build.ArtifactStagingDirectory)/api'
     artifact: 'api'
+
+- task: AzureWebApp@1
+  displayName: 'Deploy API to Azure Web App'
+  inputs:
+    azureSubscription: 'quiz-it-connection'
+    appType: 'webApp'
+    appName: 'quiz-it-api'
+    package: '$(Build.ArtifactStagingDirectory)/api/**/*.zip'
