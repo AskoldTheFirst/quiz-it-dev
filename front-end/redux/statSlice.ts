@@ -98,7 +98,6 @@ export const statSlice = createSlice({
 
         // getProfile
         builder.addCase(getProfile.fulfilled, (state, action) => {
-            debugger;
             state.profile = { ...action.payload };
         });
         builder.addCase(getProfile.rejected, (_, action) => {
