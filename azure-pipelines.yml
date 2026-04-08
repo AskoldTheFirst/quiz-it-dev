@@ -26,7 +26,7 @@ steps:
   inputs:
     command: 'build'
     projects: '$(apiProject)'
-    arguments: '--configuration $(buildConfiguration)'
+    arguments: '--configuration $(buildConfiguration) --no-restore'
 
 - task: DotNetCoreCLI@2
   displayName: 'Publish API'
@@ -34,11 +34,14 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: '$(apiProject)'
-    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/api'
+    arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/api --no-build'
     zipAfterPublish: true
 
-- task: PublishPipelineArtifact@1
-  displayName: 'Publish artifact'
+- task: AzureWebApp@1
+  displayName: 'Deploy API to Azure Web App'
   inputs:
-    targetPath: '$(Build.ArtifactStagingDirectory)/api'
-    artifact: 'api'
+    azureSubscription: 'quiz-it-connection'
+    appType: 'webApp'
+    appName: 'quiz-it-api'
+    package: '$(Build.ArtifactStagingDirectory)/api/**/*.zip'
+    deploymentMethod: 'zipDeploy'
