@@ -72,7 +72,7 @@ public class Program
 
         using var scope = app.Services.CreateScope();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
         logger.LogError($"Applying database migrations... {connectionString}");
         await uow.UpdateDbAsync();
 
