@@ -1,5 +1,11 @@
 trigger:
-- main
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - back-end/*
+      - back-end/**
 
 pool:
   name: 'Default'
