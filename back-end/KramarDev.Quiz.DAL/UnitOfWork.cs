@@ -9,15 +9,20 @@ public sealed class UnitOfWork : IUnitOfWork
 {
     private static readonly DbContextOptions<QuizDbContext> _options;
 
-    QuizDbContext _ctx = new (_options);
+    private readonly QuizDbContext _ctx;
 
-    static UnitOfWork()
+    public UnitOfWork(QuizDbContext ctx)
     {
-        var connectionString = DatabaseConfig.GetConnectionString();
-        var optionsBuilder = new DbContextOptionsBuilder<QuizDbContext>();
-        optionsBuilder.UseSqlServer(connectionString);
-        _options = optionsBuilder.Options;
+        _ctx = ctx;
     }
+
+    //static UnitOfWork()
+    //{
+    //    var connectionString = DatabaseConfig.GetConnectionString();
+    //    var optionsBuilder = new DbContextOptionsBuilder<QuizDbContext>();
+    //    optionsBuilder.UseSqlServer(connectionString);
+    //    _options = optionsBuilder.Options;
+    //}
 
     public ITestRepository TestRepository => new TestRepository(_ctx);
 
