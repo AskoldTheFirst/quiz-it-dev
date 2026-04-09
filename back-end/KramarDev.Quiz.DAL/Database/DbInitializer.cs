@@ -26,7 +26,7 @@ public static class DbInitializer
         }
         else
         {
-            techArray = ctx.Topics.Take(3).ToArray();
+            techArray = [.. ctx.Topics.OrderByDescending(t => t.Id).Take(3)];
         }
 
         if (!ctx.Questions.Any())
