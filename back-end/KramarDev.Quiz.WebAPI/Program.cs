@@ -17,6 +17,9 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        var connectionString = builder.Configuration.GetConnectionString("QuizDbConnection")
+                ?? throw new InvalidOperationException("Connection string 'QuizDbConnection' was not found.");
+
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddCustomSwagger();
@@ -69,6 +72,8 @@ public class Program
 
         using var scope = app.Services.CreateScope();
         var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var logger = scope.ServiceProvider.GetRequiredService<ILogger>();
+        logger.LogInformation($"Applying database migrations... {connectionString}");
         await uow.UpdateDbAsync();
 
         app.Run();
