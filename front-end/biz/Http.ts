@@ -3,8 +3,9 @@ import axios, { AxiosError, AxiosResponse } from "axios";
 import { AnswerRequestDto } from "./dto/AnswerRequestDto";
 import { StatisticsRequestDto } from "./dto/StatisticsRequestDto";
 
-axios.defaults.baseURL = 'https://localhost:7072/api/';
-axios.defaults.withCredentials = true;
+//axios.defaults.baseURL = 'https://localhost:7072/api/';
+axios.defaults.baseURL = 'https://quiz-it-api-a6fsfcdfg3gnb6ee.westeurope-01.azurewebsites.net/api/';
+axios.defaults.withCredentials = false;
 axios.defaults.timeout = 60000;
 
 const responseBody = (response: AxiosResponse) => response.data;
