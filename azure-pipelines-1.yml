@@ -2,6 +2,10 @@ trigger:
   branches:
     include:
       - main
+  paths:
+    include:
+      - front-end/*
+      - front-end/**
 
 pool:
   vmImage: ubuntu-latest
