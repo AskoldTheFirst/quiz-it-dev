@@ -1,24 +1,6 @@
-"use client";
-
+import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
-import { Provider } from "react-redux";
-import ThemeRegistry from "@/components/ThemeRegistry";
-//import "./globals.css";
-import { store } from "@/redux/store";
-import { initState, setForbidenPages } from "@/redux/appSlice";
-import { current } from "@/redux/testSlice";
-import { NavItem } from "@/biz/models/NavItems";
-
-// Initialize store immediately (outside component for earliest execution)
-if (typeof window !== "undefined") {
-  store.dispatch(initState());
-  store.dispatch(current());
-
-  // if (store.getState().testState.test)
-  // {
-  //   store.dispatch(setForbidenPages([NavItem.Top, NavItem.Profile, NavItem.About]));
-  // }
-}
+import ClientProviders from "./ClientProviders";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const jetbrainsMono = JetBrains_Mono({
@@ -26,37 +8,37 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
 });
 
+export const metadata: Metadata = {
+  title: "Quiz-IT – Test Your Programming Skills",
+  description:
+    "Practice quizzes for C#, SQL, JavaScript and more. Improve your skills and track your progress.",
+  keywords: ["quiz", "programming", "C#", "SQL", "JavaScript", "learning"],
+  icons: {
+    icon: [
+      {
+        url: "/icon-light-32x32.png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/icon-dark-32x32.png",
+        media: "(prefers-color-scheme: dark)",
+      },
+      {
+        url: "/icon.svg",
+        type: "image/svg+xml",
+      },
+    ],
+    apple: "/apple-icon.png",
+  },
+};
+
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <head>
-        <title>Quiz-IT - Test Your Knowledge</title>
-        <meta
-          name="description"
-          content="Test your knowledge across programming languages, frameworks, databases, and more."
-        />
-        <meta name="theme-color" content="#0f172a" />
-        <link
-          rel="icon"
-          href="/icon-light-32x32.png"
-          media="(prefers-color-scheme: light)"
-        />
-        <link
-          rel="icon"
-          href="/icon-dark-32x32.png"
-          media="(prefers-color-scheme: dark)"
-        />
-        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
-        <link rel="apple-touch-icon" href="/apple-icon.png" />
-      </head>
       <body className="font-sans antialiased">
-        <Provider store={store}>
-          <ThemeRegistry>{children}</ThemeRegistry>
-        </Provider>
+        <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
   );

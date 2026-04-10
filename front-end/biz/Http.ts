@@ -67,6 +67,7 @@ const Test = {
 const Statistics = {
     page: (requestMode: StatisticsRequestDto) => requests.get('statistics/page', requestMode),
     profile: () => requests.get('statistics/profile'),
+    hide: () => requests.put('statistics/hide', {}),
 }
 
 const Http = {

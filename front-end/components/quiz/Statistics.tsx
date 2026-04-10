@@ -18,26 +18,18 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import QuizIcon from "@mui/icons-material/Quiz";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
-import { RootState } from "@/redux/store";
+import { RootState, useAppDispatch } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { hide } from "@/redux/statSlice";
 
-export interface QuizAttempt {
-  topicId: string;
-  topicTitle: string;
-  topicColor: string;
-  score: number;
-  totalQuestions: number;
-  percentage: number;
-  weightedPercentage: number;
-  date: string;
-}
 
 export default function Statistics() {
 
   const user = useSelector((state: RootState) => state.appState.user);
   const profile = useSelector((state: RootState) => state.statState.profile);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   if (!profile) {
     return <CircularProgress />;
@@ -159,7 +151,7 @@ export default function Statistics() {
           variant="outlined"
           size="small"
           startIcon={<DeleteOutlineIcon />}
-          onClick={() => { }}
+          onClick={() => { dispatch(hide()); }}
           sx={{
             borderColor: "rgba(239, 68, 68, 0.3)",
             color: "#ef4444",

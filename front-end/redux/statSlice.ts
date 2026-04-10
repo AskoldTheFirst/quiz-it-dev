@@ -29,7 +29,6 @@ const initialState: StatState = {
 export const getPage = createAsyncThunk<StatisticsPageDto>(
     'stat/getPage',
     async (_, thunkAPI) => {
-
         try {
             const state = thunkAPI.getState() as { statState: StatState };
 
@@ -48,9 +47,19 @@ export const getPage = createAsyncThunk<StatisticsPageDto>(
 export const getProfile = createAsyncThunk<ProfileDto>(
     'stat/getProfile',
     async (_, thunkAPI) => {
-
         try {
             return await Http.Statistics.profile();
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue({ error: error.status });
+        }
+    }
+);
+
+export const hide = createAsyncThunk<ProfileDto>(
+    'stat/hide',
+    async (_, thunkAPI) => {
+        try {
+            return await Http.Statistics.hide();
         } catch (error: any) {
             return thunkAPI.rejectWithValue({ error: error.status });
         }
@@ -102,6 +111,14 @@ export const statSlice = createSlice({
         });
         builder.addCase(getProfile.rejected, (_, action) => {
             console.log("getProfile.rejected" + action.payload);
+        });
+
+        // hide
+        builder.addCase(hide.fulfilled, (state, action) => {
+            state.profile = { ...action.payload };
+        });
+        builder.addCase(hide.rejected, (_, action) => {
+            console.log("hide.rejected" + action.payload);
         });
     })
 });

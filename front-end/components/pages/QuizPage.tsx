@@ -16,62 +16,54 @@ export default function QuizPage() {
   const { topics, user } = useSelector((state: RootState) => state.appState);
   const { test, result } = useSelector((state: RootState) => state.testState);
   const dispatch = useAppDispatch();
-
   const { openLogin } = useAppContext();
-
-  useEffect(() => {
-    if (result) {
-      dispatch(setForbidenPages([]));
-    }
-  }, [dispatch, result]);
 
   useEffect(() => {
     if (test) {
       dispatch(setForbidenPages([NavItem.Top, NavItem.Profile, NavItem.About]));
+      return;
     }
-  }, [test, dispatch]);
+
+    dispatch(setForbidenPages([]));
+  }, [dispatch, test]);
 
   useEffect(() => {
     return () => {
-      if (result) {
-        dispatch(setTestData({ test: null, result: null }));
-      }
+      dispatch(setTestData({ test: null, result: null }));
     };
   }, [dispatch]);
 
-  // Timer effect
   useEffect(() => {
-
     if (!test) {
       return;
     }
 
     const timer = setInterval(() => {
       dispatch(decrementTime());
-
-      if (test.secondsLeft < 1) {
-        clearInterval(timer);
-        dispatch(complete(test.testId));
-        return 0;
-      }
-      return test.secondsLeft - 1;
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [test, dispatch]);
+  }, [dispatch, test?.testId]);
 
-  const handleSelectTopic = useCallback(
-    async (topicName: string) => {
-      if (!user) {
-        openLogin();
-        return;
-      }
+  useEffect(() => {
+    if (!test) {
+      return;
+    }
 
-      await dispatch(createTest(topicName));
-      dispatch(setForbidenPages([NavItem.Top, NavItem.Profile, NavItem.About]));
-    }, [user, openLogin, dispatch]);
+    if (test.secondsLeft <= 0) {
+      dispatch(complete(test.testId));
+    }
+  }, [dispatch, test?.secondsLeft, test?.testId]);
 
-  // Topics view
+  const handleSelectTopic = useCallback(async (topicName: string) => {
+    if (!user) {
+      openLogin();
+      return;
+    }
+
+    await dispatch(createTest(topicName)).unwrap();
+  }, [user, openLogin, dispatch]);
+
   if (!test && !result) {
     return (
       <>
@@ -110,16 +102,13 @@ export default function QuizPage() {
     );
   }
 
-  // Question view
   if (test) {
     return <QuizQuestion test={test} />;
   }
 
-  // Results view
   if (result) {
     return <QuizResults result={result} />;
   }
 
   return null;
 }
-
