@@ -90,6 +90,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                         join tt in Ctx.Topics on t.TopicId equals tt.Id
                         where t.Username == userName &&
                            !t.FinishDate.HasValue &&
+                           !t.IsHidden &&
                            t.State == TestState.Created &&
                            EF.Functions.DateDiffMinute(now, t.StartDate) < tt.DurationInMinutes
                         orderby t.StartDate descending
@@ -146,6 +147,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                             t.State == TestState.Created &&
                             t.Username == userName &&
                             t.FinishDate == null &&
+                            !t.IsHidden &&
                             tq.QuestionId == questionId &&
                             tq.AnswerDate == null &&
                             tq.RequestDate != null

@@ -15,6 +15,7 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
                       orderby t.FinalScore descending
                       where (topicId == 0 || t.TopicId == topicId) &&
                               t.State == TestState.Completed &&
+                              !t.IsHidden &&
                               t.FinalScore >= scoreThreshold
                       select new RowDto
                       {
@@ -37,6 +38,7 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
         return await (from t in Ctx.Tests
                       where (topicId == 0 || t.TopicId == topicId) &&
                             t.State == TestState.Completed &&
+                            !t.IsHidden &&
                             t.FinalScore >= scoreThreshold
                       select t).CountAsync();
     }
@@ -45,7 +47,9 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
     {
         // Summary
         var completedTests = await (from t in Ctx.Tests
-                                    where t.Username == userName && t.State == TestState.Completed
+                                    where t.Username == userName &&
+                                            t.State == TestState.Completed &&
+                                            !t.IsHidden
                                     select t).ToArrayAsync();
 
         var summary = new ProfileSummaryDto

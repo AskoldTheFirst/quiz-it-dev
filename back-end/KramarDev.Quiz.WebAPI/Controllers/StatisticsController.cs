@@ -24,4 +24,11 @@ public class StatisticsController(IStatisticsService statisticsService) : BaseCo
         return ProfileModel.FromBLL(
             await _statisticsService.GetProfileAsync(UserName));
     }
+
+    [Authorize]
+    [HttpPut("hide")]
+    public async Task<ActionResult> Hide(CancellationToken cancellationToken)
+    {
+        return NoContent();
+    }
 }
