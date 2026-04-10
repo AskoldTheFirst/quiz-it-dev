@@ -25,4 +25,9 @@ public class StatisticsService(IUnitOfWork uow) : IStatisticsService
         return DtoMapper.FromDAL(
             await _uow.StatistcsRepository.GetProfileAsync(userName));
     }
+
+    public async Task HideAsync(string userName, CancellationToken cancellationToken)
+    {
+        await _uow.StatistcsRepository.HideTestsForUserAsync(userName, cancellationToken);
+    }
 }

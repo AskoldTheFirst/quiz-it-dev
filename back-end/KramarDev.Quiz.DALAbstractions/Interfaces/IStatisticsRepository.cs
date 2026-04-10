@@ -1,5 +1,4 @@
-﻿
-namespace KramarDev.Quiz.DALAbstractions.Interfaces;
+﻿namespace KramarDev.Quiz.DALAbstractions.Interfaces;
 
 public interface IStatisticsRepository
 {
@@ -8,4 +7,6 @@ public interface IStatisticsRepository
     Task<int> GetTotalCountAsync(int topicId, int scoreThreshold);
 
     Task<ProfileDto> GetProfileAsync(string userName);
+
+    Task HideTestsForUserAsync(string userName, CancellationToken cancellationToken);
 }

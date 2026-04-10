@@ -1,5 +1,7 @@
-﻿
-using KramarDev.Quiz.DALAbstractions.Interfaces;
+﻿using KramarDev.Quiz.DALAbstractions.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading;
 
 namespace KramarDev.Quiz.DAL.Repositories;
 
@@ -94,5 +96,12 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
             Topics = topics,
             Attempts = attempts
         };
+    }
+
+    public async Task HideTestsForUserAsync(string userName, CancellationToken cancellationToken)
+    {
+        await Ctx.Tests
+            .Where(t => !t.IsHidden && t.Username == userName)
+            .ExecuteUpdateAsync(setters => setters.SetProperty(t => t.IsHidden, true), cancellationToken);
     }
 }

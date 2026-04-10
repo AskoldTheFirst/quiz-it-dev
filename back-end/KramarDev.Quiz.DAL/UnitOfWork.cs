@@ -16,14 +16,6 @@ public sealed class UnitOfWork : IUnitOfWork
         _ctx = ctx;
     }
 
-    //static UnitOfWork()
-    //{
-    //    var connectionString = DatabaseConfig.GetConnectionString();
-    //    var optionsBuilder = new DbContextOptionsBuilder<QuizDbContext>();
-    //    optionsBuilder.UseSqlServer(connectionString);
-    //    _options = optionsBuilder.Options;
-    //}
-
     public ITestRepository TestRepository => new TestRepository(_ctx);
 
     public IQuestionRepository QuestionRepository => new QuestionRepository(_ctx);
