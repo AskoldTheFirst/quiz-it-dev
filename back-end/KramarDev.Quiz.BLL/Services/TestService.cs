@@ -43,7 +43,7 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
     {
         await AnswerAsync(testId, questionId, answerNumber, userName);
 
-        var nextQuestion = await GetNextQuestionAsync(testId, userName, CancellationToken.None);
+        QuestionDto nextQuestion = await GetNextQuestionAsync(testId, userName, CancellationToken.None);
 
         // If there is a next question, return it immediately
         if (nextQuestion != null)
@@ -114,9 +114,9 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
         return testDto;
     }
 
-    public async Task CancelTestAsync(string userName, int testId)
+    public Task CancelTestAsync(string userName, int testId)
     {
-        await _uow.TestRepository.CancelTestAndSaveAsync(userName, testId);
+        return _uow.TestRepository.CancelTestAndSaveAsync(userName, testId);
     }
 
     public async Task<TestResultDto> CompleteAsync(int testId, string userName)
@@ -145,9 +145,9 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
         return dto;
     }
 
-    public async Task HideAsync(string userName, CancellationToken cancellationToken = default)
+    public Task HideAsync(string userName, CancellationToken cancellationToken = default)
     {
-        await _uow.StatisticsRepository.HideTestsForUserAndSaveAsync(userName, cancellationToken);
+        return _uow.StatisticsRepository.HideTestsForUserAndSaveAsync(userName, cancellationToken);
     }
 
 
@@ -200,19 +200,14 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
 
     private async Task<NewTestData> GenerateRandomQuestionsForTestAsync(BL.TopicDto topic)
     {
-        NewTestData data = new();
+        var (ids, totalPoints) = await GenerateTestQuestions(topic.Name, topic.QuestionCount);
 
-        var (ids, totalPoints) = await GenerateTestQuestions(
-            topic.Name, topic.QuestionCount);
-
-        data = new NewTestData
+        return new NewTestData
         {
             QuestionIds = ids,
             TotalPoints = totalPoints,
             TopicId = topic.Id
         };
-
-        return data;
     }
 
     private async Task<(int[], int)> GenerateTestQuestions(string topicName, int questionAmount)
@@ -247,16 +242,16 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
         }
 
         List<int> generatedIds = new(questionAmount);
-        generatedIds.AddRange(Generate(easyIds, easyAmount));
-        generatedIds.AddRange(Generate(middleIds, middleAmount));
-        generatedIds.AddRange(Generate(hardIds, hardAmount));
+        generatedIds.AddRange(GenerateQuestionIds(easyIds, easyAmount));
+        generatedIds.AddRange(GenerateQuestionIds(middleIds, middleAmount));
+        generatedIds.AddRange(GenerateQuestionIds(hardIds, hardAmount));
 
         int totalPoints = easyAmount + middleAmount * 2 + hardAmount * 3;
 
         return (generatedIds.ToArray(), totalPoints);
     }
 
-    private static int[] Generate(int[] ids, int amount)
+    private static int[] GenerateQuestionIds(int[] ids, int amount)
     {
         int[] generatedIds = new int[amount];
         var selectedIndices = new HashSet<int>(amount);

@@ -29,7 +29,8 @@ public class AppCacheService(IServiceScopeFactory scopeFactory, IMemoryCache cac
         int[] ids;
         if (!_cache.TryGetValue(key, out ids))
         {
-            ids = await GetUoW().TestQuestionRepository.GetAllQuestionsAsync(topicName, diff);
+            await using IUnitOfWork uow = GetUoW();
+            ids = await uow.TestQuestionRepository.GetAllQuestionsAsync(topicName, diff);
             _cache.Set(key, ids);
         }
         return ids;
@@ -42,8 +43,8 @@ public class AppCacheService(IServiceScopeFactory scopeFactory, IMemoryCache cac
 
         if (!_cache.TryGetValue(key, out topics))
         {
-            IUnitOfWork unitOfWork = GetUoW();
-            var dalTopics = await unitOfWork.TopicRepository.GetTopicsAsync();
+            await using IUnitOfWork uow = GetUoW();
+            var dalTopics = await uow.TopicRepository.GetTopicsAsync();
             topics = DtoMapper.FromDAL(dalTopics);
             _cache.Set(key, topics);
         }

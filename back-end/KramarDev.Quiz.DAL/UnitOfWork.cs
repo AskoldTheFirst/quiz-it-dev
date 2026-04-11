@@ -53,4 +53,9 @@ public sealed class UnitOfWork : IUnitOfWork
         await _ctx.Database.MigrateAsync();
         DbInitializer.Initialize(_ctx);
     }
+
+    public ValueTask DisposeAsync()
+    {
+        return _ctx.DisposeAsync();
+    }
 }

@@ -2,7 +2,7 @@
 
 namespace KramarDev.Quiz.DALAbstractions;
 
-public interface IUnitOfWork
+public interface IUnitOfWork : IAsyncDisposable
 {
     ITestRepository TestRepository { get; }
 
