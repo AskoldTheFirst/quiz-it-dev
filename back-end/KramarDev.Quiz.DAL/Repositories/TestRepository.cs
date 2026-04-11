@@ -6,7 +6,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
     private readonly QuizDbContext Ctx = dbCtx;
 
 
-    public async Task<int> CreateTestAsync(NewTestDto newTest)
+    public async Task<int> CreateTestAsync(NewTestDto newTest, CancellationToken cancellationToken = default)
     {
         int questionAmount = newTest.QuestionIds.Length;
 
@@ -23,7 +23,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
 
         Ctx.Tests.Add(test);
 
-        await Ctx.SaveChangesAsync();
+        await Ctx.SaveChangesAsync(cancellationToken);
 
         TestQuestion[] generatedQuestions = new TestQuestion[questionAmount];
         for (int i = 0; i < questionAmount; ++i)
@@ -36,12 +36,12 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
         }
 
         Ctx.TestQuestions.AddRange(generatedQuestions);
-        await Ctx.SaveChangesAsync();
+        await Ctx.SaveChangesAsync(cancellationToken);
 
         return test.Id;
     }
 
-    public async Task<QuestionInfoDto> GetQuestionInfoAsync(int questionId)
+    public async Task<QuestionInfoDto> GetQuestionInfoAsync(int questionId, CancellationToken cancellationToken = default)
     {
         return await (from q in Ctx.Questions
                       where q.Id == questionId
@@ -49,24 +49,24 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                       {
                           CorrectAnswerNumber = q.CorrectAnswerNumber,
                           TopicId = q.TopicId
-                      }).SingleAsync();
+                      }).SingleAsync(cancellationToken);
     }
 
-    public async Task AnswerAndSaveAsync(QuestionAnswerDto answer)
+    public async Task AnswerAndSaveAsync(QuestionAnswerDto answer, CancellationToken cancellationToken = default)
     {
         int rows = await Ctx.TestQuestions
             .Where(tq => tq.TestId == answer.TestId && tq.QuestionId == answer.QuestionId)
             .ExecuteUpdateAsync(setters =>
                 setters.SetProperty(tq => tq.AnswerNumber, answer.AnswerNumber)
                         .SetProperty(tq => tq.AnswerPoints, answer.AnswerPoints)
-                        .SetProperty(tq => tq.AnswerDate, answer.AnswerDate));
+                        .SetProperty(tq => tq.AnswerDate, answer.AnswerDate), cancellationToken);
 
         if (rows == 0)
             throw new InvalidOperationException("Question was not found");
     }
 
     public async Task CompleteTestAndSaveAsync(string userName, int testId,
-        int finalScore, int finalWeightedScore, int answeredCount, int earnedPoints)
+        int finalScore, int finalWeightedScore, int answeredCount, int earnedPoints, CancellationToken cancellationToken = default)
     {
         int rows = await Ctx.Tests
             .Where(t => t.Id == testId && t.Username == userName)
@@ -76,13 +76,13 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                         .SetProperty(t => t.AnsweredCount, answeredCount)
                         .SetProperty(t => t.EarnedPoints, earnedPoints)
                         .SetProperty(t => t.FinishDate, DateTime.UtcNow)
-                        .SetProperty(t => t.State, TestState.Completed));
+                        .SetProperty(t => t.State, TestState.Completed), cancellationToken);
 
         if (rows == 0)
             throw new InvalidOperationException("Test was not found");
     }
 
-    public async Task<int?> GetActiveTestByUserAsync(string userName)
+    public async Task<int?> GetActiveTestByUserAsync(string userName, CancellationToken cancellationToken = default)
     {
         DateTime now = DateTime.UtcNow;
 
@@ -94,18 +94,18 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                            t.State == TestState.Created &&
                            EF.Functions.DateDiffMinute(now, t.StartDate) < tt.DurationInMinutes
                         orderby t.StartDate descending
-                        select t.Id).FirstOrDefaultAsync();
+                        select t.Id).FirstOrDefaultAsync(cancellationToken);
 
         return id == 0 ? null : id;
     }
 
-    public async Task<CurrentTestStateDto> GetCurrentTestStateAsync(int testId)
+    public async Task<CurrentTestStateDto> GetCurrentTestStateAsync(int testId, CancellationToken cancellationToken = default)
     {
         var data = await (from t in Ctx.Tests
                           join tq in Ctx.TestQuestions on t.Id equals tq.TestId
                           join q in Ctx.Questions on tq.QuestionId equals q.Id
                           where t.Id == testId && tq.RequestDate.HasValue && tq.AnswerDate == null
-                          select new { Question = q, tqId = tq.Id, t.StartDate, q.TopicId }).FirstOrDefaultAsync();
+                          select new { Question = q, tqId = tq.Id, t.StartDate, q.TopicId }).FirstOrDefaultAsync(cancellationToken);
 
         if (data == null)
         {
@@ -114,7 +114,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
 
         var tqArray = await (from tq in Ctx.TestQuestions
                              where tq.TestId == testId
-                             select new { tq.Id, tq.AnswerDate }).ToArrayAsync();
+                             select new { tq.Id, tq.AnswerDate }).ToArrayAsync(cancellationToken);
 
         CurrentTestStateDto dto = new CurrentTestStateDto
         {
@@ -139,7 +139,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
         return dto;
     }
 
-    public async Task<bool> CanAnswerQuestionAsync(int testId, int questionId, string userName)
+    public async Task<bool> CanAnswerQuestionAsync(int testId, int questionId, string userName, CancellationToken cancellationToken = default)
     {
         return await (from t in Ctx.Tests
                       join tq in Ctx.TestQuestions on t.Id equals tq.TestId
@@ -151,16 +151,16 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                             tq.QuestionId == questionId &&
                             tq.AnswerDate == null &&
                             tq.RequestDate != null
-                      select t.Id).AnyAsync();
+                      select t.Id).AnyAsync(cancellationToken);
     }
 
-    public async Task CancelTestAsync(string userName, int testId)
+    public async Task CancelTestAndSaveAsync(string userName, int testId, CancellationToken cancellationToken = default)
     {
         int rows = await Ctx.Tests
             .Where(t => t.Id == testId && t.Username == userName)
             .ExecuteUpdateAsync(setters =>
                 setters.SetProperty(t => t.State, TestState.Cancelled)
-                        .SetProperty(t => t.FinishDate, DateTime.UtcNow));
+                        .SetProperty(t => t.FinishDate, DateTime.UtcNow), cancellationToken);
 
         if (rows == 0)
             throw new InvalidOperationException("Test was not found");

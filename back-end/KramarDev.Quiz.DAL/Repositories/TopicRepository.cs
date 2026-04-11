@@ -4,7 +4,7 @@ public sealed class TopicRepository(QuizDbContext dbCtx) : ITopicRepository
 {
     private readonly QuizDbContext Ctx = dbCtx;
 
-    public async Task<TopicDto[]> GetTopicsAsync()
+    public async Task<TopicDto[]> GetTopicsAsync(CancellationToken cancellationToken = default)
     {
         return await (from t in Ctx.Topics
                       where t.IsActive
@@ -16,10 +16,10 @@ public sealed class TopicRepository(QuizDbContext dbCtx) : ITopicRepository
                           QuestionCount = t.QuestionCount,
                           DurationInMinutes = t.DurationInMinutes,
                           ThemeColor = t.ThemeColor,
-                      }).ToArrayAsync();
+                      }).ToArrayAsync(cancellationToken);
     }
 
-    public async Task<TopicDto> GetTopicByTestIdAsync(int testId)
+    public async Task<TopicDto> GetTopicByTestIdAsync(int testId, CancellationToken cancellationToken = default)
     {
         return await (from te in Ctx.Topics
                       join t in Ctx.Tests on te.Id equals t.TopicId
@@ -32,6 +32,6 @@ public sealed class TopicRepository(QuizDbContext dbCtx) : ITopicRepository
                           QuestionCount = te.QuestionCount,
                           DurationInMinutes = te.DurationInMinutes,
                           ThemeColor = te.ThemeColor,
-                      }).SingleAsync();
+                      }).SingleAsync(cancellationToken);
     }
 }

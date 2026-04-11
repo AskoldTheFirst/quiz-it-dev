@@ -9,7 +9,7 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
     private readonly IAppCacheService _cache = cacheService;
 
 
-    public async Task<BL.TestDto> CreateTestAsync(string topicName, string userName, string ipAddress)
+    public async Task<BL.TestDto> CreateTestAsync(string topicName, string userName, string ipAddress, CancellationToken cancellationToken = default)
     {
         BL.TopicDto topic = await _cache.GetTopicByNameAsync(topicName);
         NewTestData testData = await GenerateRandomQuestionsForTestAsync(topic);
@@ -24,8 +24,8 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
             TotalPoints = testData.TotalPoints,
         };
 
-        int testId = await _uow.TestRepository.CreateTestAsync(newTest);
-        BL.QuestionDto firstQuestion = await GetNextQuestionAsync(testId, userName);
+        int testId = await _uow.TestRepository.CreateTestAsync(newTest, cancellationToken);
+        BL.QuestionDto firstQuestion = await GetNextQuestionAsync(testId, userName, cancellationToken);
 
         return new BL.TestDto
         {
@@ -38,12 +38,12 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
         };
     }
 
-    public async Task<AnswerResponseDto> AnswerAndNextAsync(
-        int testId, int questionId, byte answerNumber, string userName)
+    public async Task<AnswerResponseDto> AnswerAndNextAsync(int testId,
+        int questionId, byte answerNumber, string userName)
     {
         await AnswerAsync(testId, questionId, answerNumber, userName);
 
-        var nextQuestion = await GetNextQuestionAsync(testId, userName);
+        var nextQuestion = await GetNextQuestionAsync(testId, userName, CancellationToken.None);
 
         // If there is a next question, return it immediately
         if (nextQuestion != null)
@@ -57,12 +57,12 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
 
         // All questions answered - build final test result
         AnswerDto[] answers = DtoMapper.FromDAL(
-            await _uow.QuestionRepository.GetAnswersAsync(testId, userName));
+            await _uow.QuestionRepository.GetAnswersAsync(testId, userName, CancellationToken.None));
 
-        CalculateFinalScore(answers,
-            out int finalScore, out int finalWeightedScore, out int totalPoints, out int earnedPoints, out int answeredCount);
+        CalculateFinalScore(answers, out int finalScore, out int finalWeightedScore,
+            out int totalPoints, out int earnedPoints, out int answeredCount);
 
-        DAL.TopicDto topic = await _uow.TopicRepository.GetTopicByTestIdAsync(testId);
+        DAL.TopicDto topic = await _uow.TopicRepository.GetTopicByTestIdAsync(testId, CancellationToken.None);
 
         var testResult = new TestResultDto
         {
@@ -75,7 +75,7 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
         };
 
         await _uow.TestRepository.CompleteTestAndSaveAsync(
-            userName, testId, finalScore, finalWeightedScore, answeredCount, earnedPoints);
+            userName, testId, finalScore, finalWeightedScore, answeredCount, earnedPoints, CancellationToken.None);
 
         return new AnswerResponseDto
         {
@@ -84,15 +84,15 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
         };
     }
 
-    public async Task<BL.TestDto> RestoreCurrentTestAsync(string userName)
+    public async Task<BL.TestDto> RestoreCurrentTestAsync(string userName, CancellationToken cancellationToken = default)
     {
-        int? testId = await _uow.TestRepository.GetActiveTestByUserAsync(userName);
+        int? testId = await _uow.TestRepository.GetActiveTestByUserAsync(userName, cancellationToken);
         if (testId == null)
         {
             return null;
         }
 
-        DAL.CurrentTestStateDto dalTestDto = await _uow.TestRepository.GetCurrentTestStateAsync(testId.Value);
+        DAL.CurrentTestStateDto dalTestDto = await _uow.TestRepository.GetCurrentTestStateAsync(testId.Value, cancellationToken);
         if (dalTestDto == null)
         {
             return null;
@@ -116,7 +116,7 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
 
     public async Task CancelTestAsync(string userName, int testId)
     {
-        await _uow.TestRepository.CancelTestAsync(userName, testId);
+        await _uow.TestRepository.CancelTestAndSaveAsync(userName, testId);
     }
 
     public async Task<TestResultDto> CompleteAsync(int testId, string userName)
@@ -124,8 +124,8 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
         AnswerDto[] answers = DtoMapper.FromDAL(
                 await _uow.QuestionRepository.GetAnswersAsync(testId, userName));
 
-        CalculateFinalScore(answers,
-                out int finalScore, out int finalWeightedScore, out int totalPoints, out int earnedPoints, out int answeredCount);
+        CalculateFinalScore(answers, out int finalScore, out int finalWeightedScore,
+            out int totalPoints, out int earnedPoints, out int answeredCount);
 
         DAL.TopicDto topic = await _uow.TopicRepository.GetTopicByTestIdAsync(testId);
 
@@ -139,24 +139,29 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
             TopicName = topic.Name
         };
 
-        await _uow.TestRepository.CompleteTestAndSaveAsync(
-                userName, testId, finalScore, finalWeightedScore, answeredCount, earnedPoints);
+        await _uow.TestRepository.CompleteTestAndSaveAsync(userName, testId,
+            finalScore, finalWeightedScore, answeredCount, earnedPoints);
 
         return dto;
+    }
+
+    public async Task HideAsync(string userName, CancellationToken cancellationToken = default)
+    {
+        await _uow.StatisticsRepository.HideTestsForUserAndSaveAsync(userName, cancellationToken);
     }
 
 
     #region [Private methods]
 
-    private async Task<BL.QuestionDto> GetNextQuestionAsync(int testId, string userName)
+    private async Task<BL.QuestionDto> GetNextQuestionAsync(int testId, string userName, CancellationToken cancellationToken = default)
     {
         DAL.QuestionDto nextQuestionDAL =
-            await _uow.ComplexQueriesRepository.SelectNextQuestionAsync(testId, userName);
+            await _uow.ComplexQueriesRepository.SelectNextQuestionAsync(testId, userName, cancellationToken);
 
         if (nextQuestionDAL != null)
         {
             Task taskUpdate = _uow.TestQuestionRepository.UpdateTestQuestionDateAsync(
-                testId, nextQuestionDAL.TestQuestionId);
+                testId, nextQuestionDAL.TestQuestionId, cancellationToken);
 
             BL.QuestionDto nextQuestion = DtoMapper.FromDAL(nextQuestionDAL);
 
@@ -172,14 +177,14 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
 
     private async Task AnswerAsync(int testId, int questionId, byte answerNumber, string username)
     {
-        bool canAnswer = await _uow.TestRepository.CanAnswerQuestionAsync(testId, questionId, username);
+        bool canAnswer = await _uow.TestRepository.CanAnswerQuestionAsync(testId, questionId, username, CancellationToken.None);
         if (!canAnswer)
         {
             throw new InvalidOperationException(
                 $"User {username} cannot answer question {questionId} for test {testId}");
         }
 
-        DAL.QuestionInfoDto questionInfo = await _uow.TestRepository.GetQuestionInfoAsync(questionId);
+        DAL.QuestionInfoDto questionInfo = await _uow.TestRepository.GetQuestionInfoAsync(questionId, CancellationToken.None);
 
         DAL.QuestionAnswerDto answer = new()
         {
@@ -190,7 +195,7 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
             AnswerDate = DateTime.UtcNow
         };
 
-        await _uow.TestRepository.AnswerAndSaveAsync(answer);
+        await _uow.TestRepository.AnswerAndSaveAsync(answer, CancellationToken.None);
     }
 
     private async Task<NewTestData> GenerateRandomQuestionsForTestAsync(BL.TopicDto topic)
@@ -241,8 +246,7 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
                 $"Required: {hardAmount}, available: {hardIds.Length}");
         }
 
-        List<int> generatedIds = new List<int>(questionAmount);
-
+        List<int> generatedIds = new(questionAmount);
         generatedIds.AddRange(Generate(easyIds, easyAmount));
         generatedIds.AddRange(Generate(middleIds, middleAmount));
         generatedIds.AddRange(Generate(hardIds, hardAmount));

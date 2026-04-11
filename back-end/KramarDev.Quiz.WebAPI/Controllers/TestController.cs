@@ -1,4 +1,3 @@
-using KramarDev.Quiz.WebAPI.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,9 +12,9 @@ public class TestsController(ITestService testService) : BaseController
 
     [Authorize]
     [HttpGet("current")]
-    public async Task<ActionResult<TestModel>> Current()
+    public async Task<ActionResult<TestModel>> Current(CancellationToken cancellationToken)
     {
-        TestDto testDto = await _testService.RestoreCurrentTestAsync(UserName);
+        TestDto testDto = await _testService.RestoreCurrentTestAsync(UserName, cancellationToken);
 
         if (testDto == null)
             return NotFound();
@@ -25,10 +24,10 @@ public class TestsController(ITestService testService) : BaseController
 
     [Authorize]
     [HttpPost("create")]
-    public async Task<ActionResult<TestModel>> Create([FromQuery] string topicName)
+    public async Task<ActionResult<TestModel>> Create([FromQuery] string topicName, CancellationToken cancellationToken)
     {
         TestDto testDto = await _testService.CreateTestAsync(
-            topicName, UserName, IpAddress);
+            topicName, UserName, IpAddress, cancellationToken);
 
         return Ok(TestModel.FromBL(testDto));
     }

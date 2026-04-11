@@ -2,11 +2,11 @@
 
 public interface IStatisticsRepository
 {
-    Task<RowDto[]> SelectByFilterAsync(int topicId, int scoreThreshold, int pageSize, int pageNumber);
+    Task<RowDto[]> SelectByFilterAsync(int topicId, int scoreThreshold, int pageSize, int pageNumber, CancellationToken cancellationToken = default);
 
-    Task<int> GetTotalCountAsync(int topicId, int scoreThreshold);
+    Task<int> GetTotalCountAsync(int topicId, int scoreThreshold, CancellationToken cancellationToken = default);
 
-    Task<ProfileDto> GetProfileAsync(string userName);
+    Task<ProfileDto> GetProfileAsync(string userName, CancellationToken cancellationToken = default);
 
-    Task HideTestsForUserAsync(string userName, CancellationToken cancellationToken);
+    Task HideTestsForUserAndSaveAsync(string userName, CancellationToken cancellationToken);
 }

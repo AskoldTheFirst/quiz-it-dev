@@ -14,7 +14,7 @@ public interface IUnitOfWork
 
     IComplexQueriesRepository ComplexQueriesRepository { get; }
 
-    IStatisticsRepository StatistcsRepository { get; }
+    IStatisticsRepository StatisticsRepository { get; }
 
     Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
 

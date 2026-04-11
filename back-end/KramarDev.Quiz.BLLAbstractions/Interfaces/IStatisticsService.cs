@@ -2,9 +2,7 @@
 
 public interface IStatisticsService
 {
-    Task<ProfileDto> GetProfileAsync(string userName);
+    Task<ProfileDto> GetProfileAsync(string userName, CancellationToken cancellationToken = default);
 
-    Task<StatisticsPageDto> SelectByFilterAsync(int topicId, int scoreThreshold, int pageSize, int pageNumber);
-
-    Task HideAsync(string userName, CancellationToken cancellationToken);
+    Task<StatisticsPageDto> SelectByFilterAsync(int topicId, int scoreThreshold, int pageSize, int pageNumber, CancellationToken cancellationToken = default);
 }

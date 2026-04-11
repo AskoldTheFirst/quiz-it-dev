@@ -2,5 +2,5 @@
 
 public interface IComplexQueriesRepository
 {
-    Task<QuestionDto> SelectNextQuestionAsync(int testId, string userName);
+    Task<QuestionDto> SelectNextQuestionAsync(int testId, string userName, CancellationToken cancellationToken = default);
 }

@@ -5,7 +5,7 @@ public class QuestionRepository(QuizDbContext dbCtx) : IQuestionRepository
 {
     private readonly QuizDbContext Ctx = dbCtx;
 
-    public async Task<AnswerResultDto[]> GetAnswersAsync(int testId, string userName)
+    public async Task<AnswerResultDto[]> GetAnswersAsync(int testId, string userName, CancellationToken cancellationToken = default)
     {
         return await (from tq in Ctx.TestQuestions
                       join q in Ctx.Questions on tq.QuestionId equals q.Id
@@ -26,6 +26,6 @@ public class QuestionRepository(QuizDbContext dbCtx) : IQuestionRepository
                                    : q.CorrectAnswerNumber == 4 ? q.Answer4
                                    : null,
                           Complexity = q.Difficulty
-                      }).ToArrayAsync();
+                      }).ToArrayAsync(cancellationToken);
     }
 }

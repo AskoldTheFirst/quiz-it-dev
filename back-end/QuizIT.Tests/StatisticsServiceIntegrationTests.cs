@@ -37,7 +37,7 @@ namespace QuizIT.Tests
             using (var ctx = new QuizDbContext(options))
             {
                 var uow = new UnitOfWork(ctx);
-                var svc = new StatisticsService(uow);
+                var svc = new TestService(uow, null);
 
                 await svc.HideAsync("alice", CancellationToken.None);
             }

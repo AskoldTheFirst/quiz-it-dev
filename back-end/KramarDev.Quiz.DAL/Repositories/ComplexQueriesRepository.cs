@@ -5,7 +5,7 @@ public sealed class ComplexQueriesRepository(QuizDbContext dbCtx) : IComplexQuer
     private readonly QuizDbContext Ctx = dbCtx;
 
 
-    public async Task<QuestionDto> SelectNextQuestionAsync(int testId, string userName)
+    public async Task<QuestionDto> SelectNextQuestionAsync(int testId, string userName, CancellationToken cancellationToken = default)
     {
         return await (from tq in Ctx.TestQuestions
                       join q in Ctx.Questions on tq.QuestionId equals q.Id
@@ -23,6 +23,6 @@ public sealed class ComplexQueriesRepository(QuizDbContext dbCtx) : IComplexQuer
                           QuestionId = q.Id,
                           TestId = testId,
                           TestQuestionId = tq.Id
-                      }).FirstOrDefaultAsync();
+                      }).FirstOrDefaultAsync(cancellationToken);
     }
 }

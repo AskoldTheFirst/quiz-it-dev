@@ -5,32 +5,34 @@ namespace KramarDev.Quiz.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class StatisticsController(IStatisticsService statisticsService) : BaseController
+public class StatisticsController(IStatisticsService statisticsService, ITestService testService) : BaseController
 {
     private readonly IStatisticsService _statisticsService = statisticsService;
+    private readonly ITestService _testService = testService;
 
     [HttpGet("page")]
-    public async Task<ActionResult<StatisticsPageModel>> Page([FromQuery] StatisticsRequestModel param)
+    public async Task<ActionResult<StatisticsPageModel>> Page(
+        [FromQuery] StatisticsRequestModel param, CancellationToken cancellationToken)
     {
         return StatisticsPageModel.FromBLL(
             await _statisticsService.SelectByFilterAsync(
-                param.TopicId, param.ScoreThreshold, param.PageSize, param.PageNumber));
+                param.TopicId, param.ScoreThreshold, param.PageSize, param.PageNumber, cancellationToken));
     }
 
     [Authorize]
     [HttpGet("profile")]
-    public async Task<ActionResult<ProfileModel>> Profile()
+    public async Task<ActionResult<ProfileModel>> Profile(CancellationToken cancellationToken)
     {
         return ProfileModel.FromBLL(
-            await _statisticsService.GetProfileAsync(UserName));
+            await _statisticsService.GetProfileAsync(UserName, cancellationToken));
     }
 
     [Authorize]
     [HttpPut("hide")]
     public async Task<ActionResult<ProfileModel>> Hide(CancellationToken cancellationToken)
     {
-        await _statisticsService.HideAsync(UserName, cancellationToken);
+        await _testService.HideAsync(UserName, cancellationToken);
         return ProfileModel.FromBLL(
-            await _statisticsService.GetProfileAsync(UserName));
+            await _statisticsService.GetProfileAsync(UserName, cancellationToken));
     }
 }

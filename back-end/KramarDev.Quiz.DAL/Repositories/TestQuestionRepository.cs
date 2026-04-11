@@ -13,11 +13,11 @@ public sealed class TestQuestionRepository(QuizDbContext dbCtx) : ITestQuestionR
                       select q.Id).ToArrayAsync();
     }
 
-    public async Task UpdateTestQuestionDateAsync(int testId, int testQuestionId)
+    public async Task UpdateTestQuestionDateAsync(int testId, int testQuestionId, CancellationToken cancellationToken = default)
     {
         TestQuestion nextTestQuestion = await (from tq in Ctx.TestQuestions
                                                where tq.TestId == testId && tq.Id == testQuestionId
-                                               select tq).SingleAsync();
+                                               select tq).SingleAsync(cancellationToken);
 
         nextTestQuestion.RequestDate = DateTime.UtcNow;
     }

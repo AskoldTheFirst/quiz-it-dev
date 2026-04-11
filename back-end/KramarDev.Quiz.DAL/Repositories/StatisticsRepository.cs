@@ -9,7 +9,8 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
 {
     private readonly QuizDbContext Ctx = dbCtx;
 
-    public async Task<RowDto[]> SelectByFilterAsync(int topicId, int scoreThreshold, int pageSize, int pageNumber)
+    public async Task<RowDto[]> SelectByFilterAsync(int topicId,
+        int scoreThreshold, int pageSize, int pageNumber, CancellationToken cancellationToken = default)
     {
         return await (from t in Ctx.Tests
                       join te in Ctx.Topics
@@ -32,27 +33,28 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
                       })
                       .Skip(pageSize * pageNumber)
                       .Take(pageSize)
-                      .ToArrayAsync();
+                      .ToArrayAsync(cancellationToken);
     }
 
-    public async Task<int> GetTotalCountAsync(int topicId, int scoreThreshold)
+    public async Task<int> GetTotalCountAsync(int topicId,
+        int scoreThreshold, CancellationToken cancellationToken = default)
     {
         return await (from t in Ctx.Tests
                       where (topicId == 0 || t.TopicId == topicId) &&
                             t.State == TestState.Completed &&
                             !t.IsHidden &&
                             t.FinalScore >= scoreThreshold
-                      select t).CountAsync();
+                      select t).CountAsync(cancellationToken);
     }
 
-    public async Task<ProfileDto> GetProfileAsync(string userName)
+    public async Task<ProfileDto> GetProfileAsync(string userName, CancellationToken cancellationToken = default)
     {
         // Summary
         var completedTests = await (from t in Ctx.Tests
                                     where t.Username == userName &&
                                             t.State == TestState.Completed &&
                                             !t.IsHidden
-                                    select t).ToArrayAsync();
+                                    select t).ToArrayAsync(cancellationToken);
 
         var summary = new ProfileSummaryDto
         {
@@ -74,7 +76,7 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
                                 AttemptCount = grp.Count(),
                                 Best = grp.Max(g => g.FinalScore),
                                 Average = (int)grp.Average(g => g.FinalScore)
-                            }).ToArrayAsync();
+                            }).ToArrayAsync(cancellationToken);
 
         // Attempts
         var attempts = await (from t in Ctx.Tests
@@ -88,7 +90,7 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
                                   AnsweredCount = t.AnsweredCount,
                                   QuestionCount = t.QuestionCount,
                                   Score = t.FinalScore
-                              }).Take(3).ToArrayAsync();
+                              }).Take(3).ToArrayAsync(cancellationToken);
 
         return new ProfileDto
         {
@@ -98,7 +100,7 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
         };
     }
 
-    public async Task HideTestsForUserAsync(string userName, CancellationToken cancellationToken)
+    public async Task HideTestsForUserAndSaveAsync(string userName, CancellationToken cancellationToken)
     {
         await Ctx.Tests
             .Where(t => !t.IsHidden && t.Username == userName)
