@@ -266,7 +266,7 @@ export default function Leaderboard() {
             count={totalCount}
             rowsPerPage={pageSize}
             page={pageNumber - 1}
-            onPageChange={(event, newPage) => dispatch(setPageNumber(newPage))}
+            onPageChange={(_, newPage) => dispatch(setPageNumber(newPage + 1))}
             onRowsPerPageChange={(event) => {
               dispatch(setPageSize(Number(event.target.value)));
             }}
