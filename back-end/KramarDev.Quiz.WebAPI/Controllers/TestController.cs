@@ -17,7 +17,7 @@ public class TestsController(ITestService testService) : BaseController
         TestDto testDto = await _testService.RestoreCurrentTestAsync(UserName, cancellationToken);
 
         if (testDto == null)
-            return NotFound();
+            return Ok();
 
         return Ok(TestModel.FromBL(testDto));
     }
@@ -44,7 +44,7 @@ public class TestsController(ITestService testService) : BaseController
 
     [Authorize]
     [HttpPost("cancel")]
-    public async Task<ActionResult> Cancel(int testId)
+    public async Task<ActionResult> Cancel([FromQuery] int testId)
     {
         await _testService.CancelTestAsync(UserName, testId);
         return Ok();
@@ -52,7 +52,7 @@ public class TestsController(ITestService testService) : BaseController
 
     [Authorize]
     [HttpPost("complete")]
-    public async Task<ActionResult<TestResultModel>> Complete(int testId)
+    public async Task<ActionResult<TestResultModel>> Complete([FromQuery] int testId)
     {
         TestResultDto resultDto = await _testService.CompleteAsync(testId, UserName);
         return Ok(TestResultModel.FromBLL(resultDto));

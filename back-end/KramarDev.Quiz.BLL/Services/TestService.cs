@@ -3,13 +3,14 @@ using BL = KramarDev.Quiz.BLLAbstractions.Dto;
 
 namespace KramarDev.Quiz.BLL.Services;
 
-public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITestService
+public sealed class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITestService
 {
     private readonly IUnitOfWork _uow = uow;
     private readonly IAppCacheService _cache = cacheService;
 
-
-    public async Task<BL.TestDto> CreateTestAsync(string topicName, string userName, string ipAddress, CancellationToken cancellationToken = default)
+    // PUBLIC API
+    public async Task<BL.TestDto> CreateTestAsync(string topicName, string userName,
+        string ipAddress, CancellationToken cancellationToken = default)
     {
         BL.TopicDto topic = await _cache.GetTopicByNameAsync(topicName);
         NewTestData testData = await GenerateRandomQuestionsForTestAsync(topic);
@@ -39,11 +40,11 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
     }
 
     public async Task<AnswerResponseDto> AnswerAndNextAsync(int testId,
-        int questionId, byte answerNumber, string userName)
+        int questionId, byte answerNumber, string userName, CancellationToken cancellationToken = default)
     {
-        await AnswerAsync(testId, questionId, answerNumber, userName);
+        await SubmitAnswerAsync(testId, questionId, answerNumber, userName, cancellationToken);
 
-        QuestionDto nextQuestion = await GetNextQuestionAsync(testId, userName, CancellationToken.None);
+        QuestionDto nextQuestion = await GetNextQuestionAsync(testId, userName, cancellationToken);
 
         // If there is a next question, return it immediately
         if (nextQuestion != null)
@@ -55,32 +56,10 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
             };
         }
 
-        // All questions answered - build final test result
-        AnswerDto[] answers = DtoMapper.FromDAL(
-            await _uow.QuestionRepository.GetAnswersAsync(testId, userName, CancellationToken.None));
-
-        CalculateFinalScore(answers, out int finalScore, out int finalWeightedScore,
-            out int totalPoints, out int earnedPoints, out int answeredCount);
-
-        DAL.TopicDto topic = await _uow.TopicRepository.GetTopicByTestIdAsync(testId, CancellationToken.None);
-
-        var testResult = new TestResultDto
-        {
-            Answers = answers,
-            TotalPoints = totalPoints,
-            FinalScore = finalScore,
-            EarnedPoints = earnedPoints,
-            AnsweredCount = answeredCount,
-            TopicName = topic.Name
-        };
-
-        await _uow.TestRepository.CompleteTestAndSaveAsync(
-            userName, testId, finalScore, finalWeightedScore, answeredCount, earnedPoints, CancellationToken.None);
-
         return new AnswerResponseDto
         {
             NextQuestion = null,
-            TestResult = testResult
+            TestResult = await BuildAndCompleteTestAsync(testId, userName, cancellationToken),
         };
     }
 
@@ -92,14 +71,18 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
             return null;
         }
 
-        DAL.CurrentTestStateDto dalTestDto = await _uow.TestRepository.GetCurrentTestStateAsync(testId.Value, cancellationToken);
+        DAL.CurrentTestStateDto dalTestDto =
+            await _uow.TestRepository.GetCurrentTestStateAsync(testId.Value, cancellationToken);
+
         if (dalTestDto == null)
         {
             return null;
         }
 
         BL.TopicDto topic = await _cache.GetTopicByIdAsync(dalTestDto.TopicId);
-        int secondsLeft = topic.DurationInMinutes * 60 - dalTestDto.SpentTimeInSeconds;
+
+        DateTime now = DateTime.UtcNow;
+        int secondsLeft = topic.DurationInMinutes * 60 - (int)(now - dalTestDto.StartDate).TotalSeconds;
 
         BL.TestDto testDto = new()
         {
@@ -114,20 +97,81 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
         return testDto;
     }
 
-    public Task CancelTestAsync(string userName, int testId)
+    public Task CancelTestAsync(string userName, int testId, CancellationToken cancellationToken = default)
     {
-        return _uow.TestRepository.CancelTestAndSaveAsync(userName, testId);
+        return _uow.TestRepository.CancelTestAndSaveAsync(userName, testId, cancellationToken);
     }
 
-    public async Task<TestResultDto> CompleteAsync(int testId, string userName)
+    public Task<TestResultDto> CompleteAsync(int testId,
+        string userName, CancellationToken cancellationToken = default)
+    {
+        return BuildAndCompleteTestAsync(testId, userName, cancellationToken);
+    }
+
+    public Task HideAsync(string userName, CancellationToken cancellationToken = default)
+    {
+        return _uow.StatisticsRepository.HideTestsForUserAndSaveAsync(userName, cancellationToken);
+    }
+
+    // PRIVATE HELPERS
+    private async Task<BL.QuestionDto> GetNextQuestionAsync(
+        int testId, string userName, CancellationToken cancellationToken = default)
+    {
+        DAL.QuestionDto nextQuestionDAL =
+            await _uow.QuestionRepository.SelectNextQuestionAsync(testId, userName, cancellationToken);
+
+        if (nextQuestionDAL != null)
+        {
+            await _uow.QuestionRepository.UpdateTestQuestionDateAndSaveAsync(testId,
+                nextQuestionDAL.TestQuestionId, cancellationToken);
+
+            return DtoMapper.FromDAL(nextQuestionDAL);
+        }
+
+        return null;
+    }
+
+    private async Task SubmitAnswerAsync(int testId, int questionId,
+        byte answerNumber, string username, CancellationToken cancellationToken = default)
+    {
+        bool canAnswer = await _uow.TestRepository.CanAnswerQuestionAsync(
+            testId, questionId, username, cancellationToken);
+        if (!canAnswer)
+        {
+            throw new InvalidOperationException(
+                $"User {username} cannot answer question {questionId} for test {testId}");
+        }
+
+        DAL.QuestionInfoDto questionInfo =
+            await _uow.TestRepository.GetQuestionInfoAsync(questionId, cancellationToken);
+
+        DAL.QuestionAnswerDto answer = new()
+        {
+            TestId = testId,
+            QuestionId = questionId,
+            AnswerNumber = answerNumber,
+            AnswerPoints = (byte)(answerNumber == questionInfo.CorrectAnswerNumber ? 1 : 0),
+            AnswerDate = DateTime.UtcNow
+        };
+
+        await _uow.TestRepository.AnswerAndSaveAsync(answer, cancellationToken);
+    }
+
+    private async Task<TestResultDto> BuildAndCompleteTestAsync(
+        int testId, string userName, CancellationToken cancellationToken)
     {
         AnswerDto[] answers = DtoMapper.FromDAL(
-                await _uow.QuestionRepository.GetAnswersAsync(testId, userName));
+            await _uow.QuestionRepository.GetAnswersAsync(testId, userName, cancellationToken));
 
-        CalculateFinalScore(answers, out int finalScore, out int finalWeightedScore,
-            out int totalPoints, out int earnedPoints, out int answeredCount);
+        CalculateFinalScore(
+            answers,
+            out int finalScore,
+            out int finalWeightedScore,
+            out int totalPoints,
+            out int earnedPoints,
+            out int answeredCount);
 
-        DAL.TopicDto topic = await _uow.TopicRepository.GetTopicByTestIdAsync(testId);
+        DAL.TopicDto topic = await _uow.TopicRepository.GetTopicByTestIdAsync(testId, cancellationToken);
 
         var dto = new TestResultDto
         {
@@ -139,63 +183,10 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
             TopicName = topic.Name
         };
 
-        await _uow.TestRepository.CompleteTestAndSaveAsync(userName, testId,
-            finalScore, finalWeightedScore, answeredCount, earnedPoints);
+        await _uow.TestRepository.CompleteTestAndSaveAsync(userName, testId, finalScore, finalWeightedScore,
+            answeredCount, earnedPoints, cancellationToken);
 
         return dto;
-    }
-
-    public Task HideAsync(string userName, CancellationToken cancellationToken = default)
-    {
-        return _uow.StatisticsRepository.HideTestsForUserAndSaveAsync(userName, cancellationToken);
-    }
-
-
-    #region [Private methods]
-
-    private async Task<BL.QuestionDto> GetNextQuestionAsync(int testId, string userName, CancellationToken cancellationToken = default)
-    {
-        DAL.QuestionDto nextQuestionDAL =
-            await _uow.ComplexQueriesRepository.SelectNextQuestionAsync(testId, userName, cancellationToken);
-
-        if (nextQuestionDAL != null)
-        {
-            Task taskUpdate = _uow.TestQuestionRepository.UpdateTestQuestionDateAsync(
-                testId, nextQuestionDAL.TestQuestionId, cancellationToken);
-
-            BL.QuestionDto nextQuestion = DtoMapper.FromDAL(nextQuestionDAL);
-
-            await taskUpdate;
-
-            await _uow.SaveAsync();
-
-            return nextQuestion;
-        }
-
-        return null;
-    }
-
-    private async Task AnswerAsync(int testId, int questionId, byte answerNumber, string username)
-    {
-        bool canAnswer = await _uow.TestRepository.CanAnswerQuestionAsync(testId, questionId, username, CancellationToken.None);
-        if (!canAnswer)
-        {
-            throw new InvalidOperationException(
-                $"User {username} cannot answer question {questionId} for test {testId}");
-        }
-
-        DAL.QuestionInfoDto questionInfo = await _uow.TestRepository.GetQuestionInfoAsync(questionId, CancellationToken.None);
-
-        DAL.QuestionAnswerDto answer = new()
-        {
-            TestId = testId,
-            QuestionId = questionId,
-            AnswerNumber = answerNumber,
-            AnswerPoints = (byte)(answerNumber == questionInfo.CorrectAnswerNumber ? 1 : 0),
-            AnswerDate = DateTime.UtcNow
-        };
-
-        await _uow.TestRepository.AnswerAndSaveAsync(answer, CancellationToken.None);
     }
 
     private async Task<NewTestData> GenerateRandomQuestionsForTestAsync(BL.TopicDto topic)
@@ -265,7 +256,8 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
         return generatedIds;
     }
 
-    private static void CalculateFinalScore(AnswerDto[] answers, out int finalScore, out int finalWeightedScore, out int totalPoints, out int earnedPoints, out int answeredCount)
+    private static void CalculateFinalScore(AnswerDto[] answers, out int finalScore,
+        out int finalWeightedScore, out int totalPoints, out int earnedPoints, out int answeredCount)
     {
         totalPoints = 0;
         earnedPoints = 0;
@@ -290,6 +282,4 @@ public class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITest
     {
         return (int)Math.Round((earned / (double)total) * 100, MidpointRounding.AwayFromZero);
     }
-
-    #endregion
 }

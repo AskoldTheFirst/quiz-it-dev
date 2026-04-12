@@ -133,7 +133,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                 Answer4 = data.Question.Answer4
             },
             TotalQuestions = tqArray.Length,
-            SpentTimeInSeconds = (int)(DateTime.UtcNow - data.StartDate).TotalSeconds
+            StartDate = data.StartDate
         };
 
         return dto;

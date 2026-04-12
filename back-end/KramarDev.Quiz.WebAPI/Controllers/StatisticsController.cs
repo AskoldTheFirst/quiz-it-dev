@@ -15,7 +15,7 @@ public class StatisticsController(IStatisticsService statisticsService, ITestSer
         [FromQuery] StatisticsRequestModel param, CancellationToken cancellationToken)
     {
         return StatisticsPageModel.FromBLL(
-            await _statisticsService.SelectByFilterAsync(
+            await _statisticsService.GetStatisticsPageAsync(
                 param.TopicId, param.ScoreThreshold, param.PageSize, param.PageNumber, cancellationToken));
     }
 

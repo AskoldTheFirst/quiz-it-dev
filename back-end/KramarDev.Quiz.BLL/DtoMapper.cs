@@ -44,7 +44,7 @@ static class DtoMapper
     {
         QuestionDto question = new QuestionDto
         {
-            Number = dto.Number,
+            Number = dto.Number + 1,
             TestId = dto.TestId,
             QuestionId = dto.QuestionId,
             TestQuestionId = dto.TestQuestionId,
@@ -113,6 +113,4 @@ static class DtoMapper
             }).ToArray()
         };
     }
-
-
 }

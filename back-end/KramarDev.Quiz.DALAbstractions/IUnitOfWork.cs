@@ -2,17 +2,13 @@
 
 namespace KramarDev.Quiz.DALAbstractions;
 
-public interface IUnitOfWork : IAsyncDisposable
+public interface IUnitOfWork : IDisposable, IAsyncDisposable
 {
     ITestRepository TestRepository { get; }
 
     IQuestionRepository QuestionRepository { get; }
 
     ITopicRepository TopicRepository { get; }
-
-    ITestQuestionRepository TestQuestionRepository { get; }
-
-    IComplexQueriesRepository ComplexQueriesRepository { get; }
 
     IStatisticsRepository StatisticsRepository { get; }
 

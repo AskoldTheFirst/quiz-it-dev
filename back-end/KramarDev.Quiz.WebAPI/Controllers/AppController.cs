@@ -4,15 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KramarDev.Quiz.WebAPI.Controllers;
 
-public class AppController(
-    IAppCacheService cacheService,
-    UserManager<User> userManager,
-    TokenService tokenService) : BaseController
+public sealed class AppController(IAppCacheService cacheService,
+    UserManager<User> userManager, TokenService tokenService) : BaseController
 {
     readonly IAppCacheService _cacheService = cacheService;
     readonly UserManager<User> _userManager = userManager;
     readonly TokenService _tokenService = tokenService;
-
 
     [HttpGet("init-state")]
     public async Task<ActionResult<AppStateModel>> GetInitialStateAsync()

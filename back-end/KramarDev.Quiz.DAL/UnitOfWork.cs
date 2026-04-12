@@ -22,10 +22,6 @@ public sealed class UnitOfWork : IUnitOfWork
 
     public ITopicRepository TopicRepository => new TopicRepository(_ctx);
 
-    public ITestQuestionRepository TestQuestionRepository => new TestQuestionRepository(_ctx);
-
-    public IComplexQueriesRepository ComplexQueriesRepository => new ComplexQueriesRepository(_ctx);
-
     public IStatisticsRepository StatisticsRepository => new StatisticsRepository(_ctx);
 
     public async Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
@@ -52,6 +48,11 @@ public sealed class UnitOfWork : IUnitOfWork
     {
         await _ctx.Database.MigrateAsync();
         DbInitializer.Initialize(_ctx);
+    }
+
+    public void Dispose()
+    {
+        _ctx.Dispose();
     }
 
     public ValueTask DisposeAsync()

@@ -1,7 +1,4 @@
 ﻿using KramarDev.Quiz.DALAbstractions.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading;
 
 namespace KramarDev.Quiz.DAL.Repositories;
 

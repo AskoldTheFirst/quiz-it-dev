@@ -9,7 +9,7 @@ public sealed record CurrentTestStateDto
 
     public int TotalQuestions { get; init; }
 
-    public int SpentTimeInSeconds { get; init; }
+    public DateTime StartDate { get; init; }
 
     public QuestionDto CurrentQuestion { get; init; }
 }

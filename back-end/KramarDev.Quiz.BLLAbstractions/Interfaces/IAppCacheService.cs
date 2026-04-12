@@ -2,13 +2,15 @@
 
 public interface IAppCacheService
 {
-    Task<int[]> GetEasyQuestionIdsAsync(string topicName);
+    Task InitializeCacheAsync();
 
-    Task<int[]> GetMiddleQuestionIdsAsync(string topicName);
+    ValueTask<int[]> GetEasyQuestionIdsAsync(string topicName);
 
-    Task<int[]> GetHardQuestionIdsAsync(string topicName);
+    ValueTask<int[]> GetMiddleQuestionIdsAsync(string topicName);
 
-    Task<TopicDto[]> GetTopicsAsync();
+    ValueTask<int[]> GetHardQuestionIdsAsync(string topicName);
+
+    ValueTask<TopicDto[]> GetTopicsAsync();
 
     Task<TopicDto> GetTopicByNameAsync(string name);
 

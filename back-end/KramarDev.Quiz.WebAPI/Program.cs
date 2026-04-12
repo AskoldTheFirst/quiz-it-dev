@@ -70,9 +70,14 @@ public class Program
         app.UseAuthorization();
         app.MapControllers();
 
-        using var scope = app.Services.CreateScope();
-        var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-        await uow.UpdateDbAsync();
+        using (var scope = app.Services.CreateScope())
+        {
+            var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+            await uow.UpdateDbAsync();
+
+            var cacheService = scope.ServiceProvider.GetRequiredService<IAppCacheService>();
+            await cacheService.InitializeCacheAsync();
+        }
 
         app.Run();
     }
