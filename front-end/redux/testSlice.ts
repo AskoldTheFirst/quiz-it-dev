@@ -90,7 +90,9 @@ export const testSlice = createSlice({
 
         // current:
         builder.addCase(current.fulfilled, (state, action) => {
-            state.test = mapCurrentTest(action.payload);
+            if (action.payload) {
+                state.test = mapCurrentTest(action.payload);
+            }
             state.result = null;
         });
         builder.addCase(current.rejected, (_state, action) => {
