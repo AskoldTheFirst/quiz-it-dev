@@ -1,12 +1,9 @@
-// file: QuizIT.Tests/TestDataSeeder.cs
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using KramarDev.Quiz.DAL.Database;
 using KramarDev.Quiz.DAL.Database.Tables;
 using KramarDev.Quiz.DALAbstractions.Enum;
 using Microsoft.EntityFrameworkCore;
+
+namespace QuizIT.Tests;
 
 public static class TestDataSeeder
 {
@@ -16,18 +13,32 @@ public static class TestDataSeeder
         if (await ctx.Topics.AnyAsync(cancellationToken))
             return;
 
-        // Topic
+        // Topic 1
         var topic = new Topic
         {
             Name = "Integration Topic",
             Description = "Auto-seeded topic for tests",
             ThemeColor = "#abcdef",
-            DurationInMinutes = 60
+            DurationInMinutes = 60,
+            QuestionCount = 3,
+            IsActive = true,
         };
-        ctx.Topics.Add(topic);
+
+        // Topic 2 - for cache testing with multiple questions per difficulty
+        var topicCSharp = new Topic
+        {
+            Name = "CSharp",
+            Description = "C# Programming",
+            ThemeColor = "#512BD4",
+            DurationInMinutes = 30,
+            QuestionCount = 6,
+            IsActive = true,
+        };
+
+        ctx.Topics.AddRange(topic, topicCSharp);
         await ctx.SaveChangesAsync(cancellationToken);
 
-        // Questions for the topic
+        // Questions for the first topic
         var questions = new[]
         {
             new Question
@@ -38,7 +49,8 @@ public static class TestDataSeeder
                 Answer2 = "2",
                 Answer3 = "3",
                 Answer4 = "4",
-                CorrectAnswerNumber = 2
+                CorrectAnswerNumber = 2,
+                Difficulty = (byte)Difficulty.Easy,
             },
             new Question
             {
@@ -48,7 +60,8 @@ public static class TestDataSeeder
                 Answer2 = "Green",
                 Answer3 = "Red",
                 Answer4 = "Yellow",
-                CorrectAnswerNumber = 1
+                CorrectAnswerNumber = 1,
+                Difficulty = (byte)Difficulty.Medium,
             },
             new Question
             {
@@ -58,10 +71,24 @@ public static class TestDataSeeder
                 Answer2 = "False",
                 Answer3 = "Maybe",
                 Answer4 = "Sometimes",
-                CorrectAnswerNumber = 1
+                CorrectAnswerNumber = 1,
+                Difficulty = (byte)Difficulty.Hard,
             }
         };
+
+        // Questions for CSharp topic (2 per difficulty level for cache testing)
+        var csharpQuestions = new[]
+        {
+            new Question { TopicId = topicCSharp.Id, Text = "Easy Q1", Answer1 = "A", Answer2 = "B", Answer3 = "C", Answer4 = "D", CorrectAnswerNumber = 1, Difficulty = (byte)Difficulty.Easy },
+            new Question { TopicId = topicCSharp.Id, Text = "Easy Q2", Answer1 = "A", Answer2 = "B", Answer3 = "C", Answer4 = "D", CorrectAnswerNumber = 1, Difficulty = (byte)Difficulty.Easy },
+            new Question { TopicId = topicCSharp.Id, Text = "Medium Q1", Answer1 = "A", Answer2 = "B", Answer3 = "C", Answer4 = "D", CorrectAnswerNumber = 1, Difficulty = (byte)Difficulty.Medium },
+            new Question { TopicId = topicCSharp.Id, Text = "Medium Q2", Answer1 = "A", Answer2 = "B", Answer3 = "C", Answer4 = "D", CorrectAnswerNumber = 1, Difficulty = (byte)Difficulty.Medium },
+            new Question { TopicId = topicCSharp.Id, Text = "Hard Q1", Answer1 = "A", Answer2 = "B", Answer3 = "C", Answer4 = "D", CorrectAnswerNumber = 1, Difficulty = (byte)Difficulty.Hard },
+            new Question { TopicId = topicCSharp.Id, Text = "Hard Q2", Answer1 = "A", Answer2 = "B", Answer3 = "C", Answer4 = "D", CorrectAnswerNumber = 1, Difficulty = (byte)Difficulty.Hard },
+        };
+
         ctx.Questions.AddRange(questions);
+        ctx.Questions.AddRange(csharpQuestions);
         await ctx.SaveChangesAsync(cancellationToken);
 
         // Tests (completed) for two users

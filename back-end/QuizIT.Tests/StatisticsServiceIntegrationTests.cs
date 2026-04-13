@@ -1,57 +1,49 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
 using KramarDev.Quiz.DAL.Database;
-using KramarDev.Quiz.DAL.Database.Tables;
 using KramarDev.Quiz.DAL;
 using KramarDev.Quiz.BLL.Services;
-using KramarDev.Quiz.DALAbstractions.Enum;
 
-namespace QuizIT.Tests
+namespace QuizIT.Tests;
+
+public class StatisticsServiceIntegrationTests
 {
-    public class StatisticsServiceIntegrationTests
+    [Fact]
+    public async Task HideAsync_MarksOnlyUserTestsAsHidden_InSqliteInMemory()
     {
-        [Fact]
-        public async Task HideAsync_MarksOnlyUserTestsAsHidden_InSqliteInMemory()
+        using var connection = new SqliteConnection("Data Source=:memory:");
+        connection.Open();
+
+        var options = new DbContextOptionsBuilder<QuizDbContext>()
+            .UseSqlite(connection)
+            .Options;
+
+        // create schema
+        using (var ctx = new QuizDbContext(options))
         {
-            using var connection = new SqliteConnection("Data Source=:memory:");
-            connection.Open();
+            ctx.Database.EnsureCreated();
+            await TestDataSeeder.SeedTestDataAsync(ctx);
+        }
 
-            var options = new DbContextOptionsBuilder<QuizDbContext>()
-                .UseSqlite(connection)
-                .Options;
+        // exercise: call BLL (UnitOfWork -> StatisticsRepository)
+        using (var ctx = new QuizDbContext(options))
+        {
+            var uow = new UnitOfWork(ctx);
+            var svc = new TestService(uow, null);
 
-            // create schema
-            using (var ctx = new QuizDbContext(options))
-            {
-                ctx.Database.EnsureCreated();
-                await TestDataSeeder.SeedTestDataAsync(ctx);
-            }
+            await svc.HideAsync("alice", CancellationToken.None);
+        }
 
-            // exercise: call BLL (UnitOfWork -> StatisticsRepository)
-            using (var ctx = new QuizDbContext(options))
-            {
-                var uow = new UnitOfWork(ctx);
-                var svc = new TestService(uow, null);
+        // assert: only alice's tests were hidden
+        using (var ctx = new QuizDbContext(options))
+        {
+            var aliceTests = await ctx.Tests.Where(t => t.Username == "alice").ToArrayAsync();
+            aliceTests.Should().NotBeEmpty();
+            aliceTests.Should().OnlyContain(t => t.IsHidden);
 
-                await svc.HideAsync("alice", CancellationToken.None);
-            }
-
-            // assert: only alice's tests were hidden
-            using (var ctx = new QuizDbContext(options))
-            {
-                var aliceTests = await ctx.Tests.Where(t => t.Username == "alice").ToArrayAsync();
-                aliceTests.Should().NotBeEmpty();
-                aliceTests.Should().OnlyContain(t => t.IsHidden);
-
-                var bobTest = await ctx.Tests.FirstAsync(t => t.Username == "bob");
-                bobTest.IsHidden.Should().BeFalse();
-            }
+            var bobTest = await ctx.Tests.FirstAsync(t => t.Username == "bob");
+            bobTest.IsHidden.Should().BeFalse();
         }
     }
 }

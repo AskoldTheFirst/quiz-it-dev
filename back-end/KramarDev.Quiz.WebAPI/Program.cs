@@ -59,7 +59,8 @@ public class Program
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<ITestService, TestService>();
         builder.Services.AddScoped<IStatisticsService, StatisticsService>();
-        builder.Services.AddSingleton<IAppCacheService, AppCacheService>();
+        builder.Services.AddSingleton<IStatisticsCacheService, StatisticsCacheService>();
+        builder.Services.AddSingleton<IApplicationDataStore, ApplicationDataStore>();
         builder.Services.AddMemoryCache();
 
         var app = builder.Build();
@@ -75,8 +76,11 @@ public class Program
             var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             await uow.UpdateDbAsync();
 
-            var cacheService = scope.ServiceProvider.GetRequiredService<IAppCacheService>();
-            await cacheService.InitializeCacheAsync();
+            //var cacheService = scope.ServiceProvider.GetRequiredService<IAppCacheService>();
+            //await cacheService.InitializeCacheAsync();
+
+            var dataStore = scope.ServiceProvider.GetRequiredService<IApplicationDataStore>();
+            await dataStore.InitializeAsync();
         }
 
         app.Run();

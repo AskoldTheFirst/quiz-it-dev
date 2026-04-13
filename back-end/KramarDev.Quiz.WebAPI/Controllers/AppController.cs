@@ -1,13 +1,14 @@
-﻿using KramarDev.Quiz.DAL.Database.Tables;
+﻿using KramarDev.Quiz.BLL.Services;
+using KramarDev.Quiz.DAL.Database.Tables;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KramarDev.Quiz.WebAPI.Controllers;
 
-public sealed class AppController(IAppCacheService cacheService,
+public sealed class AppController(IApplicationDataStore dataService,
     UserManager<User> userManager, TokenService tokenService) : BaseController
 {
-    readonly IAppCacheService _cacheService = cacheService;
+    readonly IApplicationDataStore _dataService = dataService;
     readonly UserManager<User> _userManager = userManager;
     readonly TokenService _tokenService = tokenService;
 
@@ -16,7 +17,7 @@ public sealed class AppController(IAppCacheService cacheService,
     {
         AppStateModel model = new();
 
-        TopicDto[] topics = await _cacheService.GetTopicsAsync();
+        TopicDto[] topics = _dataService.GetTopics();
         model.Topics = DtoMapper.FromBLL(topics);
 
         if (UserName != null)

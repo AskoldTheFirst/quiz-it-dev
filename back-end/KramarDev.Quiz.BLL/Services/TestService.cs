@@ -3,16 +3,16 @@ using BL = KramarDev.Quiz.BLLAbstractions.Dto;
 
 namespace KramarDev.Quiz.BLL.Services;
 
-public sealed class TestService(IUnitOfWork uow, IAppCacheService cacheService) : ITestService
+public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataService) : ITestService
 {
     private readonly IUnitOfWork _uow = uow;
-    private readonly IAppCacheService _cache = cacheService;
+    private readonly IApplicationDataStore _dataService = dataService;
 
     // PUBLIC API
     public async Task<BL.TestDto> CreateTestAsync(string topicName, string userName,
         string ipAddress, CancellationToken cancellationToken = default)
     {
-        BL.TopicDto topic = await _cache.GetTopicByNameAsync(topicName);
+        BL.TopicDto topic = _dataService.GetTopicByName(topicName);
         NewTestData testData = await GenerateRandomQuestionsForTestAsync(topic);
 
         DAL.NewTestDto newTest = new()
@@ -79,7 +79,7 @@ public sealed class TestService(IUnitOfWork uow, IAppCacheService cacheService) 
             return null;
         }
 
-        BL.TopicDto topic = await _cache.GetTopicByIdAsync(dalTestDto.TopicId);
+        BL.TopicDto topic = _dataService.GetTopicById(dalTestDto.TopicId);
 
         DateTime now = DateTime.UtcNow;
         int secondsLeft = topic.DurationInMinutes * 60 - (int)(now - dalTestDto.StartDate).TotalSeconds;
@@ -203,9 +203,9 @@ public sealed class TestService(IUnitOfWork uow, IAppCacheService cacheService) 
 
     private async Task<(int[], int)> GenerateTestQuestions(string topicName, int questionAmount)
     {
-        int[] easyIds = await _cache.GetEasyQuestionIdsAsync(topicName);
-        int[] middleIds = await _cache.GetMiddleQuestionIdsAsync(topicName);
-        int[] hardIds = await _cache.GetHardQuestionIdsAsync(topicName);
+        int[] easyIds = _dataService.GetEasyQuestionIds(topicName);
+        int[] middleIds = _dataService.GetMediumQuestionIds(topicName);
+        int[] hardIds = _dataService.GetHardQuestionIds(topicName);
 
         int easyAmount = questionAmount / 2;
         int middleAmount = questionAmount / 3;

@@ -14,9 +14,10 @@ public class StatisticsController(IStatisticsService statisticsService, ITestSer
     public async Task<ActionResult<StatisticsPageModel>> Page(
         [FromQuery] StatisticsRequestModel param, CancellationToken cancellationToken)
     {
+        StatisticsRequestDto bizParam = StatisticsRequestModel.ToBLL(param);
+
         return StatisticsPageModel.FromBLL(
-            await _statisticsService.GetStatisticsPageAsync(
-                param.TopicId, param.ScoreThreshold, param.PageSize, param.PageNumber, cancellationToken));
+            await _statisticsService.GetStatisticsPageAsync(bizParam, cancellationToken));
     }
 
     [Authorize]

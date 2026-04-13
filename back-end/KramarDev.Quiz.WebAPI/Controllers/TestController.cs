@@ -17,7 +17,7 @@ public class TestsController(ITestService testService) : BaseController
         TestDto testDto = await _testService.RestoreCurrentTestAsync(UserName, cancellationToken);
 
         if (testDto == null)
-            return Ok();
+            return Ok(null);
 
         return Ok(TestModel.FromBL(testDto));
     }

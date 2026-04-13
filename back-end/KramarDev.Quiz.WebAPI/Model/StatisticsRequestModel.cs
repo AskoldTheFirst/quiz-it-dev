@@ -9,4 +9,9 @@ public sealed class StatisticsRequestModel
     public int PageSize { get; set; }
 
     public int PageNumber { get; set; }
+
+    public static StatisticsRequestDto ToBLL(StatisticsRequestModel model)
+    {
+        return new StatisticsRequestDto(model.TopicId, model.ScoreThreshold, model.PageSize, model.PageNumber);
+    }
 }
