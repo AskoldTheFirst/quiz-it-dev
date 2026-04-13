@@ -122,7 +122,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
             TopicId = data.TopicId,
             CurrentQuestion = new QuestionDto
             {
-                Number = tqArray.Count(tq => tq.AnswerDate != null) + 1,
+                Number = tqArray.Count(tq => tq.AnswerDate != null),
                 TestId = testId,
                 TestQuestionId = data.tqId,
                 QuestionId = data.Question.Id,
