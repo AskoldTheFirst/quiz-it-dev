@@ -1,8 +1,8 @@
 "use client";
 
-import Leaderboard from "@/components/quiz/Leaderboard";
+import Statistics from "@/components/quiz/Statistics";
 
 
 export default function TopPage() {
-  return <Leaderboard />;
+  return <Statistics />;
 }

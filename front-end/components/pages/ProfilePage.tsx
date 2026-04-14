@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Statistics from "@/components/quiz/Statistics";
+import PersonalStatistics from "@/components/quiz/PersonalStatistics";
 import { useAppDispatch } from "@/redux/store";
 import { getProfile } from "@/redux/statSlice";
 
@@ -12,5 +12,5 @@ export default function ProfilePage() {
     dispatch(getProfile());
   }, [dispatch]);
 
-  return <Statistics />;
+  return <PersonalStatistics />;
 }

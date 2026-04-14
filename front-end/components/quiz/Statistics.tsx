@@ -1,298 +1,298 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Typography,
   Card,
   CardContent,
   Chip,
-  Button,
-  Divider,
-  CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Avatar,
+  TablePagination,
 } from "@mui/material";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
-import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import QuizIcon from "@mui/icons-material/Quiz";
-import PersonIcon from "@mui/icons-material/Person";
-import EmailIcon from "@mui/icons-material/Email";
-import { RootState, useAppDispatch } from "@/redux/store";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { hide } from "@/redux/statSlice";
+import { RootState, useAppDispatch } from "@/redux/store";
+import { getPage, setPageNumber, setPageSize, setScore, setTopic } from "@/redux/statSlice";
 
+const getRankColor = (rank: number) => {
+  if (rank === 1) return "#fbbf24";
+  if (rank === 2) return "#94a3b8";
+  if (rank === 3) return "#cd7f32";
+  return "#64748b";
+};
 
-export default function Statistics() {
-
-  const user = useSelector((state: RootState) => state.appState.user);
-  const profile = useSelector((state: RootState) => state.statState.profile);
-  const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-
-  if (!profile) {
-    return <CircularProgress />;
-  }
-
-  const totalAttempts = profile.profileSummary.totalAttemptCount;
-  const avgPercentage = profile.profileSummary.averageScore;
-  const bestScore = profile.profileSummary.bestScore;
-  const totalQuestions = profile.profileSummary.answerCount;
-  const topicStats = profile.topics;
-  const attempts = profile.attempts;
-
-  const getGradeColor = (pct: number) => {
-    if (pct >= 80) return "#10b981";
-    if (pct >= 60) return "#f59e0b";
-    return "#ef4444";
-  };
-
-  const getGradeLabel = (pct: number) => {
-    if (pct >= 90) return "A+";
-    if (pct >= 80) return "A";
-    if (pct >= 70) return "B";
-    if (pct >= 60) return "C";
-    if (pct >= 50) return "D";
-    return "F";
-  };
-
-  if (totalAttempts === 0) {
+const getRankIcon = (rank: number) => {
+  if (rank <= 3) {
     return (
-      <Box sx={{ textAlign: "center", py: 8 }}>
-        <QuizIcon sx={{ fontSize: 64, color: "#334155", mb: 2 }} />
-        <Typography variant="h5" sx={{ color: "#f1f5f9", mb: 1, fontWeight: 700 }}>
-          No Quiz Attempts Yet
-        </Typography>
-        <Typography variant="body1" sx={{ color: "#94a3b8", mb: 3, maxWidth: 400, mx: "auto" }}>
-          Complete a quiz to start tracking your progress. Your scores,
-          percentages, and history will appear here.
-        </Typography>
-        <Button
-          variant="contained"
-          onClick={() => navigate("/")}
-          sx={{
-            backgroundColor: "#10b981",
-            color: "#fff",
-            fontWeight: 700,
-            "&:hover": { backgroundColor: "#059669" },
-          }}
-        >
-          Take a Quiz
-        </Button>
-      </Box>
+      <EmojiEventsIcon sx={{ fontSize: 18, color: getRankColor(rank) }} />
     );
   }
+  return null;
+};
+
+const getGradeColor = (pct: number) => {
+  if (pct >= 80) return "#10b981";
+  if (pct >= 60) return "#f59e0b";
+  return "#ef4444";
+};
+
+export default function Statistics() {
+  const dispatch = useAppDispatch();
+
+  const { rows, topicId, scoreThreshold, pageSize, pageNumber, totalCount } = useSelector((state: RootState) => state.statState);
+  const { topics } = useSelector((state: RootState) => state.appState);
+
+  useEffect(() => {
+    dispatch(getPage());
+  }, [dispatch, topicId, scoreThreshold, pageSize, pageNumber]);
+
+  const selectSx = {
+    color: "#f1f5f9",
+    "& .MuiOutlinedInput-notchedOutline": {
+      borderColor: "rgba(148, 163, 184, 0.2)",
+    },
+    "&:hover .MuiOutlinedInput-notchedOutline": {
+      borderColor: "rgba(16, 185, 129, 0.4)",
+    },
+    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+      borderColor: "#10b981",
+    },
+    "& .MuiSvgIcon-root": { color: "#64748b" },
+  };
+
+  const menuPropsSx = {
+    PaperProps: {
+      sx: {
+        backgroundColor: "#1e293b",
+        border: "1px solid rgba(148,163,184,0.15)",
+        "& .MuiMenuItem-root": {
+          color: "#e2e8f0",
+          fontSize: "0.85rem",
+          "&:hover": { backgroundColor: "rgba(16,185,129,0.08)" },
+          "&.Mui-selected": {
+            backgroundColor: "rgba(16,185,129,0.12)",
+            "&:hover": { backgroundColor: "rgba(16,185,129,0.15)" },
+          },
+        },
+      },
+    },
+  };
 
   return (
     <Box>
-      {/* User Profile Card */}
-      {user && (
-        <Card sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(148, 163, 184, 0.1)", mb: 3 }}>
-          <CardContent sx={{ p: 3 }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-              <Box
-                sx={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: "50%",
-                  backgroundColor: "rgba(16, 185, 129, 0.15)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
+      {/* Header */}
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="h4" sx={{ color: "#f1f5f9", fontWeight: 800, mb: 0.5 }}>
+          Leaderboard
+        </Typography>
+        <Typography variant="body1" sx={{ color: "#94a3b8" }}>
+          Top quiz results from the community
+        </Typography>
+      </Box>
+
+      {/* Filters */}
+      <Card sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(148, 163, 184, 0.1)", mb: 3 }}>
+        <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1, color: "#64748b" }}>
+              <FilterListIcon sx={{ fontSize: 18 }} />
+              <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                Filters
+              </Typography>
+            </Box>
+            <FormControl size="small" sx={{ minWidth: 160 }}>
+              <InputLabel sx={{ color: "#64748b" }}>Topic</InputLabel>
+              <Select
+                value={topicId}
+                label="Topic"
+                onChange={(e) => dispatch(setTopic(Number(e.target.value)))}
+                sx={selectSx}
+                MenuProps={menuPropsSx}
               >
-                <PersonIcon sx={{ color: "#10b981", fontSize: 24 }} />
-              </Box>
-              <Box>
-                <Typography variant="h6" sx={{ color: "#f1f5f9", fontWeight: 700 }}>
-                  {user.login}
-                </Typography>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                  <EmailIcon sx={{ fontSize: 14, color: "#64748b" }} />
-                  <Typography variant="caption" sx={{ color: "#64748b" }}>
-                    {user.email}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-            <Box sx={{ display: "flex", gap: 3 }}>
-              <Box>
-                <Typography variant="h6" sx={{ color: "#10b981", fontWeight: 700 }}>
-                  {totalAttempts}
-                </Typography>
-                <Typography variant="caption" sx={{ color: "#64748b" }}>
-                  Quizzes
-                </Typography>
-              </Box>
-              <Box>
-                <Typography variant="h6" sx={{ color: "#10b981", fontWeight: 700 }}>
-                  {profile.profileSummary.averageScore}%
-                </Typography>
-                <Typography variant="caption" sx={{ color: "#64748b" }}>
-                  Average
-                </Typography>
-              </Box>
-            </Box>
-          </CardContent>
-        </Card>
-      )}
+                <MenuItem value={0}>All Topics</MenuItem>
+                {topics.map((t) => (
+                  <MenuItem key={t.id} value={t.id}>
+                    {t.name}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ minWidth: 130 }}>
+              <InputLabel sx={{ color: "#64748b" }}>Score</InputLabel>
+              <Select
+                value={scoreThreshold}
+                label="Score"
+                onChange={(e) => dispatch(setScore(Number(e.target.value)))}
+                sx={selectSx}
+                MenuProps={menuPropsSx}
+              >
+                <MenuItem value={0}>All Scores</MenuItem>
+                <MenuItem value={90}>90%+</MenuItem>
+                <MenuItem value={80}>80%+</MenuItem>
+                <MenuItem value={70}>70%+</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+        </CardContent>
+      </Card>
 
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 3 }}>
-        <Box>
-          <Typography variant="h5" sx={{ color: "#f1f5f9", fontWeight: 700 }}>
-            Profile
-          </Typography>
-          <Typography variant="body2" sx={{ color: "#94a3b8" }}>
-            Track your progress across all topics
-          </Typography>
-        </Box>
-        <Button
-          variant="outlined"
-          size="small"
-          startIcon={<DeleteOutlineIcon />}
-          onClick={() => { dispatch(hide()); }}
-          sx={{
-            borderColor: "rgba(239, 68, 68, 0.3)",
-            color: "#ef4444",
-            fontWeight: 600,
-            fontSize: "0.8rem",
-            "&:hover": {
-              borderColor: "#ef4444",
-              backgroundColor: "rgba(239, 68, 68, 0.06)",
-            },
-          }}
-        >
-          Clear History
-        </Button>
-      </Box>
-
-      {/* Summary Cards */}
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr 1fr", md: "repeat(4, 1fr)" }, gap: 2, mb: 3 }}>
-        {[
-          { label: "Total Attempts", value: totalAttempts, icon: <QuizIcon />, color: "#10b981" },
-          { label: "Average Score", value: `${avgPercentage}%`, icon: <TrendingUpIcon />, color: getGradeColor(avgPercentage) },
-          { label: "Best Score", value: `${bestScore}%`, icon: <EmojiEventsIcon />, color: getGradeColor(bestScore) },
-          { label: "Questions Answered", value: totalQuestions, icon: <AccessTimeIcon />, color: "#94a3b8" },
-        ].map((stat, i) => (
-          <Card key={i} sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(148, 163, 184, 0.1)" }}>
-            <CardContent sx={{ p: 2, "&:last-child": { pb: 2 } }}>
-              <Box sx={{ color: stat.color, mb: 1 }}>{stat.icon}</Box>
-              <Typography variant="caption" sx={{ color: "#64748b" }}>
-                {stat.label}
-              </Typography>
-              <Typography variant="h5" sx={{ color: "#f1f5f9", fontWeight: 700 }}>
-                {stat.value}
-              </Typography>
-            </CardContent>
-          </Card>
-        ))}
-      </Box>
-
-      {/* Per-Topic Performance */}
-      <Typography variant="h6" sx={{ color: "#f1f5f9", mb: 2, fontWeight: 700 }}>
-        Performance by Topic
-      </Typography>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5, mb: 3 }}>
-        {topicStats.map((t) => (
-          <Card
-            key={t.topic}
+      {/* Leaderboard Table */}
+      <Card sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(148, 163, 184, 0.1)" }}>
+        <TableContainer>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
+                  Rank
+                </TableCell>
+                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
+                  User
+                </TableCell>
+                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
+                  Topic
+                </TableCell>
+                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
+                  Score
+                </TableCell>
+                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
+                  Percentage
+                </TableCell>
+                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
+                  Weighted
+                </TableCell>
+                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
+                  Date
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {rows.map((entry) => {
+                const isUser = entry.name === "You";
+                return (
+                  <TableRow
+                    key={entry.rank}
+                    sx={{
+                      backgroundColor: isUser ? "rgba(16, 185, 129, 0.05)" : "transparent",
+                      "&:hover": { backgroundColor: "rgba(148, 163, 184, 0.04)" },
+                    }}
+                  >
+                    <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                        {getRankIcon(entry.rank)}
+                        <Typography variant="body2" sx={{ color: getRankColor(entry.rank), fontWeight: 700 }}>
+                          #{entry.rank}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Avatar
+                          sx={{
+                            width: 28,
+                            height: 28,
+                            fontSize: "0.75rem",
+                            backgroundColor: isUser ? "rgba(16,185,129,0.2)" : "rgba(148,163,184,0.1)",
+                            color: isUser ? "#10b981" : "#94a3b8",
+                          }}
+                        >
+                          {entry.name[0]}
+                        </Avatar>
+                        <Typography variant="body2" sx={{ color: isUser ? "#10b981" : "#e2e8f0", fontWeight: isUser ? 700 : 500 }}>
+                          {entry.name}
+                        </Typography>
+                      </Box>
+                    </TableCell>
+                    <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
+                      <Chip
+                        label={entry.topicTitle}
+                        size="small"
+                        sx={{
+                          backgroundColor: `${entry.topicColor}15`,
+                          color: entry.topicColor,
+                          fontSize: "0.7rem",
+                          height: 22,
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
+                      <Typography variant="body2" sx={{ color: "#e2e8f0" }}>
+                        {entry.answeredCount}/{entry.questionCount}
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
+                      <Typography variant="body2" sx={{ color: getGradeColor(entry.score), fontWeight: 700 }}>
+                        {entry.score}%
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
+                      <Typography variant="body2" sx={{ color: getGradeColor(entry.weightedScore), fontWeight: 600 }}>
+                        {entry.weightedScore}%
+                      </Typography>
+                    </TableCell>
+                    <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
+                      <Typography variant="caption" sx={{ color: "#64748b" }}>
+                        {entry.date}
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+              {rows.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={7} sx={{ textAlign: "center", py: 4, borderColor: "rgba(148,163,184,0.06)" }}>
+                    <Typography variant="body2" sx={{ color: "#64748b" }}>
+                      No results match the selected filters.
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+          <TablePagination
+            rowsPerPageOptions={[10, 25, 50]}
+            component="div"
+            count={totalCount}
+            rowsPerPage={pageSize}
+            page={pageNumber - 1}
+            onPageChange={(_, newPage) => dispatch(setPageNumber(newPage + 1))}
+            onRowsPerPageChange={(event) => {
+              dispatch(setPageSize(Number(event.target.value)));
+            }}
             sx={{
               backgroundColor: "#1e293b",
-              border: `1px solid ${t.attemptCount > 0 ? `${t.color}20` : "rgba(148,163,184,0.06)"}`,
-              opacity: t.attemptCount === 0 ? 0.5 : 1,
+              borderTop: "1px solid rgba(148,163,184,0.06)",
+              "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows": {
+                color: "#64748b",
+                fontSize: "0.85rem",
+              },
+              "& .MuiSelect-root": {
+                color: "#e2e8f0",
+              },
+              "& .MuiIconButton-root": {
+                color: "#64748b",
+              },
+              "& .MuiIconButton-root:hover": {
+                backgroundColor: "rgba(16, 185, 129, 0.1)",
+              },
+              "& .Mui-disabled": {
+                color: "rgba(148, 163, 184, 0.3)",
+              },
             }}
-          >
-            <CardContent sx={{ py: 2, px: 2.5, "&:last-child": { pb: 2 } }}>
-              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
-                <Typography variant="body1" sx={{ color: "#f1f5f9", fontWeight: 600 }}>
-                  {t.topic}
-                </Typography>
-                {t.attemptCount > 0 && (
-                  <Chip
-                    label={`${t.attemptCount} attempt${t.attemptCount > 1 ? "s" : ""}`}
-                    size="small"
-                    sx={{ backgroundColor: `${t.color}15`, color: t.color, fontSize: "0.7rem" }}
-                  />
-                )}
-              </Box>
-              {t.attemptCount > 0 ? (
-                <Box sx={{ display: "flex", gap: 3 }}>
-                  <Box>
-                    <Typography variant="caption" sx={{ color: "#64748b" }}>
-                      Best
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: getGradeColor(t.best), fontWeight: 700 }}>
-                      {t.best}%
-                    </Typography>
-                  </Box>
-                  <Box>
-                    <Typography variant="caption" sx={{ color: "#64748b" }}>
-                      Average
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: getGradeColor(t.average), fontWeight: 700 }}>
-                      {t.average}%
-                    </Typography>
-                  </Box>
-                </Box>
-              ) : (
-                <Typography variant="caption" sx={{ color: "#475569" }}>
-                  Not attempted yet
-                </Typography>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </Box>
-
-      {/* Recent History */}
-      <Typography variant="h6" sx={{ color: "#f1f5f9", mb: 2, fontWeight: 700 }}>
-        Recent Attempts
-      </Typography>
-      <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-        {[...attempts]
-          .map((attempt, index) => (
-            <Card key={index} sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(148, 163, 184, 0.06)" }}>
-              <CardContent sx={{ py: 1.5, px: 2.5, "&:last-child": { pb: 1.5 }, display: "flex", alignItems: "center", gap: 2 }}>
-                <Box
-                  sx={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: "50%",
-                    backgroundColor: `${getGradeColor(attempt.score)}15`,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    flexShrink: 0,
-                  }}
-                >
-                  <Typography variant="caption" sx={{ color: getGradeColor(attempt.score), fontWeight: 800 }}>
-                    {getGradeLabel(attempt.score)}
-                  </Typography>
-                </Box>
-                <Box sx={{ flex: 1 }}>
-                  <Typography variant="body2" sx={{ color: "#e2e8f0", fontWeight: 600 }}>
-                    {attempt.topic}
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: "#64748b" }}>
-                    {attempt.date}
-                  </Typography>
-                </Box>
-                <Box sx={{ textAlign: "right" }}>
-                  <Typography variant="body2" sx={{ color: "#e2e8f0", fontWeight: 600 }}>
-                    {attempt.score}/{attempt.questionCount}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={{ color: getGradeColor(attempt.score), fontWeight: 700 }}
-                  >
-                    {attempt.score}%
-                  </Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          ))}
-      </Box>
+          />
+        </TableContainer>
+      </Card>
     </Box>
   );
 }

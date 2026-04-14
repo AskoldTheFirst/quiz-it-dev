@@ -9,30 +9,6 @@ import AuthDialog from "@/components/auth/AuthDialog";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/redux/store";
 
-//const USER_KEY = "quizmaster_user_data";
-
-// function loadUser(): UserData | null {
-//   if (typeof window === "undefined") return null;
-//   try {
-//     const stored = localStorage.getItem(USER_KEY);
-//     return stored ? JSON.parse(stored) : null;
-//   } catch {
-//     return null;
-//   }
-// }
-
-// function saveUser(user: UserData | null) {
-//   try {
-//     if (user) {
-//       localStorage.setItem(USER_KEY, JSON.stringify(user));
-//     } else {
-//       localStorage.removeItem(USER_KEY);
-//     }
-//   } catch {
-//     // silently fail
-//   }
-// }
-
 export type QuizState = "topics" | "active" | "results";
 
 interface AppContextType {
