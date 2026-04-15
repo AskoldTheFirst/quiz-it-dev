@@ -21,13 +21,13 @@ import EmailIcon from "@mui/icons-material/Email";
 import { RootState, useAppDispatch } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { hide } from "@/redux/statSlice";
+import { hide } from "@/redux/profileSlice";
 
 
 export default function PersonalStatistics() {
 
   const user = useSelector((state: RootState) => state.appState.user);
-  const profile = useSelector((state: RootState) => state.statState.profile);
+  const profile = useSelector((state: RootState) => state.profileState.profile);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 

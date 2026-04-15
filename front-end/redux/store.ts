@@ -2,15 +2,17 @@ import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import { appSlice } from './appSlice';
 import { testSlice } from './testSlice';
-import { statSlice } from './statSlice';
+import { topStatisticsSlice } from './topStatisticsSlice';
 import { mistakesSlice } from './mistakesSlice';
+import { profileSlice } from './profileSlice';
 
 export const store = configureStore({
   reducer: {
     appState: appSlice.reducer,
     testState: testSlice.reducer,
-    statState: statSlice.reducer,
+    statState: topStatisticsSlice.reducer,
     mistakesState: mistakesSlice.reducer,
+    profileState: profileSlice.reducer,
   },
 });
 

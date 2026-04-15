@@ -1,36 +1,32 @@
-import { ProfileDto } from "@/biz/dto/profile/ProfileDto";
 import { StatisticsPageDto } from "@/biz/dto/StatisticsPageDto";
 import { StatisticsRequestDto } from "@/biz/dto/StatisticsRequestDto";
 import Http from "@/biz/Http";
-import { Profile } from "@/biz/models/profile/Profile";
 import { Row } from "@/biz/models/Row";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface StatState {
+export interface TopStatisticsState {
     rows: Row[];
     pageSize: number;
     pageNumber: number;
     scoreThreshold: number;
     topicId: number;
     totalCount: number;
-    profile: Profile | null;
 }
 
-const initialState: StatState = {
+const initialState: TopStatisticsState = {
     rows: [],
     pageSize: 10,
     pageNumber: 1,
     scoreThreshold: 0,
     topicId: 0,
     totalCount: 0,
-    profile: null,
 };
 
 export const getPage = createAsyncThunk<StatisticsPageDto>(
     'stat/getPage',
     async (_, thunkAPI) => {
         try {
-            const state = thunkAPI.getState() as { statState: StatState };
+            const state = thunkAPI.getState() as { statState: TopStatisticsState };
 
             return await Http.Statistics.page({
                 pageNumber: state.statState.pageNumber - 1,
@@ -44,29 +40,7 @@ export const getPage = createAsyncThunk<StatisticsPageDto>(
     }
 );
 
-export const getProfile = createAsyncThunk<ProfileDto>(
-    'stat/getProfile',
-    async (_, thunkAPI) => {
-        try {
-            return await Http.Statistics.profile();
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue({ error: error.status });
-        }
-    }
-);
-
-export const hide = createAsyncThunk<ProfileDto>(
-    'stat/hide',
-    async (_, thunkAPI) => {
-        try {
-            return await Http.Statistics.hide();
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue({ error: error.status });
-        }
-    }
-);
-
-export const statSlice = createSlice({
+export const topStatisticsSlice = createSlice({
     name: 'statState',
     initialState,
     reducers: {
@@ -104,23 +78,7 @@ export const statSlice = createSlice({
         builder.addCase(getPage.rejected, (_, action) => {
             console.log("getPage.rejected" + action.payload);
         });
-
-        // getProfile
-        builder.addCase(getProfile.fulfilled, (state, action) => {
-            state.profile = { ...action.payload };
-        });
-        builder.addCase(getProfile.rejected, (_, action) => {
-            console.log("getProfile.rejected" + action.payload);
-        });
-
-        // hide
-        builder.addCase(hide.fulfilled, (state, action) => {
-            state.profile = { ...action.payload };
-        });
-        builder.addCase(hide.rejected, (_, action) => {
-            console.log("hide.rejected" + action.payload);
-        });
     })
 });
 
-export const { setFilter, setTopic, setScore, setPageSize, setPageNumber } = statSlice.actions;
+export const { setFilter, setTopic, setScore, setPageSize, setPageNumber } = topStatisticsSlice.actions;

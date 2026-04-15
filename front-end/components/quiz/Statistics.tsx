@@ -24,7 +24,7 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/redux/store";
-import { getPage, setPageNumber, setPageSize, setScore, setTopic } from "@/redux/statSlice";
+import { getPage, setPageNumber, setPageSize, setScore, setTopic } from "@/redux/topStatisticsSlice";
 
 const getRankColor = (rank: number) => {
   if (rank === 1) return "#fbbf24";

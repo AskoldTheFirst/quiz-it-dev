@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import PersonalStatistics from "@/components/quiz/PersonalStatistics";
 import { useAppDispatch } from "@/redux/store";
-import { getProfile } from "@/redux/statSlice";
+import { getProfile } from "@/redux/profileSlice";
 
 export default function ProfilePage() {
   const dispatch = useAppDispatch();
