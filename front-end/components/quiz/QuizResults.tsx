@@ -46,7 +46,7 @@ export default function QuizResults({ result }: QuizResultsProps) {
 
   const handleRetry = useCallback(async () => {
     await dispatch(createTest(result.topicName));
-    dispatch(setForbidenPages([NavItem.Top, NavItem.Profile, NavItem.About]));
+    dispatch(setForbidenPages([NavItem.Top, NavItem.Mistakes, NavItem.Profile, NavItem.About]));
   }, [dispatch, result]);
 
   const handleGoToQuiz = useCallback(() => {

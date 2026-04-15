@@ -20,7 +20,7 @@ export default function QuizPage() {
 
   useEffect(() => {
     if (test) {
-      dispatch(setForbidenPages([NavItem.Top, NavItem.Profile, NavItem.About]));
+      dispatch(setForbidenPages([NavItem.Top, NavItem.Mistakes, NavItem.Profile, NavItem.About]));
       return;
     }
 

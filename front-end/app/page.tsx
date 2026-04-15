@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import QuizPage from "@/components/pages/QuizPage";
 import TopPage from "@/components/pages/TopPage";
+import MistakePage from "@/components/pages/MistakePage";
 import ProfilePage from "@/components/pages/ProfilePage";
 import AboutPage from "@/components/pages/AboutPage";
 import AppLayout from "@/components/layout/AppLayout";
@@ -20,6 +21,10 @@ const routes = [
       {
         path: "top",
         element: <TopPage />,
+      },
+      {
+        path: "mistakes",
+        element: <MistakePage />,
       },
       {
         path: "profile",

@@ -1,6 +1,7 @@
 import { store } from "@/redux/store";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { AnswerRequestDto } from "./dto/AnswerRequestDto";
+import { MistakesRequestDto } from "./dto/MistakesRequestDto";
 import { StatisticsRequestDto } from "./dto/StatisticsRequestDto";
 
 //axios.defaults.baseURL = 'https://localhost:7072/api/';
@@ -68,6 +69,7 @@ const Statistics = {
     page: (requestMode: StatisticsRequestDto) => requests.get('statistics/page', requestMode),
     profile: () => requests.get('statistics/profile'),
     hide: () => requests.put('statistics/hide', {}),
+    mistakes: (requestModel: MistakesRequestDto) => requests.get('statistics/mistakes', requestModel),
 }
 
 const Http = {

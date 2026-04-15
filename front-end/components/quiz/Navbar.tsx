@@ -23,6 +23,7 @@ import { useTheme } from "@mui/material/styles";
 import SchoolIcon from "@mui/icons-material/School";
 import QuizIcon from "@mui/icons-material/Quiz";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import PersonIcon from "@mui/icons-material/Person";
 import InfoIcon from "@mui/icons-material/Info";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -34,6 +35,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/redux/store";
 import { NavItem } from "@/biz/models/NavItems";
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 
 export interface UserData {
   username: string;
@@ -52,6 +54,7 @@ interface NavbarProps {
 const navItems = [
   { id: "quiz", label: NavItem.Quiz, icon: <QuizIcon fontSize="small" /> },
   { id: "top", label: NavItem.Top, icon: <LeaderboardIcon fontSize="small" /> },
+  { id: "mistakes", label: NavItem.Mistakes, icon: <ThumbDownOffAltIcon fontSize="small" /> },
   { id: "profile", label: NavItem.Profile, icon: <PersonIcon fontSize="small" /> },
   { id: "about", label: NavItem.About, icon: <InfoIcon fontSize="small" /> },
 ];
