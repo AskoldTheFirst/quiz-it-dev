@@ -76,7 +76,7 @@ export const topStatisticsSlice = createSlice({
             }));
         });
         builder.addCase(getPage.rejected, (_, action) => {
-            console.log("getPage.rejected" + action.payload);
+            console.log("getPage.rejected", action.payload);
         });
     })
 });

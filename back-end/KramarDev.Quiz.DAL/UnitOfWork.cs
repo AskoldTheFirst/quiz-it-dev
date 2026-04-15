@@ -7,8 +7,6 @@ namespace KramarDev.Quiz.DAL;
 
 public sealed class UnitOfWork : IUnitOfWork
 {
-    private static readonly DbContextOptions<QuizDbContext> _options;
-
     private readonly QuizDbContext _ctx;
 
     public UnitOfWork(QuizDbContext ctx)

@@ -48,8 +48,9 @@ export const mistakesSlice = createSlice({
             state.mistakes = mapMistakes(action.payload);
             state.isLoaded = true;
         });
-        builder.addCase(loadMistakes.rejected, (_state, action) => {
-            console.log("loadMistakes.rejected" + action.payload);
+        builder.addCase(loadMistakes.rejected, (state, action) => {
+            state.isLoaded = true;
+            console.log("loadMistakes.rejected", action.payload);
         });
     })
 });

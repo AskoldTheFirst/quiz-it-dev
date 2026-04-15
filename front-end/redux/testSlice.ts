@@ -96,7 +96,7 @@ export const testSlice = createSlice({
             state.result = null;
         });
         builder.addCase(current.rejected, (_state, action) => {
-            console.log("current.rejected" + action.payload);
+            console.log("current.rejected", action.payload);
         });
 
         // createTest:
@@ -105,7 +105,7 @@ export const testSlice = createSlice({
             state.result = null;
         });
         builder.addCase(createTest.rejected, (_state, action) => {
-            console.log("createTest.rejected" + action.payload);
+            console.log("createTest.rejected", action.payload);
         });
 
         // cancelTest:
@@ -114,7 +114,7 @@ export const testSlice = createSlice({
             state.result = null;
         });
         builder.addCase(cancelTest.rejected, (_state, action) => {
-            console.log("cancelTest.rejected" + action.payload);
+            console.log("cancelTest.rejected", action.payload);
         });
 
         // answer:
@@ -147,7 +147,7 @@ export const testSlice = createSlice({
             }
         });
         builder.addCase(answer.rejected, (state, action) => {
-            console.log("answer.rejected" + action.payload);
+            console.log("answer.rejected", action.payload);
         });
 
         // complete:
@@ -163,7 +163,7 @@ export const testSlice = createSlice({
             };
         });
         builder.addCase(complete.rejected, (_state, action) => {
-            console.log("complete.rejected" + action.payload);
+            console.log("complete.rejected", action.payload);
         });
     })
 });

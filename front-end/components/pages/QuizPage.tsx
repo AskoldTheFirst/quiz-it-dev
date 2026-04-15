@@ -24,7 +24,7 @@ export default function QuizPage() {
       return;
     }
 
-    dispatch(setForbidenPages([]));
+    dispatch(setForbidenPages(user ? [] : [NavItem.Profile]));
   }, [dispatch, test]);
 
   useEffect(() => {

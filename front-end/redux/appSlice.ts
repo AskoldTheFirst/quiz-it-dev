@@ -109,7 +109,7 @@ export const appSlice = createSlice({
             }
         });
         builder.addCase(initState.rejected, (_, action) => {
-            console.log("initState.rejected" + action.payload);
+            console.log("initState.rejected", action.payload);
         });
 
         // registerInUser
@@ -124,7 +124,7 @@ export const appSlice = createSlice({
             }
         });
         builder.addCase(registerInUser.rejected, (_state, action) => {
-            console.log("registerInUser.rejected" + action.payload);
+            console.log("registerInUser.rejected", action.payload);
         });
 
         // signInUser
@@ -139,7 +139,7 @@ export const appSlice = createSlice({
             }
         });
         builder.addCase(signInUser.rejected, (_state, action) => {
-            console.log("signInUser.rejected" + action.payload);
+            console.log("signInUser.rejected", action.payload);
         });
     })
 });
