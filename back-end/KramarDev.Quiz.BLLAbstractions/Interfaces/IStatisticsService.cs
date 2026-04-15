@@ -6,4 +6,7 @@ public interface IStatisticsService
 
     Task<StatisticsPageDto> GetStatisticsPageAsync(
         StatisticsRequestDto requestDto, CancellationToken cancellationToken = default);
+
+    Task<MistakeDto[]> GetMistakesAsync(
+        MistakesRequestDto paramDto, CancellationToken cancellationToken = default);
 }

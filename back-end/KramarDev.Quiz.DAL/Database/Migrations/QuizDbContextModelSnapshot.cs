@@ -46,6 +46,9 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CorrectAnswerCount")
+                        .HasColumnType("int");
+
                     b.Property<byte>("CorrectAnswerNumber")
                         .HasColumnType("tinyint");
 
@@ -60,6 +63,9 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TopicId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WrongAnswerCount")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

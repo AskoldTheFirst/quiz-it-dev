@@ -9,4 +9,6 @@ public interface IStatisticsRepository
     Task<ProfileDto> GetProfileAsync(string userName, CancellationToken cancellationToken = default);
 
     Task HideTestsForUserAndSaveAsync(string userName, CancellationToken cancellationToken);
+
+    Task<MistakeDto[]> GetMostMissedQuestionsAsync(int topicId, bool byTotal, int topCount, CancellationToken cancellationToken = default);
 }

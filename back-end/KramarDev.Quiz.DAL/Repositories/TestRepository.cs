@@ -5,7 +5,6 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
 {
     private readonly QuizDbContext Ctx = dbCtx;
 
-
     public async Task<int> CreateTestAsync(NewTestDto newTest, CancellationToken cancellationToken = default)
     {
         int questionAmount = newTest.QuestionIds.Length;

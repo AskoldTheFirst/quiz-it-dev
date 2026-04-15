@@ -97,10 +97,40 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
         };
     }
 
-    public async Task HideTestsForUserAndSaveAsync(string userName, CancellationToken cancellationToken)
+    public Task HideTestsForUserAndSaveAsync(string userName, CancellationToken cancellationToken)
     {
-        await Ctx.Tests
+        return Ctx.Tests
             .Where(t => !t.IsHidden && t.Username == userName)
             .ExecuteUpdateAsync(setters => setters.SetProperty(t => t.IsHidden, true), cancellationToken);
+    }
+
+    public Task<MistakeDto[]> GetMostMissedQuestionsAsync(
+        int topicId, bool byTotal, int topCount, CancellationToken cancellationToken = default)
+    {
+        var query = Ctx.Questions
+                        .Where(q =>
+                            (topicId == 0 || q.TopicId == topicId) &&
+                            q.IsActive &&
+                            (q.CorrectAnswerCount + q.WrongAnswerCount) > 3);
+
+        query = byTotal
+            ? query.OrderByDescending(q => q.WrongAnswerCount)
+                   .ThenByDescending(q => (double)q.WrongAnswerCount / (q.CorrectAnswerCount + 1))
+                   .ThenBy(q => q.Id)
+            : query.OrderByDescending(q => (double)q.WrongAnswerCount / (q.CorrectAnswerCount + 1))
+                   .ThenByDescending(q => q.WrongAnswerCount)
+                   .ThenBy(q => q.Id);
+
+        return query
+            .Take(topCount)
+            .Select(q => new MistakeDto
+            {
+                QuestionText = q.Text,
+                TopicName = q.Topic.Name,
+                TotalAnswers = q.CorrectAnswerCount + q.WrongAnswerCount,
+                WrongAnswerCount = q.WrongAnswerCount,
+                CorrectAnswerCount = q.CorrectAnswerCount
+            })
+            .ToArrayAsync(cancellationToken);
     }
 }

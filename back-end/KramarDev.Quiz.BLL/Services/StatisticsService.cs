@@ -16,4 +16,13 @@ public sealed class StatisticsService(IUnitOfWork uow, IStatisticsCacheService c
         return DtoMapper.FromDAL(
             await _uow.StatisticsRepository.GetProfileAsync(userName, cancellationToken));
     }
+
+    public async Task<MistakeDto[]> GetMistakesAsync(
+        MistakesRequestDto paramDto, CancellationToken cancellationToken = default)
+    {
+        var (topicId, byTotal, topCount) = paramDto;
+
+        return DtoMapper.FromDAL(
+            await _uow.StatisticsRepository.GetMostMissedQuestionsAsync(topicId, byTotal, topCount, cancellationToken));
+    }
 }

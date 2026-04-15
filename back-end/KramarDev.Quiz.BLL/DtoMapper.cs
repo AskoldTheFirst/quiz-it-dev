@@ -113,4 +113,21 @@ static class DtoMapper
             }).ToArray()
         };
     }
+
+    public static BLLAbstractions.Dto.MistakeDto[] FromDAL(DAL.MistakeDto[] dto)
+    {
+        var mistakes = new BLLAbstractions.Dto.MistakeDto[dto.Length];
+        for (int i = 0; i < dto.Length; ++i)
+        {
+            mistakes[i] = new BLLAbstractions.Dto.MistakeDto
+            {
+                QuestionText = dto[i].QuestionText,
+                TopicName = dto[i].TopicName,
+                WrongAnswerCount = dto[i].WrongAnswerCount,
+                CorrectAnswerCount = dto[i].CorrectAnswerCount
+            };
+        }
+
+        return mistakes;
+    }
 }

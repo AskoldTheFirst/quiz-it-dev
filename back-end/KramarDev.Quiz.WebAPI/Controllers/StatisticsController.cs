@@ -14,10 +14,8 @@ public class StatisticsController(IStatisticsService statisticsService, ITestSer
     public async Task<ActionResult<StatisticsPageModel>> Page(
         [FromQuery] StatisticsRequestModel param, CancellationToken cancellationToken)
     {
-        StatisticsRequestDto bizParam = StatisticsRequestModel.ToBLL(param);
-
         return StatisticsPageModel.FromBLL(
-            await _statisticsService.GetStatisticsPageAsync(bizParam, cancellationToken));
+            await _statisticsService.GetStatisticsPageAsync(StatisticsRequestModel.ToBLL(param), cancellationToken));
     }
 
     [Authorize]
@@ -26,6 +24,14 @@ public class StatisticsController(IStatisticsService statisticsService, ITestSer
     {
         return ProfileModel.FromBLL(
             await _statisticsService.GetProfileAsync(UserName, cancellationToken));
+    }
+
+    [HttpGet("mistakes")]
+    public async Task<ActionResult<MistakeModel[]>> Mistakes(
+        [FromQuery] MistakesRequestModel param, CancellationToken cancellationToken)
+    {
+        return MistakeModel.FromBLL(
+            await _statisticsService.GetMistakesAsync(MistakesRequestModel.ToBLL(param), cancellationToken));
     }
 
     [Authorize]

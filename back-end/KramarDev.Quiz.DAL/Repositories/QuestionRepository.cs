@@ -64,6 +64,25 @@ public sealed class QuestionRepository(QuizDbContext dbCtx) : IQuestionRepositor
                     .SetProperty(tq => tq.RequestDate, DateTime.UtcNow), cancellationToken);
     }
 
+    public Task IncrementQuestionCounterAsync(
+        int questionId, bool isCorrectAnswer, CancellationToken cancellationToken = default)
+    {
+        if (isCorrectAnswer)
+        {
+            return Ctx.Questions
+                    .Where(q => q.Id == questionId)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(q => q.CorrectAnswerCount, (a) => a.CorrectAnswerCount + 1), cancellationToken);
+        }
+        else
+        {
+            return Ctx.Questions
+                    .Where(q => q.Id == questionId)
+                    .ExecuteUpdateAsync(setters => setters
+                        .SetProperty(q => q.WrongAnswerCount, (a) => a.WrongAnswerCount + 1), cancellationToken);
+        }
+    }
+
     private static string GetAnswer(int? answerNumber, Question q)
     {
         return answerNumber switch

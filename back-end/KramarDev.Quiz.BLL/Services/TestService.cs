@@ -154,7 +154,10 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
             AnswerDate = DateTime.UtcNow
         };
 
+        bool isCorrect = answer.AnswerPoints > 0;
+
         await _uow.TestRepository.AnswerAndSaveAsync(answer, cancellationToken);
+        await _uow.QuestionRepository.IncrementQuestionCounterAsync(questionId, isCorrect, cancellationToken);
     }
 
     private async Task<TestResultDto> BuildAndCompleteTestAsync(

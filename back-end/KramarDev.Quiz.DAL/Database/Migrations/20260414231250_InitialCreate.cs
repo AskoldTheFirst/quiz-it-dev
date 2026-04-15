@@ -192,6 +192,8 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                     CorrectAnswerNumber = table.Column<byte>(type: "tinyint", nullable: false),
                     Difficulty = table.Column<byte>(type: "tinyint", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CorrectAnswerCount = table.Column<int>(type: "int", nullable: false),
+                    WrongAnswerCount = table.Column<int>(type: "int", nullable: false),
                     TopicId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

@@ -27,6 +27,10 @@ public class Question
 
     public bool IsActive { get; set; } = true;
 
+    public int CorrectAnswerCount { get; set; }
+
+    public int WrongAnswerCount { get; set; }
+
     public int TopicId { get; set; }
 
     public Topic Topic { get; set; }
