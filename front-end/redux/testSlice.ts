@@ -2,6 +2,7 @@ import { AnswerRequestDto } from "@/biz/dto/AnswerRequestDto";
 import { AnswerResponseDto } from "@/biz/dto/AnswerResponseDto";
 import { TestDto } from "@/biz/dto/TestDto";
 import { TestResultDto } from "@/biz/dto/TestResultDto";
+import { Helper } from "@/biz/Helper";
 import Http from "@/biz/Http";
 import { mapAnswer } from "@/biz/mappers/answerMapper";
 import { mapCurrentTest } from "@/biz/mappers/currentTestMapper";
@@ -21,7 +22,12 @@ const initialState: TestState = {
 
 export const current = createAsyncThunk<TestDto>(
     'test/current',
-    async (data, thunkAPI) => {
+    async (_, thunkAPI) => {
+        const token = localStorage.getItem(Helper.UserKey);
+        if (!token){
+            return thunkAPI.rejectWithValue({ error: "Unauthorized" });
+        }
+
         try {
             return await Http.Test.current();
         } catch (error: any) {

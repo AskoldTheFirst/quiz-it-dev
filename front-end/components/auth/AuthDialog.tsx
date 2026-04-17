@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -12,19 +12,13 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { useAppDispatch } from "@/redux/store";
-import { registerInUser, signInUser } from "@/redux/appSlice";
+import { RootState, useAppDispatch } from "@/redux/store";
+import { addError, cleanAuthState, excludeError, registerInUser, setAuthFormFields, signInUser } from "@/redux/appSlice";
+import { useSelector } from "react-redux";
 
 export interface UserData {
   username: string;
   email: string;
-}
-
-export interface AuthFormData {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
 }
 
 interface AuthDialogProps {
@@ -63,13 +57,6 @@ const textFieldSx = {
   },
 };
 
-const initialFormData: AuthFormData = {
-  username: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-};
-
 export default function AuthDialog({
   open,
   mode,
@@ -78,70 +65,136 @@ export default function AuthDialog({
   onModeChange,
   onSuccess,
 }: AuthDialogProps) {
+  const { authState } = useSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
-  const [formData, setFormData] = useState<AuthFormData>(initialFormData);
-  const [error, setError] = useState("");
+
+  //const [formData, setFormData] = useState<AuthFormData>(initialFormData);
 
   const handleClose = useCallback(() => {
-    setFormData(initialFormData);
-    setError("");
     onClose();
-  }, [onClose]);
+    dispatch(cleanAuthState());
+  }, [onClose, dispatch]);
 
   const handleModeChange = useCallback(
     (newMode: "login" | "register") => {
-      setFormData(initialFormData);
-      setError("");
+      dispatch(cleanAuthState());
       onModeChange(newMode);
     },
     [onModeChange]
   );
 
   const handleSubmit = useCallback(async () => {
-    setError("");
+
+    let hasError = false;
+    let currentError = "";
 
     if (mode === "register") {
-      if (!formData.username || !formData.email || !formData.password) {
-        setError("Please fill in all fields.");
-        return;
+
+      currentError = "Please fill in all fields.";
+      if (!authState.username || !authState.email || !authState.password) {
+        dispatch(addError(currentError));
+        hasError = true;
       }
-      if (formData.password !== formData.confirmPassword) {
-        setError("Passwords do not match.");
-        return;
+      else {
+        dispatch(excludeError(currentError));
       }
-      if (formData.password.length < 6) {
-        setError("Password must be at least 6 characters.");
+
+      currentError = "Username must be at least 3 characters.";
+      if (authState.username && authState.username.length < 3) {
+        dispatch(addError(currentError));
+        hasError = true;
+      }
+      else {
+        dispatch(excludeError(currentError));
+      }
+
+      currentError = "Username must be less than 32 characters.";
+      if (authState.username && authState.username.length > 32) {
+        dispatch(addError(currentError));
+        hasError = true;
+      }
+      else {
+        dispatch(excludeError(currentError));
+      }
+
+      currentError = "Invalid email format.";
+      if (authState.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(authState.email)) {
+        dispatch(addError(currentError));
+        hasError = true;
+      }
+      else {
+        dispatch(excludeError(currentError));
+      }
+
+      currentError = "Email must be less than 255 characters.";
+      if (authState.email && authState.email.length > 255) {
+        dispatch(addError(currentError));
+        hasError = true;
+      }
+      else {
+        dispatch(excludeError(currentError));
+      }
+
+      currentError = "Passwords do not match.";
+      if (authState.password !== authState.confirmPassword) {
+        dispatch(addError(currentError));
+        hasError = true;
+      }
+      else {
+        dispatch(excludeError(currentError));
+      }
+
+      currentError = "Password must be at least 6 characters.";
+      if (authState.password && authState.password.length < 6) {
+        dispatch(addError(currentError));
+        hasError = true;
+      }
+      else {
+        dispatch(excludeError(currentError));
+      }
+
+      currentError = "Password must be less than 32 characters.";
+      if (authState.password.length > 32) {
+        dispatch(addError(currentError));
+        hasError = true;
+      }
+      else {
+        dispatch(excludeError(currentError));
+      }
+
+      if (hasError) {
         return;
       }
 
       try {
-        await dispatch(registerInUser(formData)).unwrap();
+        await dispatch(registerInUser(authState)).unwrap();
         onSuccess({
-          username: formData.username,
-          email: formData.email,
+          username: authState.username,
+          email: authState.email,
         });
       } catch (error) {
         console.error("Registration error:", error);
       }
     } else {
-      if (!formData.username || !formData.password) {
-        setError("Please fill in all fields.");
+      currentError = "Please fill in all fields.";
+      if (!authState.username || !authState.password) {
+        dispatch(addError(currentError));
         return;
       }
-      
+
       try {
-        await dispatch(signInUser(formData)).unwrap();
+        await dispatch(signInUser(authState)).unwrap();
         onSuccess({
-          username: formData.username,
-          email: formData.username.toLowerCase(),
+          username: authState.username,
+          email: authState.username.toLowerCase(),
         });
       } catch (error) {
         console.error("Login error:", error);
       }
     }
 
-    setFormData(initialFormData);
-  }, [mode, formData, onSuccess]);
+    //setFormData(initialFormData);
+  }, [mode, authState, onSuccess]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -179,18 +232,12 @@ export default function AuthDialog({
               : "Join Quiz-IT to save your progress and compete."}
         </Typography>
 
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-
         <TextField
           fullWidth
           label="Username"
-          value={formData.username}
+          value={authState.username}
           onChange={(e) =>
-            setFormData({ ...formData, username: e.target.value })
+            dispatch(setAuthFormFields({ ...authState, username: e.target.value }))
           }
           onKeyDown={handleKeyDown}
           autoComplete="off"
@@ -202,9 +249,9 @@ export default function AuthDialog({
             fullWidth
             label="Email"
             type="email"
-            value={formData.email}
+            value={authState.email}
             onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
+              dispatch(setAuthFormFields({ ...authState, email: e.target.value }))
             }
             onKeyDown={handleKeyDown}
             autoComplete="off"
@@ -216,13 +263,14 @@ export default function AuthDialog({
           fullWidth
           label="Password"
           type="password"
-          value={formData.password}
+          value={authState.password}
           onChange={(e) =>
-            setFormData({ ...formData, password: e.target.value })
+            dispatch(setAuthFormFields({ ...authState, password: e.target.value }))
           }
           onKeyDown={handleKeyDown}
           autoComplete="new-password"
           sx={textFieldSx}
+          inputProps={{ maxLength: 32 }}
         />
 
         {mode === "register" && (
@@ -230,16 +278,25 @@ export default function AuthDialog({
             fullWidth
             label="Confirm Password"
             type="password"
-            value={formData.confirmPassword}
+            value={authState.confirmPassword}
             onChange={(e) =>
-              setFormData({ ...formData, confirmPassword: e.target.value })
+              dispatch(setAuthFormFields({ ...authState, confirmPassword: e.target.value }))
             }
             onKeyDown={handleKeyDown}
             autoComplete="new-password"
             sx={{ ...textFieldSx, mb: 1 }}
+            inputProps={{ maxLength: 32 }}
           />
         )}
       </DialogContent>
+
+      {authState.errors.length > 0 && (
+        authState.errors.map((err, idx) => (
+          <Alert key={idx} severity="error" sx={{ mb: 2 }}>
+            {err}
+          </Alert>
+        ))
+      )}
 
       <DialogActions sx={{ px: 3, pb: 2, flexDirection: "column", gap: 1 }}>
         <Box sx={{ display: "flex", gap: 1, width: "100%" }}>
@@ -310,3 +367,4 @@ export default function AuthDialog({
     </Dialog>
   );
 }
+
