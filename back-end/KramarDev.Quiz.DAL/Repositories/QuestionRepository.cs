@@ -12,7 +12,7 @@ public sealed class QuestionRepository(QuizDbContext dbCtx) : IQuestionRepositor
                 join q in Ctx.Questions on tq.QuestionId equals q.Id
                 join t in Ctx.Tests on tq.TestId equals t.Id
                 where tq.TestId == testId && t.Username == userName
-                orderby tq.Id descending
+                orderby tq.Id ascending
                 select new AnswerResultDto
                 {
                     QuestionText = q.Text,
