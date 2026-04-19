@@ -9,7 +9,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://quiz-it.online"),
+  metadataBase: new URL("https://www.quiz-it.online"),
   title: {
     default: "Quiz-IT – Test Your Programming Skills",
     template: "%s | Quiz-IT"
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    url: "https://quiz-it.online",
+    url: "https://www.quiz-it.online",
     siteName: "Quiz-IT",
     title: "Quiz-IT – Test Your Programming Skills",
     description:
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     locale: "en_US",
     images: [
       {
-        url: "https://quiz-it.online/og-image.png",
+        url: "https://www.quiz-it.online/img.png",
         width: 1200,
         height: 630,
         alt: "Quiz-IT Programming Quizzes",
