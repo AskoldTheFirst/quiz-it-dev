@@ -9,10 +9,56 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Quiz-IT – Test Your Programming Skills",
+  metadataBase: new URL("https://quiz-it.online"),
+  title: {
+    default: "Quiz-IT – Test Your Programming Skills",
+    template: "%s | Quiz-IT"
+  },
   description:
     "Practice quizzes for C#, SQL, JavaScript and more. Improve your skills and track your progress.",
-  keywords: ["quiz", "programming", "C#", "SQL", "JavaScript", "learning"],
+  keywords: [
+    "quiz",
+    "test",
+    "programming",
+    "C#",
+    "SQL",
+    ".NET",
+    "React",
+    "JavaScript",
+    "learning",
+    "technical interview practice",
+    "C/C++"
+  ],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    type: "website",
+    url: "https://quiz-it.online",
+    siteName: "Quiz-IT",
+    title: "Quiz-IT – Test Your Programming Skills",
+    description:
+      "Practice quizzes for C#, SQL, JavaScript, React, and .NET. Improve your programming skills and track your progress.",
+    locale: "en_US",
+    images: [
+      {
+        url: "https://quiz-it.online/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Quiz-IT Programming Quizzes",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Quiz-IT – Test Your Programming Skills",
+    description:
+      "Practice quizzes for C#, SQL, JavaScript, React, and .NET.",
+  },
   icons: {
     icon: [
       {

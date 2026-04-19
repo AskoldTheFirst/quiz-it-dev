@@ -4,4 +4,5 @@ Allow: /
 Disallow: /api
 Disallow: /admin
 
-Sitemap: https://icy-mud-0795c3703.2.azurestaticapps.net/sitemap.xml
+Host: quiz-it.online
+Sitemap: https://quiz-it.online/sitemap.xml
