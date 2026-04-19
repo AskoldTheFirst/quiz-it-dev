@@ -7,30 +7,23 @@ import { NavItem } from "@/biz/models/NavItems";
 import { Topic } from "@/biz/models/Topic";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { FieldValues } from "react-hook-form";
-import { AuthState } from "@/biz/models/AuthState";
+import { Login } from "@/biz/models/Login";
+import { Register } from "@/biz/models/Register";
 
 export interface AppState {
     topics: Topic[];
     user: UserDto | null;
-    forbidenPages: NavItem[];
-    currentPage: NavItem;
-    authState: AuthState;
+    forbiddenPages: NavItem[];
+    loginFormFields: Login | null;
+    registerFormFields: Register | null;
 }
-
-const initialAuthState: AuthState = {
-    username: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    errors: []
-};
 
 const initialState: AppState = {
     topics: [],
     user: null,
-    forbidenPages: [NavItem.Profile],
-    currentPage: NavItem.Quiz,
-    authState: initialAuthState,
+    forbiddenPages: [NavItem.Profile],
+    loginFormFields: null,
+    registerFormFields: null,
 };
 
 type RegisterErrorPayload = {
@@ -89,32 +82,69 @@ export const appSlice = createSlice({
         setUser: (state, action) => {
             state.user = action.payload.user;
             localStorage.setItem(Helper.UserKey, JSON.stringify(state.user));
-            state.forbidenPages = [];
+            state.forbiddenPages = [];
         },
         logOut: (state) => {
             state.user = null;
             localStorage.removeItem(Helper.UserKey);
-            state.forbidenPages = [NavItem.Profile];
-        },
-        setCurrentPage: (state, action: PayloadAction<NavItem>) => {
-            state.currentPage = action.payload;
+            state.forbiddenPages = [NavItem.Profile];
         },
         setForbidenPages: (state, action: PayloadAction<NavItem[]>) => {
-            state.forbidenPages = action.payload;
+            state.forbiddenPages = action.payload;
         },
-        cleanAuthState: (state) => {
-            state.authState = initialAuthState;
+
+        // Login form reducers
+        openLoginForm: (state) => {
+            state.registerFormFields = null;
+            state.loginFormFields = {
+                username: "",
+                password: "",
+                errors: []
+            };
         },
-        addError: (state, action: PayloadAction<string>) => {
-            if (!state.authState.errors.includes(action.payload))
-                state.authState.errors.push(action.payload);
+        closeLoginForm: (state) => {
+            state.loginFormFields = null;
         },
-        excludeError: (state, action: PayloadAction<string>) => {
-            state.authState.errors = state.authState.errors.filter(error => error !== action.payload);
+        setLoginFormFields: (state, action: PayloadAction<Login | null>) => {
+            state.loginFormFields = action.payload;
         },
-        setAuthFormFields: (state, action: PayloadAction<AuthState>) => {
-            state.authState = action.payload;
-        }
+        addLoginError: (state, action: PayloadAction<string>) => {
+            if (state.loginFormFields === null) return;
+
+            if (!state.loginFormFields.errors.includes(action.payload))
+                state.loginFormFields.errors.push(action.payload);
+        },
+
+        // Register form reducers
+        openRegisterForm: (state) => {
+            state.loginFormFields = null;
+            state.registerFormFields = {
+                username: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+                errors: []
+            };
+        },
+        closeRegisterForm: (state) => {
+            state.registerFormFields = null;
+        },
+        setRegisterFormFields: (state, action: PayloadAction<Register | null>) => {
+            state.registerFormFields = action.payload;
+        },
+        addRegisterError: (state, action: PayloadAction<string>) => {
+            if (state.registerFormFields === null)
+                return;
+
+            if (!state.registerFormFields.errors.includes(action.payload))
+                state.registerFormFields.errors.push(action.payload);
+        },
+        excludeRegistrationError: (state, action: PayloadAction<string>) => {
+            if (state.registerFormFields === null)
+                return;
+            state.registerFormFields.errors =
+            state.registerFormFields.errors.filter(error => error !== action.payload);
+        },
     },
     extraReducers: (builder => {
 
@@ -122,14 +152,12 @@ export const appSlice = createSlice({
         builder.addCase(initState.fulfilled, (state, action) => {
             state.topics = action.payload.topics.map(mapTopic);
             state.user = action.payload.user;
-            state.currentPage = NavItem.Quiz;
-            state.authState.errors = [];
             if (state.user) {
                 localStorage.setItem(Helper.UserKey, JSON.stringify(state.user));
-                state.forbidenPages = [];
+                state.forbiddenPages = [];
             } else {
                 localStorage.removeItem(Helper.UserKey);
-                state.forbidenPages = [NavItem.Profile];
+                state.forbiddenPages = [NavItem.Profile];
             }
         });
         builder.addCase(initState.rejected, (_, action) => {
@@ -139,39 +167,53 @@ export const appSlice = createSlice({
         // registerInUser
         builder.addCase(registerInUser.fulfilled, (state, action) => {
             state.user = action.payload;
-            state.authState = initialAuthState;
+            state.registerFormFields = null;
             if (state.user) {
                 localStorage.setItem(Helper.UserKey, JSON.stringify(state.user));
-                state.forbidenPages = [];
+                state.forbiddenPages = [];
             } else {
                 localStorage.removeItem(Helper.UserKey);
-                state.forbidenPages = [NavItem.Profile];
+                state.forbiddenPages = [NavItem.Profile];
             }
         });
         builder.addCase(registerInUser.rejected, (state, action) => {
             console.log("registerInUser.rejected", action.payload);
-            state.authState.errors = [];
+            if (state.registerFormFields === null)
+                return;
+            state.registerFormFields.errors = [];
             const messages = Object.values(action.payload?.error ?? {}).flat();
-            state.authState.errors = messages;
+            state.registerFormFields.errors = messages;
         });
 
         // signInUser
         builder.addCase(signInUser.fulfilled, (state, action) => {
             state.user = action.payload;
-            state.authState = initialAuthState;
+            state.loginFormFields = null;
             if (state.user) {
                 localStorage.setItem(Helper.UserKey, JSON.stringify(state.user));
-                state.forbidenPages = [];
+                state.forbiddenPages = [];
             } else {
                 localStorage.removeItem(Helper.UserKey);
-                state.forbidenPages = [NavItem.Profile];
+                state.forbiddenPages = [NavItem.Profile];
             }
         });
         builder.addCase(signInUser.rejected, (state, action) => {
             console.log("signInUser.rejected", action.payload);
-            state.authState.errors = ['Invalid username or password.'];
+            state.loginFormFields!.errors = ['Invalid username or password.'];
         });
     })
 });
 
-export const { setUser, logOut, setCurrentPage, setForbidenPages, cleanAuthState, addError, excludeError, setAuthFormFields } = appSlice.actions;
+export const {
+    setUser,
+    logOut,
+    setForbidenPages,
+    openLoginForm,
+    closeLoginForm,
+    setLoginFormFields,
+    addLoginError,
+    openRegisterForm,
+    closeRegisterForm,
+    setRegisterFormFields,
+    addRegisterError,
+    excludeRegistrationError } = appSlice.actions;

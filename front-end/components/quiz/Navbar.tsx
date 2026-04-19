@@ -23,7 +23,6 @@ import { useTheme } from "@mui/material/styles";
 import SchoolIcon from "@mui/icons-material/School";
 import QuizIcon from "@mui/icons-material/Quiz";
 import LeaderboardIcon from "@mui/icons-material/Leaderboard";
-import ReportProblemIcon from "@mui/icons-material/ReportProblem";
 import PersonIcon from "@mui/icons-material/Person";
 import InfoIcon from "@mui/icons-material/Info";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -36,66 +35,44 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/redux/store";
 import { NavItem } from "@/biz/models/NavItems";
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-
-export interface UserData {
-  username: string;
-  email: string;
-}
-
-interface NavbarProps {
-  currentPage: string;
-  onNavigate: (page: string) => void;
-  onOpenLogin: () => void;
-  onOpenRegister: () => void;
-  isQuizActive?: boolean;
-  isInitialized?: boolean;
-}
+import { logOut, openLoginForm, openRegisterForm } from "@/redux/appSlice";
+import { useNavigate } from "react-router-dom";
 
 const navItems = [
-  { id: "quiz", label: NavItem.Quiz, icon: <QuizIcon fontSize="small" /> },
-  { id: "top", label: NavItem.Top, icon: <LeaderboardIcon fontSize="small" /> },
-  { id: "mistakes", label: NavItem.Mistakes, icon: <ThumbDownOffAltIcon fontSize="small" /> },
-  { id: "profile", label: NavItem.Profile, icon: <PersonIcon fontSize="small" /> },
-  { id: "about", label: NavItem.About, icon: <InfoIcon fontSize="small" /> },
+  { page: NavItem.Quiz, icon: <QuizIcon fontSize="small" /> },
+  { page: NavItem.Top, icon: <LeaderboardIcon fontSize="small" /> },
+  { page: NavItem.Mistakes, icon: <ThumbDownOffAltIcon fontSize="small" /> },
+  { page: NavItem.Profile, icon: <PersonIcon fontSize="small" /> },
+  { page: NavItem.About, icon: <InfoIcon fontSize="small" /> },
 ];
 
-export default function Navbar({
-  currentPage,
-  onNavigate,
-  onOpenLogin,
-  onOpenRegister,
-  isQuizActive = false,
-  isInitialized = false,
-}: NavbarProps) {
+export default function Navbar() {
 
-  const { user, forbidenPages } = useSelector((state: RootState) => state.appState);
+  const { user, forbiddenPages } = useSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
-
+  const navigate = useNavigate();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
-  const handleTabChange = (_: React.SyntheticEvent, val: string) => {
-    const item = navItems.find((n) => n.id === val);
-    // Disable non-quiz navigation during active quiz
-    if (isQuizActive && val !== "quiz") {
-      return;
-    }
-    
-    onNavigate(val);
+  const currentPage: NavItem =
+    location.pathname === "/" ? NavItem.Quiz :
+      location.pathname === "/top" ? NavItem.Top :
+        location.pathname === "/mistakes" ? NavItem.Mistakes :
+          location.pathname === "/profile" ? NavItem.Profile :
+            NavItem.About;
+
+  const isInitialized = true;
+
+  const navigateTo = (page: NavItem) => {
+    navigate(page === NavItem.Quiz ? "/" : `/${page.toLowerCase()}`);
+  }
+
+  const handleTabChange = (_: React.SyntheticEvent, val: NavItem) => {
+    navigateTo(val);
   };
 
-  const handleNavClick = (id: string) => {
-    // Disable non-quiz navigation during active quiz
-    if (isQuizActive && id !== "quiz") {
-      return;
-    }
-    
-    onNavigate(id);
-    setDrawerOpen(false);
-  };
-console.log(user);
   return (
     <AppBar
       position="sticky"
@@ -109,7 +86,7 @@ console.log(user);
         {/* Left: Logo */}
         <Box
           sx={{ display: "flex", alignItems: "center", gap: 1.5, cursor: "pointer" }}
-          onClick={() => onNavigate("quiz")}
+          onClick={() => navigateTo(NavItem.Quiz)}
         >
           <SchoolIcon sx={{ color: "#10b981", fontSize: 28 }} />
           <Box>
@@ -140,15 +117,15 @@ console.log(user);
             }}
           >
             {navItems.map((item) => {
-              const isDisabled = forbidenPages.includes(item.label as NavItem);
+              const isDisabled = forbiddenPages.includes(item.page);
               return (
                 <Tab
-                  key={item.id}
-                  value={item.id}
+                  key={item.page}
+                  value={item.page}
                   disabled={isDisabled}
                   label={
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                      {item.label}
+                      {item.page}
                       {isDisabled && <LockIcon sx={{ fontSize: 12, color: "#475569" }} />}
                     </Box>
                   }
@@ -181,7 +158,7 @@ console.log(user);
                   variant="outlined"
                   size="small"
                   startIcon={<LogoutIcon sx={{ fontSize: 16 }} />}
-                  onClick={() => dispatch({ type: "appState/logOut" })}
+                  onClick={() => { dispatch(logOut()); navigateTo(NavItem.Quiz); }}
                   sx={{
                     borderColor: "rgba(148, 163, 184, 0.2)",
                     color: "#94a3b8",
@@ -204,7 +181,8 @@ console.log(user);
                   variant="outlined"
                   size="small"
                   startIcon={<LoginIcon sx={{ fontSize: 16 }} />}
-                  onClick={onOpenLogin}
+                  //onClick={onOpenLogin}
+                  onClick={() => dispatch(openLoginForm())}
                   sx={{
                     borderColor: "rgba(16, 185, 129, 0.4)",
                     color: "#10b981",
@@ -224,7 +202,8 @@ console.log(user);
                   variant="contained"
                   size="small"
                   startIcon={<PersonAddIcon sx={{ fontSize: 16 }} />}
-                  onClick={onOpenRegister}
+                  //onClick={onOpenRegister}
+                  onClick={() => dispatch(openRegisterForm())}
                   sx={{
                     backgroundColor: "#10b981",
                     color: "#0f172a",
@@ -286,12 +265,12 @@ console.log(user);
             <Divider sx={{ borderColor: "rgba(148, 163, 184, 0.1)", mb: 1 }} />
             <List>
               {navItems.map((item) => {
-                const isDisabled = forbidenPages.includes(item.label as NavItem);
+                const isDisabled = forbiddenPages.includes(item.page);
                 return (
-                  <Box key={item.id}>
+                  <Box key={item.page}>
                     <ListItemButton
-                      selected={currentPage === item.id}
-                      onClick={() => handleNavClick(item.id)}
+                      selected={currentPage === item.page}
+                      onClick={() => { navigateTo(item.page); setDrawerOpen(false); }}
                       disabled={isDisabled}
                       sx={{
                         mx: 1,
@@ -310,19 +289,19 @@ console.log(user);
                         },
                       }}
                     >
-                      <ListItemIcon sx={{ minWidth: 36, color: currentPage === item.id ? "#10b981" : "#64748b" }}>
+                      <ListItemIcon sx={{ minWidth: 36, color: currentPage === item.page ? "#10b981" : "#64748b" }}>
                         {item.icon}
                       </ListItemIcon>
                       <ListItemText
                         primary={
                           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                            {item.label}
+                            {item.page}
                             {isDisabled && <LockIcon sx={{ fontSize: 12, color: "#475569" }} />}
                           </Box>
                         }
                         primaryTypographyProps={{
-                          fontWeight: currentPage === item.id ? 700 : 500,
-                          color: currentPage === item.id ? "#f1f5f9" : "#94a3b8",
+                          fontWeight: currentPage === item.page ? 700 : 500,
+                          color: currentPage === item.page ? "#f1f5f9" : "#94a3b8",
                           fontSize: "0.95rem",
                         }}
                       />
@@ -347,7 +326,8 @@ console.log(user);
                     size="small"
                     startIcon={<LogoutIcon sx={{ fontSize: 16 }} />}
                     onClick={() => {
-                      dispatch({ type: "appState/logOut" });
+                      dispatch(logOut());
+                      navigateTo(NavItem.Quiz);
                       setDrawerOpen(false);
                     }}
                     sx={{
@@ -369,7 +349,7 @@ console.log(user);
                     size="small"
                     startIcon={<LoginIcon sx={{ fontSize: 16 }} />}
                     onClick={() => {
-                      onOpenLogin();
+                      dispatch(openLoginForm());
                       setDrawerOpen(false);
                     }}
                     sx={{
@@ -389,7 +369,7 @@ console.log(user);
                     size="small"
                     startIcon={<PersonAddIcon sx={{ fontSize: 16 }} />}
                     onClick={() => {
-                      onOpenRegister();
+                      dispatch(openRegisterForm());
                       setDrawerOpen(false);
                     }}
                     sx={{

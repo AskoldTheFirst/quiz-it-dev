@@ -56,7 +56,7 @@ export default function TopicCard({ topic, onSelect }: TopicCardProps) {
           alignItems: "stretch",
         }}
       >
-        <CardContent sx={{ p: 3, flex: 1 }}>
+        <CardContent sx={{ p: 3, flex: 1, display: "flex", flexDirection: "column" }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, mb: 2 }}>
             <Box
               sx={{
@@ -82,7 +82,7 @@ export default function TopicCard({ topic, onSelect }: TopicCardProps) {
             {topic.description}
           </Typography>
 
-          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mt: "auto" }}>
             <Typography variant="caption" sx={{ color: "#64748b" }}>
               {topic.questionCount} questions
             </Typography>

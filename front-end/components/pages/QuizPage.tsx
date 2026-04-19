@@ -2,21 +2,19 @@
 
 import { useCallback, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
-import { useAppContext } from "@/components/layout/AppLayout";
 import TopicCard from "@/components/quiz/TopicCard";
 import QuizQuestion from "@/components/quiz/QuizQuestion";
 import QuizResults from "@/components/quiz/QuizResults";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/redux/store";
 import { complete, createTest, decrementTime, setTestData } from "@/redux/testSlice";
-import { setForbidenPages } from "@/redux/appSlice";
+import { openLoginForm, setForbidenPages } from "@/redux/appSlice";
 import { NavItem } from "@/biz/models/NavItems";
 
 export default function QuizPage() {
   const { topics, user } = useSelector((state: RootState) => state.appState);
   const { test, result } = useSelector((state: RootState) => state.testState);
   const dispatch = useAppDispatch();
-  const { openLogin } = useAppContext();
 
   useEffect(() => {
     if (test) {
@@ -57,12 +55,12 @@ export default function QuizPage() {
 
   const handleSelectTopic = useCallback(async (topicName: string) => {
     if (!user) {
-      openLogin();
+      dispatch(openLoginForm());
       return;
     }
 
     await dispatch(createTest(topicName)).unwrap();
-  }, [user, openLogin, dispatch]);
+  }, [user, dispatch]);
 
   if (!test && !result) {
     return (
