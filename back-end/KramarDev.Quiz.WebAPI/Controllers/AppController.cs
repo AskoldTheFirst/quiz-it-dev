@@ -1,5 +1,4 @@
-﻿using KramarDev.Quiz.BLL.Services;
-using KramarDev.Quiz.DAL.Database.Tables;
+﻿using KramarDev.Quiz.DAL.Database.Tables;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,6 +38,7 @@ public sealed class AppController(IApplicationDataStore dataService,
     }
 
     [HttpPost("login")]
+    [RequestSizeLimit(4 * 1024)]
     public async Task<ActionResult<UserModel>> Login(LoginModel login)
     {
         var user = await _userManager.FindByNameAsync(login.Username);
@@ -56,6 +56,7 @@ public sealed class AppController(IApplicationDataStore dataService,
     }
 
     [HttpPost("register")]
+    [RequestSizeLimit(4 * 1024)]
     public async Task<ActionResult<UserModel>> Register(RegisterModel register)
     {
         var user = new User { UserName = register.Username, Email = register.Email };
