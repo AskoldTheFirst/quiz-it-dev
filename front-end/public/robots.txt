@@ -4,5 +4,4 @@ Allow: /
 Disallow: /api
 Disallow: /admin
 
-Host: www.quiz-it.online
 Sitemap: https://www.quiz-it.online/sitemap.xml
