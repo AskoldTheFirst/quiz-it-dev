@@ -32,7 +32,7 @@ public sealed class ProfileModel
             Attempts = dto.Attempts?.Select(a => new AttemptModel
             {
                 Topic = a.Topic,
-                Date = a.Date,
+                Date = a.Date.ToString("dd MMM yyyy h:mm"),
                 AnsweredCount = a.AnsweredCount,
                 QuestionCount = a.QuestionCount,
                 Score = a.Score
@@ -69,7 +69,7 @@ public sealed class AttemptModel
 {
     public string Topic { get; set; }
 
-    public DateTime Date { get; set; }
+    public string Date { get; set; }
 
     public int AnsweredCount { get; set; }
 
