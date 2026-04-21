@@ -1,29 +1,16 @@
 "use client";
 
-import React from "react";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Divider,
-  Chip,
-  Button,
-} from "@mui/material";
+import { Box, Typography, Card, CardContent, Divider, Chip, Button } from "@mui/material";
 import QuizIcon from "@mui/icons-material/Quiz";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import SecurityIcon from "@mui/icons-material/Security";
 import SpeedIcon from "@mui/icons-material/Speed";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import CodeIcon from "@mui/icons-material/Code";
 import WebIcon from "@mui/icons-material/Web";
 import StorageIcon from "@mui/icons-material/Storage";
 import LockIcon from "@mui/icons-material/Lock";
-
-interface AboutProps {
-  onGoToQuiz: () => void;
-}
+import { useRouter } from "next/navigation";
 
 const features = [
   {
@@ -75,7 +62,7 @@ const techStack = {
     { label: "React with Next.js" },
     { label: "Redux Toolkit for state management" },
     { label: "TypeScript for type safety" },
-    { label: "Tailwind CSS for styling" },
+    { label: "Material UI for styling" },
   ],
   backend: [
     { label: "ASP.NET Core REST API" },
@@ -85,7 +72,9 @@ const techStack = {
   ],
 };
 
-export default function About({ onGoToQuiz }: AboutProps) {
+export default function About() {
+  const router = useRouter();
+
   return (
     <Box>
       {/* Header */}
@@ -93,10 +82,13 @@ export default function About({ onGoToQuiz }: AboutProps) {
         <Typography variant="h4" sx={{ color: "#f1f5f9", fontWeight: 800, mb: 1.5 }}>
           About Quiz-IT
         </Typography>
-        <Typography variant="body1" sx={{ color: "#94a3b8", maxWidth: 600, mx: "auto", lineHeight: 1.7 }}>
-          Quiz-IT is a web-based quiz application built to help developers
-          and learners test their knowledge across programming languages,
-          frameworks, databases, and more.
+        <Typography
+          variant="body1"
+          sx={{ color: "#94a3b8", maxWidth: 600, mx: "auto", lineHeight: 1.7 }}
+        >
+          Quiz-IT is a web-based quiz application built to help developers and learners
+          test their knowledge across programming languages, frameworks, databases, and
+          more.
         </Typography>
       </Box>
 
@@ -104,12 +96,28 @@ export default function About({ onGoToQuiz }: AboutProps) {
       <Typography variant="h5" sx={{ color: "#f1f5f9", fontWeight: 700, mb: 2 }}>
         Features
       </Typography>
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" }, gap: 2, mb: 4 }}>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr 1fr" },
+          gap: 2,
+          mb: 4,
+        }}
+      >
         {features.map((feature, index) => (
-          <Card key={index} sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(148, 163, 184, 0.1)" }}>
+          <Card
+            key={index}
+            sx={{
+              backgroundColor: "#1e293b",
+              border: "1px solid rgba(148, 163, 184, 0.1)",
+            }}
+          >
             <CardContent sx={{ p: 3 }}>
               <Box sx={{ color: feature.color, mb: 1.5 }}>{feature.icon}</Box>
-              <Typography variant="h6" sx={{ color: "#f1f5f9", fontWeight: 700, mb: 1, fontSize: "1rem" }}>
+              <Typography
+                variant="h6"
+                sx={{ color: "#f1f5f9", fontWeight: 700, mb: 1, fontSize: "1rem" }}
+              >
                 {feature.title}
               </Typography>
               <Typography variant="body2" sx={{ color: "#94a3b8", lineHeight: 1.6 }}>
@@ -124,15 +132,31 @@ export default function About({ onGoToQuiz }: AboutProps) {
       <Typography variant="h5" sx={{ color: "#f1f5f9", fontWeight: 700, mb: 2 }}>
         Tech Stack
       </Typography>
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, gap: 2, mb: 4 }}>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+          gap: 2,
+          mb: 4,
+        }}
+      >
         {(["frontend", "backend"] as const).map((stack) => (
-          <Card key={stack} sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(148, 163, 184, 0.1)" }}>
+          <Card
+            key={stack}
+            sx={{
+              backgroundColor: "#1e293b",
+              border: "1px solid rgba(148, 163, 184, 0.1)",
+            }}
+          >
             <CardContent sx={{ p: 3 }}>
               <Chip
                 label={stack === "frontend" ? "Frontend" : "Backend"}
                 size="small"
                 sx={{
-                  backgroundColor: stack === "frontend" ? "rgba(16, 185, 129, 0.15)" : "rgba(99, 102, 241, 0.15)",
+                  backgroundColor:
+                    stack === "frontend"
+                      ? "rgba(16, 185, 129, 0.15)"
+                      : "rgba(99, 102, 241, 0.15)",
                   color: stack === "frontend" ? "#10b981" : "#6366f1",
                   mb: 2,
                   fontWeight: 700,
@@ -165,7 +189,9 @@ export default function About({ onGoToQuiz }: AboutProps) {
       </Box>
 
       {/* CTA */}
-      <Card sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(16, 185, 129, 0.2)" }}>
+      <Card
+        sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(16, 185, 129, 0.2)" }}
+      >
         <CardContent sx={{ p: 4, textAlign: "center" }}>
           <Typography variant="h5" sx={{ color: "#f1f5f9", fontWeight: 700, mb: 1 }}>
             Ready to Test Your Knowledge?
@@ -175,7 +201,7 @@ export default function About({ onGoToQuiz }: AboutProps) {
           </Typography>
           <Button
             variant="contained"
-            onClick={onGoToQuiz}
+            onClick={() => router.push("/")}
             sx={{
               backgroundColor: "#10b981",
               color: "#fff",
@@ -187,6 +213,19 @@ export default function About({ onGoToQuiz }: AboutProps) {
           </Button>
         </CardContent>
       </Card>
+      <Typography
+        variant="caption"
+        sx={{ color: "#64748b", mt: 2, textAlign: "center", display: "block" }}
+      >
+        Questions or feedback? Reach out at{" "}
+        <Box
+          component="a"
+          href="mailto:vkramar.biz@gmail.com"
+          sx={{ color: "#10b981", textDecoration: "none" }}
+        >
+          vkramar.biz@gmail.com
+        </Box>
+      </Typography>
     </Box>
   );
 }

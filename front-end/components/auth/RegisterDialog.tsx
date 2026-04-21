@@ -117,7 +117,9 @@ export default function RegisterDialog() {
         },
       }}
     >
-      <DialogTitle sx={{ color: "#f1f5f9", fontWeight: 700, pb: 0 }}>Create Account</DialogTitle>
+      <DialogTitle sx={{ color: "#f1f5f9", fontWeight: 700, pb: 0 }}>
+        Create Account
+      </DialogTitle>
 
       <DialogContent>
         <Typography variant="body2" sx={{ color: "#94a3b8", mb: 2, mt: 1 }}>
@@ -205,22 +207,20 @@ export default function RegisterDialog() {
         </Box>
 
         <Typography variant="caption" sx={{ color: "#64748b", textAlign: "center" }}>
-          <>
-            Already have an account?
-            <Box
-              component="span"
-              onClick={() => dispatch(openLoginForm())}
-              sx={{
-                color: "#10b981",
-                cursor: "pointer",
-                fontWeight: 600,
-                "&:hover": { textDecoration: "underline" },
-              }}
-            >
-              {" "}
-              Sign In
-            </Box>
-          </>
+          Already have an account?
+          <Box
+            component="span"
+            onClick={() => dispatch(openLoginForm())}
+            sx={{
+              color: "#10b981",
+              cursor: "pointer",
+              fontWeight: 600,
+              "&:hover": { textDecoration: "underline" },
+            }}
+          >
+            {" "}
+            Sign In
+          </Box>
         </Typography>
       </DialogActions>
     </Dialog>
