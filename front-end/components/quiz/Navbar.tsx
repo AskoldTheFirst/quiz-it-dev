@@ -35,7 +35,7 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/redux/store";
 import { NavItem } from "@/biz/models/NavItems";
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import { logOut, openLoginForm, openRegisterForm } from "@/redux/appSlice";
+import { closeLoginForm, logOut, openLoginForm, openRegisterForm } from "@/redux/appSlice";
 import { useNavigate } from "react-router-dom";
 
 const navItems = [

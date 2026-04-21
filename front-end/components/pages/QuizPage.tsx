@@ -8,7 +8,7 @@ import QuizResults from "@/components/quiz/QuizResults";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/redux/store";
 import { complete, createTest, decrementTime, setTestData } from "@/redux/testSlice";
-import { openLoginForm, setForbidenPages } from "@/redux/appSlice";
+import { openLoginForm, setForbiddenPages } from "@/redux/appSlice";
 import { NavItem } from "@/biz/models/NavItems";
 
 export default function QuizPage() {
@@ -18,11 +18,11 @@ export default function QuizPage() {
 
   useEffect(() => {
     if (test) {
-      dispatch(setForbidenPages([NavItem.Top, NavItem.Mistakes, NavItem.Profile, NavItem.About]));
+      dispatch(setForbiddenPages([NavItem.Top, NavItem.Mistakes, NavItem.Profile, NavItem.About]));
       return;
     }
 
-    dispatch(setForbidenPages(user ? [] : [NavItem.Profile]));
+    dispatch(setForbiddenPages(user ? [] : [NavItem.Profile]));
   }, [dispatch, test]);
 
   useEffect(() => {

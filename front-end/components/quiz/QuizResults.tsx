@@ -17,7 +17,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import { TestResult } from "@/biz/models/TestResult";
 import { useAppDispatch } from "@/redux/store";
 import { createTest, setTestData } from "@/redux/testSlice";
-import { setForbidenPages } from "@/redux/appSlice";
+import { setForbiddenPages } from "@/redux/appSlice";
 import { NavItem } from "@/biz/models/NavItems";
 
 interface QuizResultsProps {
@@ -46,7 +46,7 @@ export default function QuizResults({ result }: QuizResultsProps) {
 
   const handleRetry = useCallback(async () => {
     await dispatch(createTest(result.topicName));
-    dispatch(setForbidenPages([NavItem.Top, NavItem.Mistakes, NavItem.Profile, NavItem.About]));
+    dispatch(setForbiddenPages([NavItem.Top, NavItem.Mistakes, NavItem.Profile, NavItem.About]));
   }, [dispatch, result]);
 
   const handleGoToQuiz = useCallback(() => {

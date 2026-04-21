@@ -18,7 +18,7 @@ import { useAppDispatch } from "@/redux/store";
 import { answer, cancelTest } from "@/redux/testSlice";
 import { AnswerRequestDto } from "@/biz/dto/AnswerRequestDto";
 import { CurrentTest } from "@/biz/models/CurrentTest";
-import { setForbidenPages } from "@/redux/appSlice";
+import { setForbiddenPages } from "@/redux/appSlice";
 
 interface QuizQuestionProps {
   test: CurrentTest;
@@ -37,7 +37,7 @@ export default function QuizQuestion({ test }: QuizQuestionProps) {
   const handleCancel = useCallback(
     async () => {
       await dispatch(cancelTest(test.testId));
-      dispatch(setForbidenPages([]));
+      dispatch(setForbiddenPages([]));
     }, [test.testId]);
 
   const handleNext = useCallback(
