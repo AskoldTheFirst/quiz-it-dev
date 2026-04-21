@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   Box,
   Typography,
@@ -24,7 +24,13 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/redux/store";
-import { getPage, setPageNumber, setPageSize, setScore, setTopic } from "@/redux/topStatisticsSlice";
+import {
+  getPage,
+  setPageNumber,
+  setPageSize,
+  setScore,
+  setTopic,
+} from "@/redux/topStatisticsSlice";
 
 const getRankColor = (rank: number) => {
   if (rank === 1) return "#fbbf24";
@@ -35,9 +41,7 @@ const getRankColor = (rank: number) => {
 
 const getRankIcon = (rank: number) => {
   if (rank <= 3) {
-    return (
-      <EmojiEventsIcon sx={{ fontSize: 18, color: getRankColor(rank) }} />
-    );
+    return <EmojiEventsIcon sx={{ fontSize: 18, color: getRankColor(rank) }} />;
   }
   return null;
 };
@@ -47,16 +51,6 @@ const getGradeColor = (pct: number) => {
   if (pct >= 60) return "#f59e0b";
   return "#ef4444";
 };
-
-export default function Statistics() {
-  const dispatch = useAppDispatch();
-
-  const { rows, topicId, scoreThreshold, pageSize, pageNumber, totalCount } = useSelector((state: RootState) => state.statState);
-  const { topics } = useSelector((state: RootState) => state.appState);
-
-  useEffect(() => {
-    dispatch(getPage());
-  }, [dispatch, topicId, scoreThreshold, pageSize, pageNumber]);
 
   const selectSx = {
     color: "#f1f5f9",
@@ -90,6 +84,25 @@ export default function Statistics() {
     },
   };
 
+const headerCellSx = {
+  color: "#64748b",
+  fontWeight: 700,
+  borderColor: "rgba(148,163,184,0.08)",
+  fontSize: "0.8rem",
+};
+
+export default function Leaderboard() {
+  const dispatch = useAppDispatch();
+
+  const { rows, topicId, scoreThreshold, pageSize, pageNumber, totalCount } = useSelector(
+    (state: RootState) => state.statState
+  );
+  const { topics } = useSelector((state: RootState) => state.appState);
+
+  useEffect(() => {
+    dispatch(getPage());
+  }, [dispatch, topicId, scoreThreshold, pageSize, pageNumber]);
+
   return (
     <Box>
       {/* Header */}
@@ -103,7 +116,13 @@ export default function Statistics() {
       </Box>
 
       {/* Filters */}
-      <Card sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(148, 163, 184, 0.1)", mb: 3 }}>
+      <Card
+        sx={{
+          backgroundColor: "#1e293b",
+          border: "1px solid rgba(148, 163, 184, 0.1)",
+          mb: 3,
+        }}
+      >
         <CardContent sx={{ p: 2.5, "&:last-child": { pb: 2.5 } }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1, color: "#64748b" }}>
@@ -149,32 +168,20 @@ export default function Statistics() {
       </Card>
 
       {/* Leaderboard Table */}
-      <Card sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(148, 163, 184, 0.1)" }}>
+      <Card
+        sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(148, 163, 184, 0.1)" }}
+      >
         <TableContainer>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
-                  Rank
-                </TableCell>
-                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
-                  User
-                </TableCell>
-                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
-                  Topic
-                </TableCell>
-                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
-                  Score
-                </TableCell>
-                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
-                  Percentage
-                </TableCell>
-                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
-                  Weighted
-                </TableCell>
-                <TableCell sx={{ color: "#64748b", fontWeight: 700, borderColor: "rgba(148,163,184,0.08)", fontSize: "0.8rem" }}>
-                  Date
-                </TableCell>
+                <TableCell sx={headerCellSx}>Rank</TableCell>
+                <TableCell sx={headerCellSx}>User</TableCell>
+                <TableCell sx={headerCellSx}>Topic</TableCell>
+                <TableCell sx={headerCellSx}>Score</TableCell>
+                <TableCell sx={headerCellSx}>Percentage</TableCell>
+                <TableCell sx={headerCellSx}>Weighted</TableCell>
+                <TableCell sx={headerCellSx}>Date</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -184,14 +191,19 @@ export default function Statistics() {
                   <TableRow
                     key={entry.rank}
                     sx={{
-                      backgroundColor: isUser ? "rgba(16, 185, 129, 0.05)" : "transparent",
+                      backgroundColor: isUser
+                        ? "rgba(16, 185, 129, 0.05)"
+                        : "transparent",
                       "&:hover": { backgroundColor: "rgba(148, 163, 184, 0.04)" },
                     }}
                   >
                     <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
                       <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                         {getRankIcon(entry.rank)}
-                        <Typography variant="body2" sx={{ color: getRankColor(entry.rank), fontWeight: 700 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{ color: getRankColor(entry.rank), fontWeight: 700 }}
+                        >
                           #{entry.rank}
                         </Typography>
                       </Box>
@@ -203,13 +215,21 @@ export default function Statistics() {
                             width: 28,
                             height: 28,
                             fontSize: "0.75rem",
-                            backgroundColor: isUser ? "rgba(16,185,129,0.2)" : "rgba(148,163,184,0.1)",
+                            backgroundColor: isUser
+                              ? "rgba(16,185,129,0.2)"
+                              : "rgba(148,163,184,0.1)",
                             color: isUser ? "#10b981" : "#94a3b8",
                           }}
                         >
                           {entry.name[0]}
                         </Avatar>
-                        <Typography variant="body2" sx={{ color: isUser ? "#10b981" : "#e2e8f0", fontWeight: isUser ? 700 : 500 }}>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: isUser ? "#10b981" : "#e2e8f0",
+                            fontWeight: isUser ? 700 : 500,
+                          }}
+                        >
                           {entry.name}
                         </Typography>
                       </Box>
@@ -232,12 +252,21 @@ export default function Statistics() {
                       </Typography>
                     </TableCell>
                     <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
-                      <Typography variant="body2" sx={{ color: getGradeColor(entry.score), fontWeight: 700 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{ color: getGradeColor(entry.score), fontWeight: 700 }}
+                      >
                         {entry.score}%
                       </Typography>
                     </TableCell>
                     <TableCell sx={{ borderColor: "rgba(148,163,184,0.06)", py: 1.5 }}>
-                      <Typography variant="body2" sx={{ color: getGradeColor(entry.weightedScore), fontWeight: 600 }}>
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          color: getGradeColor(entry.weightedScore),
+                          fontWeight: 600,
+                        }}
+                      >
                         {entry.weightedScore}%
                       </Typography>
                     </TableCell>
@@ -251,7 +280,14 @@ export default function Statistics() {
               })}
               {rows.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={7} sx={{ textAlign: "center", py: 4, borderColor: "rgba(148,163,184,0.06)" }}>
+                  <TableCell
+                    colSpan={7}
+                    sx={{
+                      textAlign: "center",
+                      py: 4,
+                      borderColor: "rgba(148,163,184,0.06)",
+                    }}
+                  >
                     <Typography variant="body2" sx={{ color: "#64748b" }}>
                       No results match the selected filters.
                     </Typography>
