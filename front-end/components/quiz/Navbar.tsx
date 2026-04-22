@@ -51,9 +51,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ isInitialized }: NavbarProps) {
-  const { user, forbiddenPages } = useSelector(
-    (state: RootState) => state.appState
-  );
+  const { user, forbiddenPages } = useSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathname = usePathname();
@@ -146,7 +144,9 @@ export default function Navbar({ isInitialized }: NavbarProps) {
                   label={
                     <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                       {item.page}
-                      {isDisabled && <LockIcon sx={{ fontSize: 12, color: "#475569" }} />}
+                      {isDisabled && isInitialized && (
+                        <LockIcon sx={{ fontSize: 12, color: "#475569" }} />
+                      )}
                     </Box>
                   }
                   icon={item.icon}
@@ -345,7 +345,7 @@ export default function Navbar({ isInitialized }: NavbarProps) {
                         primary={
                           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                             {item.page}
-                            {isDisabled && (
+                            {isDisabled && isInitialized && (
                               <LockIcon sx={{ fontSize: 12, color: "#475569" }} />
                             )}
                           </Box>
