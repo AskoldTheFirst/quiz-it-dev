@@ -45,7 +45,7 @@ export default function QuizResults({ result }: QuizResultsProps) {
   const grade = getGrade();
 
   const handleRetry = useCallback(async () => {
-    await dispatch(createTest(result.topicName));
+    await dispatch(createTest(result.topicName)).unwrap();
     dispatch(setForbiddenPages([NavItem.Top, NavItem.Mistakes, NavItem.Profile, NavItem.About]));
   }, [dispatch, result]);
 

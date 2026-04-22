@@ -26,37 +26,45 @@ interface QuizQuestionProps {
 
 export default function QuizQuestion({ test }: QuizQuestionProps) {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useAppDispatch();
 
-  const options = [test.questionAnswer1, test.questionAnswer2, test.questionAnswer3, test.questionAnswer4];
+  const options = [
+    test.questionAnswer1,
+    test.questionAnswer2,
+    test.questionAnswer3,
+    test.questionAnswer4,
+  ];
   const topicColor = test.testColor;
 
-  const progress = ((test.number) / test.totalQuestions) * 100;
+  const progress = (test.number / test.totalQuestions) * 100;
   const isLastQuestion = test.number >= test.totalQuestions;
 
-  const handleCancel = useCallback(
-    async () => {
-      await dispatch(cancelTest(test.testId));
-      dispatch(setForbiddenPages([]));
-    }, [test.testId]);
+  const handleCancel = useCallback(async () => {
+    await dispatch(cancelTest(test.testId));
+    dispatch(setForbiddenPages([]));
+  }, [dispatch, test.testId]);
 
-  const handleNext = useCallback(
-    async () => {
+  const handleNext = useCallback(async () => {
+    if (selectedAnswer == null || isSubmitting) {
+      return;
+    }
 
-      if (selectedAnswer == null) {
-        return;
-      }
+    setIsSubmitting(true);
 
-      const requestDto = {
+    try {
+      const requestDto: AnswerRequestDto = {
         testId: test.testId,
         questionId: test.questionId,
         answerNumber: selectedAnswer + 1,
-      } as AnswerRequestDto;
+      };
 
-      await dispatch(answer(requestDto));
-
+      await dispatch(answer(requestDto)).unwrap();
       setSelectedAnswer(null);
-    }, [test, selectedAnswer]);
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [dispatch, selectedAnswer, test.testId, test.questionId, isSubmitting]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -70,7 +78,14 @@ export default function QuizQuestion({ test }: QuizQuestionProps) {
     <Box sx={{ maxWidth: 720, mx: "auto" }}>
       {/* Header */}
       <Box sx={{ mb: 3 }}>
-        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1.5 }}>
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 1.5,
+          }}
+        >
           <Typography variant="body2" sx={{ color: "#94a3b8" }}>
             Question{" "}
             <Box component="span" sx={{ color: topicColor, fontWeight: 700 }}>
@@ -121,7 +136,10 @@ export default function QuizQuestion({ test }: QuizQuestionProps) {
       </Box>
 
       {/* Question */}
-      <Typography variant="h5" sx={{ color: "#f1f5f9", mb: 3, fontWeight: 700, lineHeight: 1.4 }}>
+      <Typography
+        variant="h5"
+        sx={{ color: "#f1f5f9", mb: 3, fontWeight: 700, lineHeight: 1.4 }}
+      >
         {test.questionText}
       </Typography>
 
@@ -147,7 +165,16 @@ export default function QuizQuestion({ test }: QuizQuestionProps) {
                 },
               }}
             >
-              <CardContent sx={{ display: "flex", alignItems: "center", gap: 2, py: 1.5, px: 2, "&:last-child": { pb: 1.5 } }}>
+              <CardContent
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  py: 1.5,
+                  px: 2,
+                  "&:last-child": { pb: 1.5 },
+                }}
+              >
                 <Box
                   sx={{
                     width: 36,
@@ -156,7 +183,9 @@ export default function QuizQuestion({ test }: QuizQuestionProps) {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    backgroundColor: isSelected ? `${topicColor}25` : "rgba(148,163,184,0.08)",
+                    backgroundColor: isSelected
+                      ? `${topicColor}25`
+                      : "rgba(148,163,184,0.08)",
                     color: isSelected ? topicColor : "#64748b",
                     fontWeight: 700,
                     fontSize: "0.85rem",
@@ -181,10 +210,13 @@ export default function QuizQuestion({ test }: QuizQuestionProps) {
       </Box>
 
       {/* Action buttons */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <Box
+        sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+      >
         <Button
           variant="outlined"
           onClick={handleCancel}
+          disabled={isSubmitting}
           startIcon={<CloseIcon />}
           sx={{
             px: 2.5,
@@ -203,7 +235,7 @@ export default function QuizQuestion({ test }: QuizQuestionProps) {
         </Button>
         <Button
           variant="contained"
-          disabled={selectedAnswer === null}
+          disabled={selectedAnswer === null || isSubmitting}
           onClick={handleNext}
           endIcon={isLastQuestion ? <EmojiEventsIcon /> : <ArrowForwardIcon />}
           sx={{

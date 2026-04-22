@@ -18,12 +18,14 @@ export default function QuizPage() {
 
   useEffect(() => {
     if (test) {
-      dispatch(setForbiddenPages([NavItem.Top, NavItem.Mistakes, NavItem.Profile, NavItem.About]));
+      dispatch(
+        setForbiddenPages([NavItem.Top, NavItem.Mistakes, NavItem.Profile, NavItem.About])
+      );
       return;
     }
 
     dispatch(setForbiddenPages(user ? [] : [NavItem.Profile]));
-  }, [dispatch, test]);
+  }, [dispatch, test, user]);
 
   useEffect(() => {
     return () => {
@@ -41,35 +43,35 @@ export default function QuizPage() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [dispatch, test?.testId]);
+  }, [dispatch, test]);
 
   useEffect(() => {
     if (!test) {
       return;
     }
 
-    if (test.secondsLeft <= 0) {
+    if (test.secondsLeft === 0) {
       dispatch(complete(test.testId));
     }
   }, [dispatch, test?.secondsLeft, test?.testId]);
 
-  const handleSelectTopic = useCallback(async (topicName: string) => {
-    if (!user) {
-      dispatch(openLoginForm());
-      return;
-    }
+  const handleSelectTopic = useCallback(
+    async (topicName: string) => {
+      if (!user) {
+        dispatch(openLoginForm());
+        return;
+      }
 
-    await dispatch(createTest(topicName)).unwrap();
-  }, [user, dispatch]);
+      await dispatch(createTest(topicName)).unwrap();
+    },
+    [user, dispatch]
+  );
 
   if (!test && !result) {
     return (
       <>
         <Box sx={{ textAlign: "center", mb: 4 }}>
-          <Typography
-            variant="h3"
-            sx={{ color: "#f1f5f9", fontWeight: 800, mb: 1.5 }}
-          >
+          <Typography variant="h3" sx={{ color: "#f1f5f9", fontWeight: 800, mb: 1.5 }}>
             Test Your Knowledge
           </Typography>
           <Typography
