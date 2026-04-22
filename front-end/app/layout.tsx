@@ -58,6 +58,7 @@ export const metadata: Metadata = {
     title: "Quiz-IT – Test Your Programming Skills",
     description:
       "Practice quizzes for C#, SQL, JavaScript, React, and .NET.",
+    images: ["https://www.quiz-it.online/img.png"],
   },
   icons: {
     icon: [

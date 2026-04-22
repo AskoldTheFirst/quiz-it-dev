@@ -1,19 +1,22 @@
 "use client";
 
-import { Outlet } from "react-router-dom";
 import { Box, Typography, Container } from "@mui/material";
 import Navbar from "@/components/quiz/Navbar";
 import LoginDialog from "../auth/LoginDialog";
 import RegisterDialog from "../auth/RegisterDialog";
+import { ReactNode } from "react";
 
-export default function AppLayout() {
+interface AppLayoutProps {
+  children: ReactNode;
+}
 
+export default function AppLayout({ children }: AppLayoutProps) {
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Navbar />
 
       <Container maxWidth="lg" sx={{ flex: 1, py: 4 }}>
-        <Outlet />
+        {children}
       </Container>
 
       {/* Footer */}
@@ -32,7 +35,6 @@ export default function AppLayout() {
       {/* Auth Dialogs */}
       <LoginDialog />
       <RegisterDialog />
-
     </Box>
   );
 }

@@ -34,9 +34,9 @@ import LockIcon from "@mui/icons-material/Lock";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "@/redux/store";
 import { NavItem } from "@/biz/models/NavItems";
-import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import { closeLoginForm, logOut, openLoginForm, openRegisterForm } from "@/redux/appSlice";
-import { useNavigate } from "react-router-dom";
+import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
+import { logOut, openLoginForm, openRegisterForm } from "@/redux/appSlice";
+import { usePathname, useRouter } from "next/navigation";
 
 const navItems = [
   { page: NavItem.Quiz, icon: <QuizIcon fontSize="small" /> },
@@ -47,27 +47,29 @@ const navItems = [
 ];
 
 export default function Navbar() {
-
-  const { user, forbiddenPages } = useSelector((state: RootState) => state.appState);
+  const { user, forbiddenPages, isInitialized } = useSelector((state: RootState) => state.appState);
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const [drawerOpen, setDrawerOpen] = React.useState(false);
 
   const currentPage: NavItem =
-    location.pathname === "/" ? NavItem.Quiz :
-      location.pathname === "/top" ? NavItem.Top :
-        location.pathname === "/mistakes" ? NavItem.Mistakes :
-          location.pathname === "/profile" ? NavItem.Profile :
-            NavItem.About;
-
-  const isInitialized = true;
+    pathname === "/"
+      ? NavItem.Quiz
+      : pathname === "/top"
+        ? NavItem.Top
+        : pathname === "/mistakes"
+          ? NavItem.Mistakes
+          : pathname === "/profile"
+            ? NavItem.Profile
+            : NavItem.About;
 
   const navigateTo = (page: NavItem) => {
-    navigate(page === NavItem.Quiz ? "/" : `/${page.toLowerCase()}`);
-  }
+    router.push(page === NavItem.Quiz ? "/" : `/${page.toLowerCase()}`);
+  };
 
   const handleTabChange = (_: React.SyntheticEvent, val: NavItem) => {
     navigateTo(val);
@@ -90,7 +92,15 @@ export default function Navbar() {
         >
           <SchoolIcon sx={{ color: "#10b981", fontSize: 28 }} />
           <Box>
-            <Typography variant="h6" sx={{ color: "#f1f5f9", fontWeight: 800, fontSize: "1.1rem", lineHeight: 1.2 }}>
+            <Typography
+              variant="h6"
+              sx={{
+                color: "#f1f5f9",
+                fontWeight: 800,
+                fontSize: "1.1rem",
+                lineHeight: 1.2,
+              }}
+            >
               Quiz-IT
             </Typography>
             <Typography variant="caption" sx={{ color: "#64748b", fontSize: "0.65rem" }}>
@@ -113,7 +123,11 @@ export default function Navbar() {
                 minHeight: 48,
                 "&.Mui-selected": { color: "#10b981" },
               },
-              "& .MuiTabs-indicator": { backgroundColor: "#10b981", height: 2.5, borderRadius: 2 },
+              "& .MuiTabs-indicator": {
+                backgroundColor: "#10b981",
+                height: 2.5,
+                borderRadius: 2,
+              },
             }}
           >
             {navItems.map((item) => {
@@ -143,13 +157,24 @@ export default function Navbar() {
 
         {/* Right: Auth Buttons */}
         {!isMobile && (
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, minWidth: 180, justifyContent: "flex-end" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+              minWidth: 180,
+              justifyContent: "flex-end",
+            }}
+          >
             {!isInitialized ? null : user ? (
               <>
                 <Tooltip title={user.email}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <PersonIcon sx={{ color: "#10b981", fontSize: 20 }} />
-                    <Typography variant="body2" sx={{ color: "#e2e8f0", fontWeight: 600, fontSize: "0.85rem" }}>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#e2e8f0", fontWeight: 600, fontSize: "0.85rem" }}
+                    >
                       {user.login}
                     </Typography>
                   </Box>
@@ -158,7 +183,10 @@ export default function Navbar() {
                   variant="outlined"
                   size="small"
                   startIcon={<LogoutIcon sx={{ fontSize: 16 }} />}
-                  onClick={() => { dispatch(logOut()); navigateTo(NavItem.Quiz); }}
+                  onClick={() => {
+                    dispatch(logOut());
+                    navigateTo(NavItem.Quiz);
+                  }}
                   sx={{
                     borderColor: "rgba(148, 163, 184, 0.2)",
                     color: "#94a3b8",
@@ -250,7 +278,14 @@ export default function Navbar() {
           }}
         >
           <Box sx={{ p: 2 }}>
-            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2,
+              }}
+            >
               <Typography variant="h6" sx={{ color: "#f1f5f9", fontWeight: 700 }}>
                 Quiz-IT
               </Typography>
@@ -270,7 +305,10 @@ export default function Navbar() {
                   <Box key={item.page}>
                     <ListItemButton
                       selected={currentPage === item.page}
-                      onClick={() => { navigateTo(item.page); setDrawerOpen(false); }}
+                      onClick={() => {
+                        navigateTo(item.page);
+                        setDrawerOpen(false);
+                      }}
                       disabled={isDisabled}
                       sx={{
                         mx: 1,
@@ -289,14 +327,21 @@ export default function Navbar() {
                         },
                       }}
                     >
-                      <ListItemIcon sx={{ minWidth: 36, color: currentPage === item.page ? "#10b981" : "#64748b" }}>
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 36,
+                          color: currentPage === item.page ? "#10b981" : "#64748b",
+                        }}
+                      >
                         {item.icon}
                       </ListItemIcon>
                       <ListItemText
                         primary={
                           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
                             {item.page}
-                            {isDisabled && <LockIcon sx={{ fontSize: 12, color: "#475569" }} />}
+                            {isDisabled && (
+                              <LockIcon sx={{ fontSize: 12, color: "#475569" }} />
+                            )}
                           </Box>
                         }
                         primaryTypographyProps={{
@@ -316,7 +361,10 @@ export default function Navbar() {
                 <>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
                     <PersonIcon sx={{ color: "#10b981", fontSize: 20 }} />
-                    <Typography variant="body2" sx={{ color: "#e2e8f0", fontWeight: 600 }}>
+                    <Typography
+                      variant="body2"
+                      sx={{ color: "#e2e8f0", fontWeight: 600 }}
+                    >
                       {user.login}
                     </Typography>
                   </Box>

@@ -16,6 +16,7 @@ export interface AppState {
   forbiddenPages: NavItem[];
   isLoginDialogOpen: boolean;
   isRegisterDialogOpen: boolean;
+  isInitialized: boolean;
 }
 
 const initialState: AppState = {
@@ -24,6 +25,7 @@ const initialState: AppState = {
   forbiddenPages: [NavItem.Profile],
   isLoginDialogOpen: false,
   isRegisterDialogOpen: false,
+  isInitialized: false,
 };
 
 function applyUserState(state: AppState, user: UserDto | null) {
@@ -114,10 +116,12 @@ export const appSlice = createSlice({
   extraReducers: (builder) => {
     // initState
     builder.addCase(initState.fulfilled, (state, action) => {
+      state.isInitialized = true;
       state.topics = action.payload.topics.map(mapTopic);
       applyUserState(state, action.payload.user);
     });
-    builder.addCase(initState.rejected, (_, action) => {
+    builder.addCase(initState.rejected, (state, action) => {
+      state.isInitialized = true;
       console.log("initState.rejected", action.payload);
     });
 
