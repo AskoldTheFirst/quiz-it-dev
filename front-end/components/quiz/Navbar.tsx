@@ -46,8 +46,14 @@ const navItems = [
   { page: NavItem.About, icon: <InfoIcon fontSize="small" /> },
 ];
 
-export default function Navbar() {
-  const { user, forbiddenPages, isInitialized } = useSelector((state: RootState) => state.appState);
+interface NavbarProps {
+  isInitialized: boolean;
+}
+
+export default function Navbar({ isInitialized }: NavbarProps) {
+  const { user, forbiddenPages } = useSelector(
+    (state: RootState) => state.appState
+  );
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathname = usePathname();

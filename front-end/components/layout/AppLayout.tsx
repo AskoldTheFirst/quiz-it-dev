@@ -4,16 +4,23 @@ import { Box, Typography, Container } from "@mui/material";
 import Navbar from "@/components/quiz/Navbar";
 import LoginDialog from "../auth/LoginDialog";
 import RegisterDialog from "../auth/RegisterDialog";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
+import React from "react";
 
 interface AppLayoutProps {
   children: ReactNode;
 }
 
 export default function AppLayout({ children }: AppLayoutProps) {
+  const [initialized, setInitialized] = React.useState(false);
+
+  useEffect(() => {
+    setInitialized(true);
+  }, []);
+    
   return (
     <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Navbar />
+      <Navbar isInitialized={initialized} />
 
       <Container maxWidth="lg" sx={{ flex: 1, py: 4 }}>
         {children}
