@@ -105,7 +105,7 @@ export const testSlice = createSlice({
       }
       state.result = null;
     });
-    builder.addCase(current.rejected, (_state, action) => {
+    builder.addCase(current.rejected, (_, action) => {
       console.log("current.rejected", action.payload);
     });
 
@@ -114,7 +114,7 @@ export const testSlice = createSlice({
       state.test = mapCurrentTest(action.payload);
       state.result = null;
     });
-    builder.addCase(createTest.rejected, (_state, action) => {
+    builder.addCase(createTest.rejected, (_, action) => {
       console.log("createTest.rejected", action.payload);
     });
 
@@ -123,7 +123,7 @@ export const testSlice = createSlice({
       state.test = null;
       state.result = null;
     });
-    builder.addCase(cancelTest.rejected, (_state, action) => {
+    builder.addCase(cancelTest.rejected, (_, action) => {
       console.log("cancelTest.rejected", action.payload);
     });
 
@@ -150,7 +150,7 @@ export const testSlice = createSlice({
         console.log("answer.fulfilled: unexpected payload", ap);
       }
     });
-    builder.addCase(answer.rejected, (state, action) => {
+    builder.addCase(answer.rejected, (_, action) => {
       console.log("answer.rejected", action.payload);
     });
 
@@ -159,7 +159,7 @@ export const testSlice = createSlice({
       state.test = null;
       state.result = mapTestResult(action.payload);
     });
-    builder.addCase(complete.rejected, (_state, action) => {
+    builder.addCase(complete.rejected, (_, action) => {
       console.log("complete.rejected", action.payload);
     });
   },

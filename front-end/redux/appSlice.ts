@@ -117,7 +117,7 @@ export const appSlice = createSlice({
       state.topics = action.payload.topics.map(mapTopic);
       applyUserState(state, action.payload.user);
     });
-    builder.addCase(initState.rejected, (state, action) => {
+    builder.addCase(initState.rejected, (_, action) => {
       console.log("initState.rejected", action.payload);
     });
 
