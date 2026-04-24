@@ -4,7 +4,6 @@ using KramarDev.Quiz.DAL.Database;
 using KramarDev.Quiz.DAL.Database.Tables;
 using KramarDev.Quiz.DALAbstractions;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace KramarDev.Quiz.WebAPI;
@@ -25,14 +24,6 @@ public class Program
         builder.Services.AddCustomSwagger();
         builder.Services.AddDbContext<QuizDbContext>(opt =>
         {
-            var connectionString = builder.Configuration.GetConnectionString("QuizDbConnection")
-                ?? throw new InvalidOperationException("Connection string 'QuizDbConnection' was not found.");
-
-            var csb = new SqlConnectionStringBuilder(connectionString);
-
-            Console.WriteLine(
-                $"SQL Server={csb.DataSource}; Database={csb.InitialCatalog}; Encrypt={csb.Encrypt}; TrustServerCertificate={csb.TrustServerCertificate}");
-
             opt.UseSqlServer(connectionString, sqlOptions =>
             {
                 sqlOptions.EnableRetryOnFailure();
@@ -75,9 +66,6 @@ public class Program
         {
             var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
             await uow.UpdateDbAsync();
-
-            //var cacheService = scope.ServiceProvider.GetRequiredService<IAppCacheService>();
-            //await cacheService.InitializeCacheAsync();
 
             var dataStore = scope.ServiceProvider.GetRequiredService<IApplicationDataStore>();
             await dataStore.InitializeAsync();
