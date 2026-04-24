@@ -1,3 +1,4 @@
+using KramarDev.Quiz.WebAPI.Model.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,10 +25,10 @@ public class TestsController(ITestService testService) : BaseController
 
     [Authorize]
     [HttpPost("create")]
-    public async Task<ActionResult<TestModel>> Create([FromQuery] string topicName, CancellationToken cancellationToken)
+    public async Task<ActionResult<TestModel>> Create([FromBody] CreateTestRequest request, CancellationToken cancellationToken)
     {
         TestDto testDto = await _testService.CreateTestAsync(
-            topicName, UserName, IpAddress, cancellationToken);
+            request.TopicName, UserName, IpAddress, cancellationToken);
 
         return Ok(TestModel.FromBL(testDto));
     }
@@ -44,17 +45,17 @@ public class TestsController(ITestService testService) : BaseController
 
     [Authorize]
     [HttpPost("cancel")]
-    public async Task<ActionResult> Cancel([FromQuery] int testId)
+    public async Task<ActionResult> Cancel([FromBody] CancelTestRequest request)
     {
-        await _testService.CancelTestAsync(UserName, testId);
+        await _testService.CancelTestAsync(UserName, request.TestId);
         return Ok();
     }
 
     [Authorize]
     [HttpPost("complete")]
-    public async Task<ActionResult<TestResultModel>> Complete([FromQuery] int testId)
+    public async Task<ActionResult<TestResultModel>> Complete([FromBody] CompleteTestRequest request)
     {
-        TestResultDto resultDto = await _testService.CompleteAsync(testId, UserName);
+        TestResultDto resultDto = await _testService.CompleteAsync(request.TestId, UserName);
         return Ok(TestResultModel.FromBLL(resultDto));
     }
 }

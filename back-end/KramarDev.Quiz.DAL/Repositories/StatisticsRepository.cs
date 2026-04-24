@@ -111,7 +111,7 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
                         .Where(q =>
                             (topicId == 0 || q.TopicId == topicId) &&
                             q.IsActive &&
-                            (q.CorrectAnswerCount + q.WrongAnswerCount) > 3);
+                            q.WrongAnswerCount > 3);
 
         query = byTotal
             ? query.OrderByDescending(q => q.WrongAnswerCount)
