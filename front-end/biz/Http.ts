@@ -1,81 +1,103 @@
 import { store } from "@/redux/store";
-import axios, { AxiosError, AxiosResponse } from "axios";
+import axios, { AxiosError, AxiosInstance, AxiosResponse } from "axios";
 import { AnswerRequestDto } from "./dto/AnswerRequestDto";
 import { MistakesRequestDto } from "./dto/MistakesRequestDto";
 import { StatisticsRequestDto } from "./dto/StatisticsRequestDto";
+import { TestDto } from "./dto/TestDto";
+import { AnswerResponseDto } from "./dto/AnswerResponseDto";
+import { TestResultDto } from "./dto/TestResultDto";
+import { AppStateDto } from "./dto/AppStateDto";
+import { UserDto } from "./dto/UserDto";
+import { MistakeDto } from "./dto/MistakeDto";
+import { ProfileDto } from "./dto/profile/ProfileDto";
+import { StatisticsPageDto } from "./dto/StatisticsPageDto";
 
-//axios.defaults.baseURL = 'https://localhost:7072/api/';
-axios.defaults.baseURL = 'https://quiz-it-api-a6fsfcdfg3gnb6ee.westeurope-01.azurewebsites.net/api/';
-axios.defaults.withCredentials = false;
-axios.defaults.timeout = 60000;
-
-const responseBody = (response: AxiosResponse) => response.data;
-
-axios.interceptors.request.use(config => {
-    const token = store.getState().appState.user?.token;
-    if (token)
-        config.headers.Authorization = `Bearer ${token}`;
-
-    return config;
+const api: AxiosInstance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "https://localhost:7072/api/",
+  withCredentials: false,
+  timeout: 60000,
 });
 
-axios.interceptors.response.use(async response => {
-    return response;
-}, /*not 2xx responce range*/(error: AxiosError) => {
-    const { data, status } = error.response as AxiosResponse;
+const responseBody = <T>(response: AxiosResponse<T>): T => response.data;
 
-    switch (status) {
-        case 400:
-            break;
-        case 401:
-            break;
-        case 404:
-            break;
-        case 500:
-            //router.navigate('/server-error', { state: { error: data } });
-            break;
-        default:
-            break;
+api.interceptors.request.use((config) => {
+  const token = store.getState().appState.user?.token;
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
+api.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError) => {
+    if (!error.response) {
+      console.log("Network/API error:", error.message);
+      return Promise.reject({
+        status: 0,
+        message: "Network error or server is unavailable.",
+      });
     }
 
-    console.log("response error: " + status);
-
+    const { status, data } = error.response;
+    console.log("response error:", status, data);
     return Promise.reject(data);
-});
+  }
+);
 
 const requests = {
-    get: (url: string, params?: any) => axios.get(url, { params }).then(responseBody),
-    post: (url: string, body: object) => axios.post(url, body).then(responseBody),
-    put: (url: string, body: object) => axios.put(url, body).then(responseBody),
-    delete: (url: string) => axios.delete(url).then(responseBody),
-}
+  get: <T>(url: string, params?: object, signal?: AbortSignal) =>
+    api.get<T>(url, { params, signal }).then(responseBody),
+
+  post: <T>(url: string, body?: object, signal?: AbortSignal) =>
+    api.post<T>(url, body ?? {}, { signal }).then(responseBody),
+
+  put: <T>(url: string, body?: object, signal?: AbortSignal) =>
+    api.put<T>(url, body ?? {}, { signal }).then(responseBody),
+
+  delete: <T>(url: string, signal?: AbortSignal) =>
+    api.delete<T>(url, { signal }).then(responseBody),
+};
 
 const App = {
-    initState: () => requests.get('app/init-state'),
-    login: (values: any) => requests.post('app/login', values),
-    register: (values: any) => requests.post('app/register', values),
-    currentUser: () => requests.get('app/currentUser'),
-}
+  initState: () => requests.get<AppStateDto>("app/init-state"),
+  login: (values: object) => requests.post<UserDto>("app/login", values),
+  register: (values: object) => requests.post<UserDto>("app/register", values),
+  currentUser: () => requests.get("app/currentUser"),
+};
 
 const Test = {
-    current: () => requests.get('tests/current'),
-    create: (topicName: string) => requests.post(`tests/create?topicName=${topicName}`, {}),
-    cancel: (testId: number) => requests.post(`tests/cancel?testId=${testId}`, {}),
-    answer: (requestModel: AnswerRequestDto) => requests.post('tests/answer', requestModel),
-    complete: (testId: number) => requests.post(`tests/complete?testId=${testId}`, {}),
-}
+  current: () => requests.get<TestDto>("tests/current"),
+
+  create: (topicName: string) => requests.post<TestDto>("tests/create", { topicName }),
+
+  cancel: (testId: number) => requests.post<void>("tests/cancel", { testId }),
+
+  answer: (requestModel: AnswerRequestDto) =>
+    requests.post<AnswerResponseDto>("tests/answer", requestModel),
+
+  complete: (testId: number) =>
+    requests.post<TestResultDto>("tests/complete", { testId }),
+};
 
 const Statistics = {
-    page: (requestMode: StatisticsRequestDto) => requests.get('statistics/page', requestMode),
-    profile: () => requests.get('statistics/profile'),
-    hide: () => requests.put('statistics/hide', {}),
-    mistakes: (requestModel: MistakesRequestDto) => requests.get('statistics/mistakes', requestModel),
-}
+  page: (requestModel: StatisticsRequestDto, signal?: AbortSignal) =>
+    requests.get<StatisticsPageDto>("statistics/page", requestModel, signal),
+
+  profile: () => requests.get<ProfileDto>("statistics/profile"),
+
+  hide: () => requests.put<ProfileDto>("statistics/hide"),
+
+  mistakes: (requestModel: MistakesRequestDto, signal?: AbortSignal) =>
+    requests.get<MistakeDto[]>("statistics/mistakes", requestModel, signal),
+};
 
 const Http = {
-    App,
-    Test,
-    Statistics,
-}
+  App,
+  Test,
+  Statistics,
+};
 
 export default Http;

@@ -33,22 +33,22 @@ export const current = createAsyncThunk<TestDto>("test/current", async (_, thunk
   }
 });
 
-export const createTest = createAsyncThunk<TestDto, string>(
+export const createTest = createAsyncThunk<TestDto, string, { rejectValue: any }>(
   "test/createTest",
   async (topicName, thunkAPI) => {
     try {
-      return await Http.Test.create(encodeURIComponent(topicName));
+      return await Http.Test.create(topicName);
     } catch (error: any) {
-      return thunkAPI.rejectWithValue({ error: error.status });
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
 
-export const cancelTest = createAsyncThunk<void, number>(
+export const cancelTest = createAsyncThunk<void, number, { rejectValue: any }>(
   "test/cancelTest",
   async (testId, thunkAPI) => {
     try {
-      return await Http.Test.cancel(testId);
+      await Http.Test.cancel(testId);
     } catch (error: any) {
       return thunkAPI.rejectWithValue({ error: error.status });
     }
@@ -145,8 +145,7 @@ export const testSlice = createSlice({
       } else if (ap.testResult) {
         state.result = mapTestResult(ap.testResult);
         state.test = null;
-      }
-      else{
+      } else {
         console.log("answer.fulfilled: unexpected payload", ap);
       }
     });
