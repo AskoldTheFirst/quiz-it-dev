@@ -1,0 +1,12 @@
+{
+  "routes": [
+    {
+      "route": "/*",
+      "redirect": "https://quiz-it.online/:path",
+      "statusCode": 301,
+      "conditions": {
+        "host": ["www.quiz-it.online"]
+      }
+    }
+  ]
+}
