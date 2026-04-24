@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace KramarDev.Quiz.DAL.Database.Migrations
 {
     [DbContext(typeof(QuizDbContext))]
-    [Migration("20260414231250_InitialCreate")]
+    [Migration("20260424140527_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -63,7 +63,7 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("TopicId")
                         .HasColumnType("int");
@@ -72,6 +72,9 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Text")
+                        .IsUnique();
 
                     b.HasIndex("TopicId");
 

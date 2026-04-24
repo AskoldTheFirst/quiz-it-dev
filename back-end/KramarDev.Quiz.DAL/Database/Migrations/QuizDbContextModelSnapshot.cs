@@ -60,7 +60,7 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("TopicId")
                         .HasColumnType("int");
@@ -69,6 +69,9 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Text")
+                        .IsUnique();
 
                     b.HasIndex("TopicId");
 
