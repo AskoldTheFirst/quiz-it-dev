@@ -184,7 +184,7 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Text = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Answer1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Answer2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Answer3 = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -316,12 +316,6 @@ namespace KramarDev.Quiz.DAL.Database.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Questions_Text",
-                table: "Questions",
-                column: "Text",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Questions_TopicId",

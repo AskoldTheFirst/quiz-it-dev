@@ -40,10 +40,6 @@ public class QuizDbContext : IdentityDbContext<User>
             .HasPrincipalKey(e => e.Id)
             .OnDelete(DeleteBehavior.Restrict);
 
-        builder.Entity<Question>()
-            .HasIndex(q => q.Text)
-            .IsUnique();
-
         builder.Entity<Topic>()
             .HasMany(e => e.Questions)
             .WithOne(e => e.Topic)

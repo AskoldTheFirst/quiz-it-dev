@@ -3,3 +3,5 @@
 **/bin/
 **/obj/
 .vs
+appsettings.Development.json
+appsettings.json
