@@ -17,7 +17,7 @@ public sealed class AppController(IApplicationDataStore dataService,
         AppStateModel model = new();
 
         TopicDto[] topics = _dataService.GetTopics();
-        model.Topics = DtoMapper.FromBLL(topics);
+        model.Topics = topics.Select(t => TopicModel.FromBLL(t)).ToArray();
 
         if (UserName != null)
         {

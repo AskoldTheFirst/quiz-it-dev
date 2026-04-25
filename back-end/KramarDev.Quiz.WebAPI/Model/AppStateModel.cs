@@ -1,4 +1,6 @@
-﻿namespace KramarDev.Quiz.WebAPI.Model;
+﻿using KramarDev.Quiz.DALAbstractions.Dto;
+
+namespace KramarDev.Quiz.WebAPI.Model;
 
 public sealed class AppStateModel
 {
@@ -20,4 +22,17 @@ public sealed record TopicModel
     public int DurationInMinute { get; init; }
 
     public string ThemeColor { get; init; }
+
+    public static TopicModel FromBLL(BLLAbstractions.Dto.TopicDto dto)
+    {
+        return new TopicModel
+        {
+            Id = dto.Id,
+            Name = dto.Name,
+            Description = dto.Description,
+            QuestionCount = dto.QuestionCount,
+            DurationInMinute = dto.DurationInMinutes,
+            ThemeColor = dto.ThemeColor,
+        };
+    }
 }
