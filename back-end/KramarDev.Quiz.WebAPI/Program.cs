@@ -45,7 +45,7 @@ public class Program
 
         builder.Services.AddJwtAuthentication(builder.Configuration);
         builder.Services.AddAuthorization();
-        builder.Services.AddScoped<TokenService>();
+        builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<ITestService, TestService>();

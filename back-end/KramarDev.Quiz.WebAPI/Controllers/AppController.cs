@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace KramarDev.Quiz.WebAPI.Controllers;
 
 public sealed class AppController(IApplicationDataStore dataService,
-    UserManager<User> userManager, TokenService tokenService) : BaseController
+    UserManager<User> userManager, IJwtTokenGenerator tokenService) : BaseController
 {
     readonly IApplicationDataStore _dataService = dataService;
     readonly UserManager<User> _userManager = userManager;
-    readonly TokenService _tokenService = tokenService;
+    readonly IJwtTokenGenerator _tokenService = tokenService;
 
     [HttpGet("init-state")]
     public async Task<ActionResult<AppStateModel>> GetInitialStateAsync()
