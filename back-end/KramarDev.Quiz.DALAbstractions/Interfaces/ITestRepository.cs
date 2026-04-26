@@ -17,4 +17,6 @@ public interface ITestRepository
     Task<bool> CanAnswerQuestionAsync(int testId, int questionId, string userName, CancellationToken cancellationToken = default);
 
     Task CancelTestAndSaveAsync(string userName, int testId, CancellationToken cancellationToken = default);
+
+    Task<TestDto> GetTestAsync(int testId, CancellationToken cancellationToken = default);
 }

@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace KramarDev.Quiz.WebAPI.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class TestsController(ITestService testService) : BaseController
+public sealed class TestsController(ITestService testService) : BaseController
 {
     private readonly ITestService _testService = testService;
 
@@ -35,7 +33,7 @@ public class TestsController(ITestService testService) : BaseController
 
     [Authorize]
     [HttpPost("answer")]
-    public async Task<ActionResult<AnswerResponseModel>> Answer([FromBody] AnswerRequestModel requestModel)
+    public async Task<ActionResult<AnswerResponseModel>> Answer([FromBody] AnswerRequest requestModel)
     {
         AnswerResponseDto responseDto = await _testService.AnswerAndNextAsync(
             requestModel.TestId, requestModel.QuestionId, requestModel.AnswerNumber, UserName);

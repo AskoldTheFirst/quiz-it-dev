@@ -1,6 +1,6 @@
-﻿namespace KramarDev.Quiz.WebAPI.Model;
+﻿namespace KramarDev.Quiz.WebAPI.Model.Request;
 
-public sealed class StatisticsRequestModel
+public sealed class StatisticsRequest
 {
     public int TopicId { get; set; }
 
@@ -10,7 +10,7 @@ public sealed class StatisticsRequestModel
 
     public int PageNumber { get; set; }
 
-    public static StatisticsRequestDto ToBLL(StatisticsRequestModel model)
+    public static StatisticsRequestDto ToBLL(StatisticsRequest model)
     {
         return new StatisticsRequestDto(model.TopicId, model.ScoreThreshold, model.PageSize, model.PageNumber);
     }

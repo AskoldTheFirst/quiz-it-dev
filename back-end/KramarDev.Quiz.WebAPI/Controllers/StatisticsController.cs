@@ -1,10 +1,9 @@
+using KramarDev.Quiz.WebAPI.Model.Request;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace KramarDev.Quiz.WebAPI.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
 public class StatisticsController(IStatisticsService statisticsService, ITestService testService) : BaseController
 {
     private readonly IStatisticsService _statisticsService = statisticsService;
@@ -12,10 +11,10 @@ public class StatisticsController(IStatisticsService statisticsService, ITestSer
 
     [HttpGet("page")]
     public async Task<ActionResult<StatisticsPageModel>> Page(
-        [FromQuery] StatisticsRequestModel param, CancellationToken cancellationToken)
+        [FromQuery] StatisticsRequest param, CancellationToken cancellationToken)
     {
         return StatisticsPageModel.FromBLL(
-            await _statisticsService.GetStatisticsPageAsync(StatisticsRequestModel.ToBLL(param), cancellationToken));
+            await _statisticsService.GetStatisticsPageAsync(StatisticsRequest.ToBLL(param), cancellationToken));
     }
 
     [Authorize]
@@ -28,10 +27,10 @@ public class StatisticsController(IStatisticsService statisticsService, ITestSer
 
     [HttpGet("mistakes")]
     public async Task<ActionResult<MistakeModel[]>> Mistakes(
-        [FromQuery] MistakesRequestModel param, CancellationToken cancellationToken)
+        [FromQuery] MistakesRequest param, CancellationToken cancellationToken)
     {
         return MistakeModel.FromBLL(
-            await _statisticsService.GetMistakesAsync(MistakesRequestModel.ToBLL(param), cancellationToken));
+            await _statisticsService.GetMistakesAsync(MistakesRequest.ToBLL(param), cancellationToken));
     }
 
     [Authorize]

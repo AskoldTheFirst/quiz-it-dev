@@ -1,6 +1,6 @@
-﻿namespace KramarDev.Quiz.WebAPI.Model;
+﻿namespace KramarDev.Quiz.WebAPI.Model.Request;
 
-public sealed record AnswerRequestModel
+public sealed record AnswerRequest
 {
     public int TestId { get; init; }
 

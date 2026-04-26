@@ -4,9 +4,9 @@ public sealed record ProfileDto
 {
     public ProfileSummaryDto Summary { get; init; }
 
-    public PerformanceByTopicDto[] Topics { get; init; }
+    public PerformanceByTopicDto[] Topics { get; init; } = [];
 
-    public AttemptDto[] Attempts { get; init; }
+    public AttemptDto[] Attempts { get; init; } = [];
 }
 
 public sealed record ProfileSummaryDto

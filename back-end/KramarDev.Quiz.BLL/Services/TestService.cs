@@ -13,7 +13,7 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
         string ipAddress, CancellationToken cancellationToken = default)
     {
         BL.TopicDto topic = _dataService.GetTopicByName(topicName);
-        NewTestData testData = await GenerateRandomQuestionsForTestAsync(topic);
+        NewTestData testData = GenerateRandomQuestionsForTest(topic);
 
         DAL.NewTestDto newTest = new()
         {
@@ -42,9 +42,21 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
     public async Task<AnswerResponseDto> AnswerAndNextAsync(int testId,
         int questionId, byte answerNumber, string userName, CancellationToken cancellationToken = default)
     {
-        await SubmitAnswerAsync(testId, questionId, answerNumber, userName, cancellationToken);
+        var currentTest = await _uow.TestRepository.GetTestAsync(testId, cancellationToken);
+        if (userName != currentTest.Username)
+        {
+            throw new UnauthorizedAccessException("The test does not belong to the current user.");
+        }
 
-        QuestionDto nextQuestion = await GetNextQuestionAsync(testId, userName, cancellationToken);
+        int durationInMin = _dataService.GetTopicById(currentTest.TopicId).DurationInMinutes;
+        bool isTestStillAlive = DateTime.UtcNow < currentTest.StartDate.AddMinutes(durationInMin);
+
+        QuestionDto nextQuestion = null;
+        if (isTestStillAlive)
+        {
+            await SubmitAnswerAsync(testId, questionId, answerNumber, userName, cancellationToken);
+            nextQuestion = await GetNextQuestionAsync(testId, userName, cancellationToken);
+        }
 
         // If there is a next question, return it immediately
         if (nextQuestion != null)
@@ -83,6 +95,12 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
 
         DateTime now = DateTime.UtcNow;
         int secondsLeft = topic.DurationInMinutes * 60 - (int)(now - dalTestDto.StartDate).TotalSeconds;
+
+        if (secondsLeft <= 0)
+        {
+            await BuildAndCompleteTestAsync(testId.Value, userName, cancellationToken);
+            return null;
+        }
 
         BL.TestDto testDto = new()
         {
@@ -192,9 +210,9 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
         return dto;
     }
 
-    private async Task<NewTestData> GenerateRandomQuestionsForTestAsync(BL.TopicDto topic)
+    private NewTestData GenerateRandomQuestionsForTest(BL.TopicDto topic)
     {
-        var (ids, totalPoints) = await GenerateTestQuestions(topic.Name, topic.QuestionCount);
+        var (ids, totalPoints) = GenerateTestQuestions(topic.Name, topic.QuestionCount);
 
         return new NewTestData
         {
@@ -204,7 +222,7 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
         };
     }
 
-    private async Task<(int[], int)> GenerateTestQuestions(string topicName, int questionAmount)
+    private (int[], int) GenerateTestQuestions(string topicName, int questionAmount)
     {
         int[] easyIds = _dataService.GetEasyQuestionIds(topicName);
         int[] middleIds = _dataService.GetMediumQuestionIds(topicName);
@@ -283,6 +301,9 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
 
     private static int CalculateScore(int earned, int total)
     {
+        if (total == 0)
+            return 0;
+
         return (int)Math.Round((earned / (double)total) * 100, MidpointRounding.AwayFromZero);
     }
 }

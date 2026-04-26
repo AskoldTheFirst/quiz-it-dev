@@ -1,8 +1,9 @@
 ﻿using DAL = KramarDev.Quiz.DALAbstractions.Dto;
+using BL = KramarDev.Quiz.BLLAbstractions.Dto;
 
 namespace KramarDev.Quiz.BLL;
 
-static class DtoMapper
+internal static class DtoMapper
 {
     public static AnswerDto[] FromDAL(DAL.AnswerResultDto[] dto)
     {
@@ -24,7 +25,7 @@ static class DtoMapper
     public static TopicDto[] FromDAL(DAL.TopicDto[] dto)
     {
         TopicDto[] topics = new TopicDto[dto.Length];
-        for (int i = 0; i < topics.Length; ++i)
+        for (int i = 0; i < dto.Length; ++i)
         {
             topics[i] = new TopicDto
             {
@@ -44,6 +45,7 @@ static class DtoMapper
     {
         QuestionDto question = new QuestionDto
         {
+            // DAL stores zero-based question index; UI displays one-based numbering.
             Number = dto.Number + 1,
             TestId = dto.TestId,
             QuestionId = dto.QuestionId,
@@ -82,44 +84,45 @@ static class DtoMapper
         return rows;
     }
 
-    public static BLLAbstractions.Dto.ProfileDto FromDAL(DAL.ProfileDto dto)
+    public static BL.ProfileDto FromDAL(DAL.ProfileDto dto)
     {
-        if (dto == null) return null;
+        if (dto == null)
+            return null;
 
-        return new BLLAbstractions.Dto.ProfileDto
+        return new BL.ProfileDto
         {
-            Summary = new BLLAbstractions.Dto.ProfileSummaryDto
+            Summary = new BL.ProfileSummaryDto
             {
                 TotalAttemptCount = dto.Summary.TotalAttemptCount,
                 AverageScore = dto.Summary.AverageScore,
                 BestScore = dto.Summary.BestScore,
                 AnswerCount = dto.Summary.AnswerCount
             },
-            Topics = dto.Topics?.Select(t => new BLLAbstractions.Dto.PerformanceByTopicDto
+            Topics = dto.Topics?.Select(t => new BL.PerformanceByTopicDto
             {
                 Topic = t.Topic,
                 Best = t.Best,
                 Average = t.Average,
                 AttemptCount = t.AttemptCount,
                 Color = t.Color
-            }).ToArray(),
-            Attempts = dto.Attempts?.Select(a => new BLLAbstractions.Dto.AttemptDto
+            }).ToArray() ?? [],
+            Attempts = dto.Attempts?.Select(a => new BL.AttemptDto
             {
                 Topic = a.Topic,
                 Date = a.Date,
                 AnsweredCount = a.AnsweredCount,
                 QuestionCount = a.QuestionCount,
                 Score = a.Score
-            }).ToArray()
+            }).ToArray() ?? []
         };
     }
 
-    public static BLLAbstractions.Dto.MistakeDto[] FromDAL(DAL.MistakeDto[] dto)
+    public static BL.MistakeDto[] FromDAL(DAL.MistakeDto[] dto)
     {
-        var mistakes = new BLLAbstractions.Dto.MistakeDto[dto.Length];
+        var mistakes = new BL.MistakeDto[dto.Length];
         for (int i = 0; i < dto.Length; ++i)
         {
-            mistakes[i] = new BLLAbstractions.Dto.MistakeDto
+            mistakes[i] = new BL.MistakeDto
             {
                 QuestionText = dto[i].QuestionText,
                 TopicName = dto[i].TopicName,

@@ -1,6 +1,6 @@
-﻿namespace KramarDev.Quiz.WebAPI.Model;
+﻿namespace KramarDev.Quiz.WebAPI.Model.Request;
 
-public sealed record MistakesRequestModel
+public sealed record MistakesRequest
 {
     public int TopicId { get; init; }
 
@@ -8,7 +8,7 @@ public sealed record MistakesRequestModel
 
     public int TopCount { get; init; }
 
-    public static MistakesRequestDto ToBLL(MistakesRequestModel model)
+    public static MistakesRequestDto ToBLL(MistakesRequest model)
     {
         return new MistakesRequestDto(model.TopicId, model.ByTotal, model.TopCount);
     }

@@ -3,7 +3,7 @@ namespace KramarDev.Quiz.BLLAbstractions.Dto;
 
 public sealed record StatisticsPageDto
 {
-    public RowDto[] Rows { get; init; }
+    public RowDto[] Rows { get; init; } = [];
 
     public int TotalCount { get; init; }
 }

@@ -14,6 +14,7 @@ public sealed class ApplicationDataStore(IServiceScopeFactory scopeFactory) : IA
     private Dictionary<string, int[]> _mediumQuestionIds = new(StringComparer.OrdinalIgnoreCase);
     private Dictionary<string, int[]> _hardQuestionIds = new(StringComparer.OrdinalIgnoreCase);
 
+    private readonly SemaphoreSlim _initializeLock = new(1, 1);
     private volatile bool _isInitialized;
 
     public async Task InitializeAsync()
@@ -21,44 +22,58 @@ public sealed class ApplicationDataStore(IServiceScopeFactory scopeFactory) : IA
         if (_isInitialized)
             return;
 
-        await using var scope = _scopeFactory.CreateAsyncScope();
-        var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        await _initializeLock.WaitAsync();
 
-        var dalTopics = await uow.TopicRepository.GetTopicsAsync();
-        TopicDto[] topics = DtoMapper.FromDAL(dalTopics);
-
-        var topicsById = new Dictionary<int, TopicDto>(topics.Length);
-        var topicsByName = new Dictionary<string, TopicDto>(topics.Length, StringComparer.OrdinalIgnoreCase);
-
-        var easyQuestionIds = new Dictionary<string, int[]>(topics.Length, StringComparer.OrdinalIgnoreCase);
-        var mediumQuestionIds = new Dictionary<string, int[]>(topics.Length, StringComparer.OrdinalIgnoreCase);
-        var hardQuestionIds = new Dictionary<string, int[]>(topics.Length, StringComparer.OrdinalIgnoreCase);
-
-        for (int i = 0; i < topics.Length; ++i)
+        try
         {
-            TopicDto topic = topics[i];
+            if (_isInitialized)
+            {
+                return;
+            }
 
-            topicsById[topic.Id] = topic;
-            topicsByName[topic.Name] = topic;
+            await using var scope = _scopeFactory.CreateAsyncScope();
+            var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-            easyQuestionIds[topic.Name] = await uow.QuestionRepository
-                .GetAllQuestionsAsync(topic.Name, Difficulty.Easy);
+            var dalTopics = await uow.TopicRepository.GetTopicsAsync();
+            TopicDto[] topics = DtoMapper.FromDAL(dalTopics);
 
-            mediumQuestionIds[topic.Name] = await uow.QuestionRepository
-                .GetAllQuestionsAsync(topic.Name, Difficulty.Medium);
+            var topicsById = new Dictionary<int, TopicDto>(topics.Length);
+            var topicsByName = new Dictionary<string, TopicDto>(topics.Length, StringComparer.OrdinalIgnoreCase);
 
-            hardQuestionIds[topic.Name] = await uow.QuestionRepository
-                .GetAllQuestionsAsync(topic.Name, Difficulty.Hard);
+            var easyQuestionIds = new Dictionary<string, int[]>(topics.Length, StringComparer.OrdinalIgnoreCase);
+            var mediumQuestionIds = new Dictionary<string, int[]>(topics.Length, StringComparer.OrdinalIgnoreCase);
+            var hardQuestionIds = new Dictionary<string, int[]>(topics.Length, StringComparer.OrdinalIgnoreCase);
+
+            for (int i = 0; i < topics.Length; ++i)
+            {
+                TopicDto topic = topics[i];
+
+                topicsById[topic.Id] = topic;
+                topicsByName[topic.Name] = topic;
+
+                easyQuestionIds[topic.Name] = await uow.QuestionRepository
+                    .GetAllQuestionsAsync(topic.Name, Difficulty.Easy);
+
+                mediumQuestionIds[topic.Name] = await uow.QuestionRepository
+                    .GetAllQuestionsAsync(topic.Name, Difficulty.Medium);
+
+                hardQuestionIds[topic.Name] = await uow.QuestionRepository
+                    .GetAllQuestionsAsync(topic.Name, Difficulty.Hard);
+            }
+
+            _topics = topics;
+            _topicsById = topicsById;
+            _topicsByName = topicsByName;
+            _easyQuestionIds = easyQuestionIds;
+            _mediumQuestionIds = mediumQuestionIds;
+            _hardQuestionIds = hardQuestionIds;
+
+            _isInitialized = true;
         }
-
-        _topics = topics;
-        _topicsById = topicsById;
-        _topicsByName = topicsByName;
-        _easyQuestionIds = easyQuestionIds;
-        _mediumQuestionIds = mediumQuestionIds;
-        _hardQuestionIds = hardQuestionIds;
-
-        _isInitialized = true;
+        finally
+        {
+            _initializeLock.Release();
+        }
     }
 
     public int[] GetEasyQuestionIds(string topicName)
@@ -111,7 +126,7 @@ public sealed class ApplicationDataStore(IServiceScopeFactory scopeFactory) : IA
         throw new InvalidOperationException($"Topic '{name}' was not found.");
     }
 
-    public TopicDto[] GetTopics()
+    public IReadOnlyList<TopicDto> GetTopics()
     {
         EnsureInitialized();
         return _topics;

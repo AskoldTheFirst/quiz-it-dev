@@ -9,7 +9,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
     {
         int questionAmount = newTest.QuestionIds.Length;
 
-        Test test = new ()
+        Test test = new()
         {
             TopicId = newTest.TopicId,
             Username = newTest.Username,
@@ -91,7 +91,7 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                            !t.FinishDate.HasValue &&
                            !t.IsHidden &&
                            t.State == TestState.Created &&
-                           EF.Functions.DateDiffMinute(now, t.StartDate) < tt.DurationInMinutes
+                           EF.Functions.DateDiffMinute(t.StartDate, now) < tt.DurationInMinutes
                         orderby t.StartDate descending
                         select t.Id).FirstOrDefaultAsync(cancellationToken);
 
@@ -163,5 +163,20 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
 
         if (rows == 0)
             throw new InvalidOperationException("Test was not found");
+    }
+
+    public Task<TestDto> GetTestAsync(int testId, CancellationToken cancellationToken = default)
+    {
+        return (from t in Ctx.Tests
+                where t.Id == testId
+                select new TestDto
+                {
+                    Username = t.Username,
+                    FinishDate = t.FinishDate,
+                    IpAddress = t.IpAddress,
+                    IsHidden = t.IsHidden,
+                    StartDate = t.StartDate,
+                    TopicId = t.TopicId,
+                }).SingleOrDefaultAsync();
     }
 }

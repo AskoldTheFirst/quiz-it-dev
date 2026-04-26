@@ -20,7 +20,7 @@ public sealed record TestResultDto
 
     public int AnsweredCount { get; init; }
 
-    public AnswerDto[] Answers { get; init; }
+    public AnswerDto[] Answers { get; init; } = [];
 }
 
 public sealed record AnswerDto

@@ -4,7 +4,7 @@ public interface IApplicationDataStore
 {
     Task InitializeAsync();
 
-    TopicDto[] GetTopics();
+    IReadOnlyList<TopicDto> GetTopics();
 
     TopicDto GetTopicById(int id);
 

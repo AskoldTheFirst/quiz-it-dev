@@ -1,6 +1,7 @@
 ﻿using KramarDev.Quiz.DAL.Database.Tables;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 
 namespace KramarDev.Quiz.WebAPI.Controllers;
 
@@ -16,7 +17,7 @@ public sealed class AppController(IApplicationDataStore dataService,
     {
         AppStateModel model = new();
 
-        TopicDto[] topics = _dataService.GetTopics();
+        IReadOnlyList<TopicDto> topics = _dataService.GetTopics();
         model.Topics = topics.Select(t => TopicModel.FromBLL(t)).ToArray();
 
         if (UserName != null)
@@ -59,6 +60,8 @@ public sealed class AppController(IApplicationDataStore dataService,
     [RequestSizeLimit(4 * 1024)]
     public async Task<ActionResult<UserModel>> Register(RegisterModel register)
     {
+        const string MemberRole = "Member";
+
         var user = new User { UserName = register.Username, Email = register.Email };
 
         var result = await _userManager.CreateAsync(user, register.Password);
@@ -73,7 +76,17 @@ public sealed class AppController(IApplicationDataStore dataService,
             return ValidationProblem();
         }
 
-        await _userManager.AddToRoleAsync(user, "Member");
+        var roleResult = await _userManager.AddToRoleAsync(user, MemberRole);
+
+        if (!roleResult.Succeeded)
+        {
+            foreach (var error in roleResult.Errors)
+            {
+                ModelState.AddModelError(error.Code, error.Description);
+            }
+
+            return ValidationProblem();
+        }
 
         return new UserModel
         {
