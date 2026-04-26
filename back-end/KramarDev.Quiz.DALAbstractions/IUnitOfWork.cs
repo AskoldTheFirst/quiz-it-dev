@@ -12,13 +12,15 @@ public interface IUnitOfWork : IDisposable, IAsyncDisposable
 
     IStatisticsRepository StatisticsRepository { get; }
 
-    Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted);
+    Task BeginTransactionAsync(
+        IsolationLevel isolationLevel = IsolationLevel.ReadCommitted,
+        CancellationToken cancellationToken = default);
 
-    Task CommitTransactionAsync();
+    Task CommitTransactionAsync(CancellationToken cancellationToken = default);
 
-    Task RollbackTransactionAsync();
+    Task RollbackTransactionAsync(CancellationToken cancellationToken = default);
 
-    Task<int> SaveAsync();
+    Task<int> SaveAsync(CancellationToken cancellationToken = default);
 
-    Task UpdateDbAsync();
+    Task UpdateDbAsync(CancellationToken cancellationToken = default);
 }

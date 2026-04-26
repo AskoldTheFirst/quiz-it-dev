@@ -8,7 +8,7 @@ public interface ITestRepository
 
     Task AnswerAndSaveAsync(QuestionAnswerDto answer, CancellationToken cancellationToken = default);
 
-    Task CompleteTestAndSaveAsync(string userName, int testId, int finalScore, int finalWeightedScore, int answeredCount, int earnedPoints, CancellationToken cancellationToken = default);
+    Task CompleteTestAndSaveAsync(CompleteTestDto dto, CancellationToken cancellationToken = default);
 
     Task<int?> GetActiveTestByUserAsync(string userName, CancellationToken cancellationToken = default);
 

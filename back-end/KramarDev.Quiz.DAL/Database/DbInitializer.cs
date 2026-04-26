@@ -6,7 +6,7 @@ public static class DbInitializer
     // dotnet ef migrations add InitialCreate -o Database/Migrations
 
     // Add any initials here.
-    public static void Initialize(QuizDbContext ctx)
+    public static async Task InitializeAsync(QuizDbContext ctx, CancellationToken cancellationToken = default)
     {
         bool shouldWeSubmit = false;
         Topic[] techArray = new Topic[7];
@@ -2899,7 +2899,7 @@ public static class DbInitializer
 
         if (shouldWeSubmit)
         {
-            ctx.SaveChanges();
+            await ctx.SaveChangesAsync(cancellationToken);
         }
     }
 }

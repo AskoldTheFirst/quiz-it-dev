@@ -1,5 +1,6 @@
-﻿using DAL = KramarDev.Quiz.DALAbstractions.Dto;
+﻿using KramarDev.Quiz.DALAbstractions.Dto;
 using BL = KramarDev.Quiz.BLLAbstractions.Dto;
+using DAL = KramarDev.Quiz.DALAbstractions.Dto;
 
 namespace KramarDev.Quiz.BLL.Services;
 
@@ -25,8 +26,21 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
             TotalPoints = testData.TotalPoints,
         };
 
-        int testId = await _uow.TestRepository.CreateTestAsync(newTest, cancellationToken);
-        BL.QuestionDto firstQuestion = await GetNextQuestionAsync(testId, userName, cancellationToken);
+        int testId = 0;
+        BL.QuestionDto firstQuestion = null;
+
+        try
+        {
+            await _uow.BeginTransactionAsync(System.Data.IsolationLevel.ReadCommitted, cancellationToken);
+            testId = await _uow.TestRepository.CreateTestAsync(newTest, cancellationToken);
+            firstQuestion = await GetNextQuestionAsync(testId, userName, cancellationToken);
+            await _uow.CommitTransactionAsync(cancellationToken);
+        }
+        catch
+        {
+            await _uow.RollbackTransactionAsync(cancellationToken);
+            throw;
+        }
 
         return new BL.TestDto
         {
@@ -51,7 +65,7 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
         int durationInMin = _dataService.GetTopicById(currentTest.TopicId).DurationInMinutes;
         bool isTestStillAlive = DateTime.UtcNow < currentTest.StartDate.AddMinutes(durationInMin);
 
-        QuestionDto nextQuestion = null;
+        BL.QuestionDto nextQuestion = null;
         if (isTestStillAlive)
         {
             await SubmitAnswerAsync(testId, questionId, answerNumber, userName, cancellationToken);
@@ -204,8 +218,10 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
             TopicName = topic.Name
         };
 
-        await _uow.TestRepository.CompleteTestAndSaveAsync(userName, testId, finalScore, finalWeightedScore,
-            answeredCount, earnedPoints, cancellationToken);
+        var dtoParam = new CompleteTestDto(userName, testId, finalScore,
+            finalWeightedScore, answeredCount, earnedPoints);
+
+        await _uow.TestRepository.CompleteTestAndSaveAsync(dtoParam, cancellationToken);
 
         return dto;
     }

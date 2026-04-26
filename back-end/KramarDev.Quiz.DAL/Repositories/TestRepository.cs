@@ -21,7 +21,6 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
         };
 
         Ctx.Tests.Add(test);
-
         await Ctx.SaveChangesAsync(cancellationToken);
 
         TestQuestion[] generatedQuestions = new TestQuestion[questionAmount];
@@ -54,7 +53,11 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
     public async Task AnswerAndSaveAsync(QuestionAnswerDto answer, CancellationToken cancellationToken = default)
     {
         int rows = await Ctx.TestQuestions
-            .Where(tq => tq.TestId == answer.TestId && tq.QuestionId == answer.QuestionId)
+            .Where(tq =>
+                tq.TestId == answer.TestId &&
+                tq.QuestionId == answer.QuestionId &&
+                tq.AnswerDate == null &&
+                tq.RequestDate != null)
             .ExecuteUpdateAsync(setters =>
                 setters.SetProperty(tq => tq.AnswerNumber, answer.AnswerNumber)
                         .SetProperty(tq => tq.AnswerPoints, answer.AnswerPoints)
@@ -64,11 +67,17 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
             throw new InvalidOperationException("Question was not found");
     }
 
-    public async Task CompleteTestAndSaveAsync(string userName, int testId,
-        int finalScore, int finalWeightedScore, int answeredCount, int earnedPoints, CancellationToken cancellationToken = default)
+    public async Task CompleteTestAndSaveAsync(CompleteTestDto dto, CancellationToken cancellationToken = default)
     {
+        var (userName, testId, finalScore, finalWeightedScore, answeredCount, earnedPoints) = dto;
+
         int rows = await Ctx.Tests
-            .Where(t => t.Id == testId && t.Username == userName)
+            .Where(t =>
+                t.Id == testId &&
+                t.Username == userName &&
+                t.State == TestState.Created &&
+                t.FinishDate == null &&
+                !t.IsHidden)
             .ExecuteUpdateAsync(setters =>
                 setters.SetProperty(t => t.FinalScore, finalScore)
                         .SetProperty(t => t.FinalWeightedScore, finalWeightedScore)
@@ -156,7 +165,12 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
     public async Task CancelTestAndSaveAsync(string userName, int testId, CancellationToken cancellationToken = default)
     {
         int rows = await Ctx.Tests
-            .Where(t => t.Id == testId && t.Username == userName)
+            .Where(t =>
+                t.Id == testId &&
+                t.Username == userName &&
+                t.State == TestState.Created &&
+                t.FinishDate == null &&
+                !t.IsHidden)
             .ExecuteUpdateAsync(setters =>
                 setters.SetProperty(t => t.State, TestState.Cancelled)
                         .SetProperty(t => t.FinishDate, DateTime.UtcNow), cancellationToken);
@@ -177,6 +191,6 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
                     IsHidden = t.IsHidden,
                     StartDate = t.StartDate,
                     TopicId = t.TopicId,
-                }).SingleOrDefaultAsync();
+                }).SingleOrDefaultAsync(cancellationToken);
     }
 }

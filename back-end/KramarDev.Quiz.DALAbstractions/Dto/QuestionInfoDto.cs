@@ -2,7 +2,7 @@
 
 public sealed record QuestionInfoDto
 {
-    public int CorrectAnswerNumber { get; init; }
+    public byte CorrectAnswerNumber { get; init; }
 
     public int TopicId { get; init; }
 }

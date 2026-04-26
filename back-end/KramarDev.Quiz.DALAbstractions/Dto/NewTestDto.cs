@@ -12,5 +12,5 @@ public sealed record NewTestDto
 
     public int TotalPoints { get; init; }
 
-    public int[] QuestionIds { get; init; }
+    public int[] QuestionIds { get; init; } = [];
 }

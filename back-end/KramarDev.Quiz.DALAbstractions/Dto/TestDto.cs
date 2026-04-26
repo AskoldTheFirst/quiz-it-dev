@@ -3,15 +3,15 @@ namespace KramarDev.Quiz.DALAbstractions.Dto;
 
 public sealed record TestDto
 {
-    public int TopicId { get; set; }
+    public int TopicId { get; init; }
 
-    public string Username { get; set; }
+    public string Username { get; init; }
 
-    public DateTime StartDate { get; set; }
+    public DateTime StartDate { get; init; }
 
-    public DateTime? FinishDate { get; set; }
+    public DateTime? FinishDate { get; init; }
 
-    public string IpAddress { get; set; }
+    public string IpAddress { get; init; }
 
-    public bool IsHidden { get; set; }
+    public bool IsHidden { get; init; }
 }

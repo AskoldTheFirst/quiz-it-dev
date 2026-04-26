@@ -64,7 +64,10 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
         // Performance by topic
         var topics = await (from t in Ctx.Tests
                             join te in Ctx.Topics on t.TopicId equals te.Id
-                            where t.Username == userName && t.State == TestState.Completed
+                            where
+                                t.Username == userName &&
+                                t.State == TestState.Completed &&
+                                !t.IsHidden
                             group t by new { te.Name, te.ThemeColor } into grp
                             select new PerformanceByTopicDto
                             {
@@ -78,7 +81,10 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
         // Attempts
         var attempts = await (from t in Ctx.Tests
                               join te in Ctx.Topics on t.TopicId equals te.Id
-                              where t.Username == userName && t.State == TestState.Completed
+                              where
+                                t.Username == userName &&
+                                t.State == TestState.Completed &&
+                                !t.IsHidden
                               orderby t.FinishDate descending
                               select new AttemptDto
                               {

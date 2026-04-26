@@ -12,40 +12,47 @@ public sealed class UnitOfWork : IUnitOfWork
     public UnitOfWork(QuizDbContext ctx)
     {
         _ctx = ctx;
+
+        TestRepository = new TestRepository(_ctx);
+        QuestionRepository = new QuestionRepository(_ctx);
+        TopicRepository = new TopicRepository(_ctx);
+        StatisticsRepository = new StatisticsRepository(_ctx);
     }
 
-    public ITestRepository TestRepository => new TestRepository(_ctx);
+    public ITestRepository TestRepository { get; }
 
-    public IQuestionRepository QuestionRepository => new QuestionRepository(_ctx);
+    public IQuestionRepository QuestionRepository { get; }
 
-    public ITopicRepository TopicRepository => new TopicRepository(_ctx);
+    public ITopicRepository TopicRepository { get; }
 
-    public IStatisticsRepository StatisticsRepository => new StatisticsRepository(_ctx);
+    public IStatisticsRepository StatisticsRepository { get; }
 
-    public async Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted)
+    public Task BeginTransactionAsync(
+        IsolationLevel isolationLevel = IsolationLevel.ReadCommitted,
+        CancellationToken cancellationToken = default)
     {
-        await _ctx.Database.BeginTransactionAsync(isolationLevel);
+        return _ctx.Database.BeginTransactionAsync(isolationLevel, cancellationToken);
     }
 
-    public async Task CommitTransactionAsync()
+    public Task CommitTransactionAsync(CancellationToken cancellationToken = default)
     {
-        await _ctx.Database.CommitTransactionAsync();
+        return _ctx.Database.CommitTransactionAsync(cancellationToken);
     }
 
-    public async Task RollbackTransactionAsync()
+    public Task RollbackTransactionAsync(CancellationToken cancellationToken = default)
     {
-        await _ctx.Database.RollbackTransactionAsync();
+        return _ctx.Database.RollbackTransactionAsync(cancellationToken);
     }
 
-    public async Task<int> SaveAsync()
+    public Task<int> SaveAsync(CancellationToken cancellationToken = default)
     {
-        return await _ctx.SaveChangesAsync();
+        return _ctx.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task UpdateDbAsync()
+    public async Task UpdateDbAsync(CancellationToken cancellationToken = default)
     {
-        await _ctx.Database.MigrateAsync();
-        DbInitializer.Initialize(_ctx);
+        await _ctx.Database.MigrateAsync(cancellationToken);
+        await DbInitializer.InitializeAsync(_ctx, cancellationToken);
     }
 
     public void Dispose()
