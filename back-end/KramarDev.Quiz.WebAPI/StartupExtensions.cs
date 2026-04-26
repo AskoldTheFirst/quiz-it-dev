@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
@@ -39,16 +41,35 @@ public static class StartupExtensions
         return services;
     }
 
-    public static IServiceCollection AddAppCors(this IServiceCollection services, string policyName)
+    public static IServiceCollection AddAppCors(this IServiceCollection services, string policyName, bool isProduction)
     {
         services.AddCors(options =>
         {
             options.AddPolicy(policyName, policy =>
             {
-                policy.AllowAnyHeader()
-                      .AllowAnyMethod()
-                      .AllowCredentials()
-                      .SetIsOriginAllowed(_ => true);
+                if (isProduction)
+                {
+
+                    policy
+                        .WithOrigins(
+                            "https://quiz-it.online",
+                            "https://www.quiz-it.online")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .SetPreflightMaxAge(TimeSpan.FromDays(1));
+                }
+                else
+                {
+                    policy
+                        .WithOrigins(
+                            "http://localhost:3000",
+                            "http://localhost:3004",
+                            "http://127.0.0.1:3000",
+                            "http://127.0.0.1:3004")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .SetPreflightMaxAge(TimeSpan.FromDays(1));
+                }
             });
         });
 
@@ -89,6 +110,49 @@ public static class StartupExtensions
                 c.ConfigObject.AdditionalItems["persistAuthorization"] = "true";
             });
         }
+
+        return app;
+    }
+
+    public static WebApplication UseAppExceptionHandler(this WebApplication app)
+    {
+        app.UseExceptionHandler(errorApp =>
+        {
+            errorApp.Run(async context =>
+            {
+                var logger = context.RequestServices
+                    .GetRequiredService<ILoggerFactory>()
+                    .CreateLogger("GlobalExceptionHandler");
+
+                var env = context.RequestServices
+                    .GetRequiredService<IHostEnvironment>();
+
+                var exceptionFeature = context.Features
+                    .Get<IExceptionHandlerFeature>();
+
+                var exception = exceptionFeature?.Error;
+
+                if (exception is not null)
+                {
+                    logger.LogError(exception, "Unhandled exception occurred.");
+                }
+
+                context.Response.Clear();
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                context.Response.ContentType = "application/problem+json";
+
+                var problem = new ProblemDetails
+                {
+                    Status = StatusCodes.Status500InternalServerError,
+                    Title = "An unexpected error occurred.",
+                    Detail = env.IsDevelopment()
+                        ? exception?.Message
+                        : "Please try again later."
+                };
+
+                await context.Response.WriteAsJsonAsync(problem);
+            });
+        });
 
         return app;
     }

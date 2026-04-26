@@ -10,7 +10,7 @@ namespace KramarDev.Quiz.WebAPI;
 
 public class Program
 {
-    private const string CorsPolicyName = "AllowAllDev";
+    private const string CorsPolicyName = "QuizCORS";
 
     public static async Task Main(string[] args)
     {
@@ -30,7 +30,7 @@ public class Program
             });
         });
         
-        builder.Services.AddAppCors(CorsPolicyName);
+        builder.Services.AddAppCors(CorsPolicyName, builder.Environment.IsProduction());
         builder.Services.AddIdentityCore<User>(opt =>
         {
             opt.Password.RequireUppercase = false;
@@ -55,6 +55,7 @@ public class Program
         builder.Services.AddMemoryCache();
 
         var app = builder.Build();
+        app.UseAppExceptionHandler();
         app.UseCustomSwagger(app.Environment);
         app.UseHttpsRedirection();
         app.UseCors(CorsPolicyName);
@@ -71,6 +72,6 @@ public class Program
             await dataStore.InitializeAsync();
         }
 
-        app.Run();
+        await app.RunAsync();
     }
 }
