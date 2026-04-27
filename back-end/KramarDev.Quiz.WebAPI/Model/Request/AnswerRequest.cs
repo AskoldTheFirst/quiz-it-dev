@@ -1,4 +1,6 @@
-﻿namespace KramarDev.Quiz.WebAPI.Model.Request;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace KramarDev.Quiz.WebAPI.Model.Request;
 
 public sealed record AnswerRequest
 {
@@ -6,5 +8,6 @@ public sealed record AnswerRequest
 
     public int QuestionId { get; init; }
 
+    [Range(1, 4)]
     public byte AnswerNumber { get; init; }
 }

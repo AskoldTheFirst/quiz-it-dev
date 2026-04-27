@@ -3,6 +3,7 @@ using KramarDev.Quiz.DAL;
 using KramarDev.Quiz.DAL.Database;
 using KramarDev.Quiz.DAL.Database.Tables;
 using KramarDev.Quiz.DALAbstractions;
+using KramarDev.Quiz.WebAPI.Controllers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -43,6 +44,7 @@ public class Program
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<QuizDbContext>();
 
+        builder.Services.AddAppRateLimiting(BaseController.RateLimiterName);
         builder.Services.AddJwtAuthentication(builder.Configuration);
         builder.Services.AddAuthorization();
         builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
@@ -60,6 +62,7 @@ public class Program
         app.UseCustomSwagger(app.Environment);
         app.UseHttpsRedirection();
         app.UseCors(CorsPolicyName);
+        app.UseRateLimiter();
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();

@@ -48,7 +48,7 @@ public sealed class JwtTokenGenerator(UserManager<User> userManager, IConfigurat
             issuer: null,
             audience: null,
             claims: claims,
-            expires: DateTime.UtcNow.AddDays(7),
+            expires: DateTime.UtcNow.AddDays(1),
             signingCredentials: creds
         );
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
@@ -173,5 +174,22 @@ public static class StartupExtensions
         });
 
         return app;
+    }
+
+    public static IServiceCollection AddAppRateLimiting(this IServiceCollection services, string rateLimitName)
+    {
+        services.AddRateLimiter(options =>
+        {
+            options.AddFixedWindowLimiter(rateLimitName, limiterOptions =>
+            {
+                limiterOptions.PermitLimit = 10;
+                limiterOptions.Window = TimeSpan.FromMinutes(1);
+                limiterOptions.QueueLimit = 0;
+            });
+
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+        });
+
+        return services;
     }
 }

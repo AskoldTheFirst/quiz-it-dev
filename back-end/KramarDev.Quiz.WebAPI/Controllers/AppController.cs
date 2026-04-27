@@ -1,6 +1,7 @@
 ﻿using KramarDev.Quiz.DAL.Database.Tables;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Rewrite;
 
 namespace KramarDev.Quiz.WebAPI.Controllers;
@@ -39,6 +40,7 @@ public sealed class AppController(IApplicationDataStore dataService,
     }
 
     [HttpPost("login")]
+    [EnableRateLimiting(RateLimiterName)]
     [RequestSizeLimit(4 * 1024)]
     public async Task<ActionResult<UserModel>> Login(LoginModel login)
     {
@@ -57,6 +59,7 @@ public sealed class AppController(IApplicationDataStore dataService,
     }
 
     [HttpPost("register")]
+    [EnableRateLimiting(RateLimiterName)]
     [RequestSizeLimit(4 * 1024)]
     public async Task<ActionResult<UserModel>> Register(RegisterModel register)
     {

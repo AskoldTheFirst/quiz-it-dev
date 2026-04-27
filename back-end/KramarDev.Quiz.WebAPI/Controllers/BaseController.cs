@@ -6,6 +6,8 @@ namespace KramarDev.Quiz.WebAPI.Controllers;
 [Route("api/[controller]")]
 public abstract class BaseController : ControllerBase
 {
+    public const string RateLimiterName = "auth";
+
     protected string UserName
     {
         get
