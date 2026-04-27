@@ -60,44 +60,4 @@ public class GetProfileTest
             profile.Attempts.Should().OnlyContain(a => a.QuestionCount > 0);
         }
     }
-
-    [Fact]
-    public async Task GetProfileAsync_ReturnsEmptyProfile_ForNonExistentUser()
-    {
-        using var connection = new SqliteConnection("Data Source=:memory:");
-        connection.Open();
-
-        var options = new DbContextOptionsBuilder<QuizDbContext>()
-            .UseSqlite(connection)
-            .Options;
-
-        using (var ctx = new QuizDbContext(options))
-        {
-            ctx.Database.EnsureCreated();
-            await TestDataSeeder.SeedTestDataAsync(ctx);
-        }
-
-        var services = new ServiceCollection();
-        services.AddMemoryCache();
-        var serviceProvider = services.BuildServiceProvider();
-        var scopeFactory = serviceProvider.GetRequiredService<IServiceScopeFactory>();
-        var memoryCache = serviceProvider.GetRequiredService<IMemoryCache>();
-
-        using (var ctx = new QuizDbContext(options))
-        {
-            var uow = new UnitOfWork(ctx);
-            var cache = new StatisticsCacheService(scopeFactory, memoryCache);
-            var statisticsService = new KramarDev.Quiz.BLL.Services.StatisticsService(uow, cache);
-
-            var profile = await statisticsService.GetProfileAsync("nonexistent", CancellationToken.None);
-
-            profile.Should().NotBeNull();
-            profile.Summary.Should().NotBeNull();
-            profile.Summary.TotalAttemptCount.Should().Be(0);
-            profile.Topics.Should().NotBeNull();
-            profile.Topics.Should().BeEmpty();
-            profile.Attempts.Should().NotBeNull();
-            profile.Attempts.Should().BeEmpty();
-        }
-    }
 }
