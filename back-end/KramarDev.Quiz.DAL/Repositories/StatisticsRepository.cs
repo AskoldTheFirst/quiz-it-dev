@@ -58,6 +58,17 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
                                  AnswerCount = g.Sum(t => t.AnsweredCount)
                              }).FirstOrDefaultAsync(cancellationToken);
 
+        if (summary == null)
+        {
+            summary = new ProfileSummaryDto
+            {
+                TotalAttemptCount = 0,
+                AverageScore = 0,
+                BestScore = 0,
+                AnswerCount = 0
+            };
+        }
+
         // Performance by topic
         var topics = await (from t in Ctx.Tests
                             join te in Ctx.Topics on t.TopicId equals te.Id

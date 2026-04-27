@@ -10,6 +10,7 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
     private readonly IApplicationDataStore _dataService = dataService;
 
     // PUBLIC API
+
     public async Task<BL.TestDto> CreateTestAsync(string topicName, string userName,
         string ipAddress, CancellationToken cancellationToken = default)
     {
@@ -26,31 +27,26 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
             TotalPoints = testData.TotalPoints,
         };
 
-        int testId = 0;
-        BL.QuestionDto firstQuestion = null;
+        int testId = await _uow.TestRepository.CreateTestAsync(newTest, cancellationToken);
 
         try
         {
-            await _uow.BeginTransactionAsync(System.Data.IsolationLevel.ReadCommitted, cancellationToken);
-            testId = await _uow.TestRepository.CreateTestAsync(newTest, cancellationToken);
-            firstQuestion = await GetNextQuestionAsync(testId, userName, cancellationToken);
-            await _uow.CommitTransactionAsync(cancellationToken);
+            BL.QuestionDto firstQuestion = await GetNextQuestionAsync(testId, userName, cancellationToken);
+            return new BL.TestDto
+            {
+                TestId = testId,
+                TopicName = topicName,
+                QuestionCount = testData.QuestionIds.Length,
+                SecondsLeft = topic.DurationInMinutes * 60,
+                Question = firstQuestion,
+                TopicColor = topic.ThemeColor,
+            };
         }
         catch
         {
-            await _uow.RollbackTransactionAsync(cancellationToken);
+            await _uow.TestRepository.CancelTestAndSaveAsync(userName, testId, CancellationToken.None);
             throw;
         }
-
-        return new BL.TestDto
-        {
-            TestId = testId,
-            TopicName = topicName,
-            QuestionCount = testData.QuestionIds.Length,
-            SecondsLeft = topic.DurationInMinutes * 60,
-            Question = firstQuestion,
-            TopicColor = topic.ThemeColor,
-        };
     }
 
     public async Task<AnswerResponseDto> AnswerAndNextAsync(int testId,

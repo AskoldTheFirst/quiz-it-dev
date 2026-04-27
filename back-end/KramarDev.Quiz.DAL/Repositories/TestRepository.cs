@@ -20,20 +20,20 @@ public class TestRepository(QuizDbContext dbCtx) : ITestRepository
             State = TestState.Created
         };
 
-        Ctx.Tests.Add(test);
-        await Ctx.SaveChangesAsync(cancellationToken);
-
         TestQuestion[] generatedQuestions = new TestQuestion[questionAmount];
+
         for (int i = 0; i < questionAmount; ++i)
         {
-            generatedQuestions[i] = new TestQuestion()
+            generatedQuestions[i] = new TestQuestion
             {
                 QuestionId = newTest.QuestionIds[i],
-                TestId = test.Id
+                Test = test
             };
         }
 
+        Ctx.Tests.Add(test);
         Ctx.TestQuestions.AddRange(generatedQuestions);
+
         await Ctx.SaveChangesAsync(cancellationToken);
 
         return test.Id;
