@@ -47,19 +47,16 @@ public class StatisticsRepository(QuizDbContext dbCtx) : IStatisticsRepository
     public async Task<ProfileDto> GetProfileAsync(string userName, CancellationToken cancellationToken = default)
     {
         // Summary
-        var completedTests = await (from t in Ctx.Tests
-                                    where t.Username == userName &&
-                                            t.State == TestState.Completed &&
-                                            !t.IsHidden
-                                    select t).ToArrayAsync(cancellationToken);
-
-        var summary = new ProfileSummaryDto
-        {
-            TotalAttemptCount = completedTests.Length,
-            AverageScore = completedTests.Length > 0 ? (int)completedTests.Average(t => t.FinalScore) : 0,
-            BestScore = completedTests.Length > 0 ? (int)completedTests.Max(t => t.FinalScore) : 0,
-            AnswerCount = completedTests.Sum(t => t.AnsweredCount)
-        };
+        var summary = await (from t in Ctx.Tests
+                             where t.Username == userName && t.State == TestState.Completed && !t.IsHidden
+                             group t by 1 into g
+                             select new ProfileSummaryDto
+                             {
+                                 TotalAttemptCount = g.Count(),
+                                 AverageScore = (int)g.Average(t => t.FinalScore),
+                                 BestScore = (int)g.Max(t => t.FinalScore),
+                                 AnswerCount = g.Sum(t => t.AnsweredCount)
+                             }).FirstOrDefaultAsync(cancellationToken);
 
         // Performance by topic
         var topics = await (from t in Ctx.Tests
