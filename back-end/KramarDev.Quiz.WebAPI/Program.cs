@@ -55,6 +55,7 @@ public class Program
         builder.Services.AddMemoryCache();
 
         var app = builder.Build();
+        app.UseApiNoCaching();
         app.UseAppExceptionHandler();
         app.UseCustomSwagger(app.Environment);
         app.UseHttpsRedirection();
