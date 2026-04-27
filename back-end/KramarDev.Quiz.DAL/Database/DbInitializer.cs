@@ -13,20 +13,20 @@ public static class DbInitializer
 
         if (!ctx.Topics.Any())
         {
-            techArray[0] = new Topic() { Name = "C#", Description = "Test your knowledge of C# fundamentals, OOP concepts, LINQ, and the .NET ecosystem.", IsActive = true, DurationInMinutes = 2, QuestionCount = 10, ThemeColor = "#68217a" };
-            techArray[1] = new Topic() { Name = "JavaScript", Description = "Test your knowledge of JavaScript fundamentals, ES6+ features, and browser APIs.", IsActive = true, DurationInMinutes = 4, QuestionCount = 12, ThemeColor = "#f0db4f" };
-            techArray[2] = new Topic() { Name = "C/C++", Description = "Test your knowledge of C/C++ fundamentals, memory management, pointers, object-oriented programming, and standard libraries.", IsActive = true, DurationInMinutes = 6, QuestionCount = 12, ThemeColor = "#12bd87" };
-            techArray[3] = new Topic() { Name = "SQL", Description = "Test your SQL skills with questions on queries, joins, indexes, and database design.", IsActive = true, DurationInMinutes = 6, QuestionCount = 10, ThemeColor = "#336791" };
-            techArray[4] = new Topic() { Name = ".NET", Description = "Explore your understanding of the .NET framework, ASP.NET Core, Entity Framework, and middleware.", IsActive = true, DurationInMinutes = 5, QuestionCount = 10, ThemeColor = "#512bd4" };
+            techArray[0] = new Topic() { Name = "C#", Description = "Test your knowledge of C# fundamentals, OOP concepts, LINQ, and the .NET ecosystem.", IsActive = true, DurationInMinutes = 3, QuestionCount = 10, ThemeColor = "#68217a" };
+            techArray[1] = new Topic() { Name = "JavaScript", Description = "Test your knowledge of JavaScript fundamentals, ES6+ features, and browser APIs.", IsActive = true, DurationInMinutes = 3, QuestionCount = 12, ThemeColor = "#f0db4f" };
+            techArray[2] = new Topic() { Name = "C/C++", Description = "Test your knowledge of C/C++ fundamentals, memory management, pointers, object-oriented programming, and standard libraries.", IsActive = true, DurationInMinutes = 4, QuestionCount = 12, ThemeColor = "#12bd87" };
+            techArray[3] = new Topic() { Name = "SQL", Description = "Test your SQL skills with questions on queries, joins, indexes, and database design.", IsActive = true, DurationInMinutes = 5, QuestionCount = 10, ThemeColor = "#336791" };
+            techArray[4] = new Topic() { Name = ".NET", Description = "Explore your understanding of the .NET framework, ASP.NET Core, Entity Framework, and middleware.", IsActive = true, DurationInMinutes = 4, QuestionCount = 10, ThemeColor = "#512bd4" };
             techArray[5] = new Topic() { Name = "React", Description = "Challenge yourself on React concepts, hooks, state management, and best practices.", IsActive = true, DurationInMinutes = 5, QuestionCount = 12, ThemeColor = "#61dafb" };
-            techArray[6] = new Topic() { Name = "English Grammar", Description = "Test your understanding of English grammar rules, tenses, parts of speech, and sentence structure.", IsActive = true, DurationInMinutes = 6, QuestionCount = 20, ThemeColor = "#e44d26" };
+            techArray[6] = new Topic() { Name = "English Grammar", Description = "Test your understanding of English grammar rules, tenses, parts of speech, and sentence structure.", IsActive = true, DurationInMinutes = 8, QuestionCount = 20, ThemeColor = "#e44d26" };
 
             ctx.Topics.AddRange(techArray);
             shouldWeSubmit = true;
         }
         else
         {
-            techArray = [.. ctx.Topics.OrderByDescending(t => t.Id).Take(3)];
+            techArray = [.. ctx.Topics.OrderByDescending(t => t.Id)];
         }
 
         if (!ctx.Questions.Any())
@@ -34,6 +34,227 @@ public static class DbInitializer
             var questions = new List<Question>()
             {
                 // C# — techArray[0]
+
+                new() {
+                    Text = "What is the purpose of the 'params' keyword in a method parameter list?",
+                    Answer1 = "It allows a method to accept a variable number of arguments",
+                    Answer2 = "It makes all parameters optional",
+                    Answer3 = "It passes parameters by reference",
+                    Answer4 = "It prevents parameter values from being changed",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What does the 'nameof' operator return?",
+                    Answer1 = "The runtime type name of an object",
+                    Answer2 = "The string name of a variable, type, or member",
+                    Answer3 = "The namespace of a class",
+                    Answer4 = "The full assembly name",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 1,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What is the main benefit of using generics in C#?",
+                    Answer1 = "They allow type-safe code reuse",
+                    Answer2 = "They make all methods asynchronous",
+                    Answer3 = "They disable runtime type checking",
+                    Answer4 = "They force all values to be stored as object",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What does the 'is' operator do in C#?",
+                    Answer1 = "Checks whether an object is compatible with a given type",
+                    Answer2 = "Creates a new instance of a type",
+                    Answer3 = "Compares two strings by reference only",
+                    Answer4 = "Checks whether a variable is readonly",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What does the 'as' operator do in C#?",
+                    Answer1 = "Performs a safe cast and returns null if the cast fails",
+                    Answer2 = "Always throws an exception if the cast fails",
+                    Answer3 = "Converts any value type to a string",
+                    Answer4 = "Creates an alias for a namespace",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What is the purpose of the 'abstract' keyword on a class?",
+                    Answer1 = "It prevents the class from having methods",
+                    Answer2 = "It means the class cannot be instantiated directly",
+                    Answer3 = "It makes all members private",
+                    Answer4 = "It makes the class static",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 1,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What is the purpose of the 'base' keyword in a derived class?",
+                    Answer1 = "To access members of the base class",
+                    Answer2 = "To create a new namespace",
+                    Answer3 = "To mark a class as immutable",
+                    Answer4 = "To stop inheritance",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What is the purpose of the 'this' keyword in an instance member?",
+                    Answer1 = "It refers to the current object instance",
+                    Answer2 = "It refers to the base class only",
+                    Answer3 = "It creates a static member",
+                    Answer4 = "It imports an external namespace",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What is constructor chaining in C#?",
+                    Answer1 = "Calling one constructor from another constructor in the same class or base class",
+                    Answer2 = "Calling multiple unrelated classes in sequence",
+                    Answer3 = "Creating objects only through interfaces",
+                    Answer4 = "Running constructors asynchronously",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What does the 'out' keyword mean for a method parameter?",
+                    Answer1 = "The method must assign a value to the parameter before returning",
+                    Answer2 = "The parameter is optional",
+                    Answer3 = "The parameter is passed only by value",
+                    Answer4 = "The parameter can only be used with strings",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What does the 'ref' keyword mean for a method parameter?",
+                    Answer1 = "The method receives a reference to the caller's variable",
+                    Answer2 = "The parameter becomes readonly",
+                    Answer3 = "The parameter is copied into a new object",
+                    Answer4 = "The method can only read the parameter",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "Which statement about properties in C# is correct?",
+                    Answer1 = "Properties provide controlled access to data through get and set accessors",
+                    Answer2 = "Properties cannot contain logic",
+                    Answer3 = "Properties are always stored directly as database columns",
+                    Answer4 = "Properties cannot be part of an interface",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What is an auto-implemented property?",
+                    Answer1 = "A property where the compiler creates the backing field automatically",
+                    Answer2 = "A property that updates itself every second",
+                    Answer3 = "A property that can only be static",
+                    Answer4 = "A property that is generated only at runtime",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What does the 'init' accessor allow?",
+                    Answer1 = "Setting a property only during object initialization",
+                    Answer2 = "Changing a property only inside a loop",
+                    Answer3 = "Making a property static",
+                    Answer4 = "Resetting an object to its default values",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What is pattern matching commonly used for in C#?",
+                    Answer1 = "Testing values against shapes, types, or conditions",
+                    Answer2 = "Encrypting strings",
+                    Answer3 = "Generating database migrations",
+                    Answer4 = "Forcing garbage collection",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What does a nullable value type such as int? represent?",
+                    Answer1 = "An int that can also hold null",
+                    Answer2 = "An int that can only be negative",
+                    Answer3 = "An int stored as a string",
+                    Answer4 = "An int that cannot be assigned",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What is the purpose of the 'checked' keyword?",
+                    Answer1 = "To enable overflow checking for integral arithmetic operations",
+                    Answer2 = "To check whether an object is null",
+                    Answer3 = "To validate a password",
+                    Answer4 = "To force a method to run synchronously",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What does the 'unchecked' keyword do?",
+                    Answer1 = "It suppresses overflow checking for integral arithmetic operations",
+                    Answer2 = "It disables all exception handling",
+                    Answer3 = "It skips compiler errors",
+                    Answer4 = "It removes null checks from reference types",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What is the main difference between const and readonly fields?",
+                    Answer1 = "const values are compile-time constants, while readonly fields can be assigned at runtime in a constructor",
+                    Answer2 = "readonly fields are always static, while const fields are never static",
+                    Answer3 = "const fields can be changed after construction",
+                    Answer4 = "readonly fields can only store strings",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
+                new() {
+                    Text = "What is an extension method in C#?",
+                    Answer1 = "A static method that can be called as if it were an instance method on another type",
+                    Answer2 = "A method that automatically overrides a base method",
+                    Answer3 = "A method that can only be used inside abstract classes",
+                    Answer4 = "A method that extends the runtime memory limit",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[0].Id,
+                    Topic = techArray[0]
+                },
 
                 new() {
                     Text = "What is the main benefit of using 'IEnumerable<T>' instead of a concrete collection type in method parameters?",
@@ -368,6 +589,246 @@ public static class DbInitializer
 
                 // JavaScript / TypeScript — techArray[1]
 
+                new()
+                {
+                    Text = "What is the main difference between 'let' and 'const' in JavaScript?",
+                    Answer1 = "'let' is function-scoped, while 'const' is block-scoped",
+                    Answer2 = "'let' allows reassignment, while 'const' does not allow reassignment",
+                    Answer3 = "'const' variables are always deeply immutable",
+                    Answer4 = "'let' can only store numbers",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 1,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What does 'Array.prototype.reduce()' commonly do?",
+                    Answer1 = "Removes duplicate values from an array automatically",
+                    Answer2 = "Combines array elements into a single accumulated result",
+                    Answer3 = "Sorts an array in ascending order",
+                    Answer4 = "Stops iteration after the first matching element",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What does 'Array.prototype.find()' return?",
+                    Answer1 = "All elements that match a condition",
+                    Answer2 = "The index of the first matching element",
+                    Answer3 = "The first element that matches a condition",
+                    Answer4 = "A boolean indicating whether any element matches",
+                    CorrectAnswerNumber = 3,
+                    Difficulty = 1,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What does 'Array.prototype.some()' check?",
+                    Answer1 = "Whether at least one element matches a condition",
+                    Answer2 = "Whether all elements match a condition",
+                    Answer3 = "Whether the array contains only numbers",
+                    Answer4 = "Whether the array is empty",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What does 'Array.prototype.every()' check?",
+                    Answer1 = "Whether at least one element matches a condition",
+                    Answer2 = "Whether all elements match a condition",
+                    Answer3 = "Whether the array has duplicate values",
+                    Answer4 = "Whether the array has been sorted",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 1,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What is the purpose of destructuring assignment in JavaScript?",
+                    Answer1 = "To extract values from arrays or objects into variables",
+                    Answer2 = "To delete properties from an object",
+                    Answer3 = "To convert objects into JSON strings",
+                    Answer4 = "To make variables private",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What is the purpose of default parameters in JavaScript functions?",
+                    Answer1 = "To make a function return a default value only",
+                    Answer2 = "To provide fallback values when arguments are missing or undefined",
+                    Answer3 = "To force all parameters to be strings",
+                    Answer4 = "To prevent a function from being called without arguments",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 1,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What does the nullish coalescing operator '??' do?",
+                    Answer1 = "Returns the right-hand value only when the left-hand value is null or undefined",
+                    Answer2 = "Returns the right-hand value when the left-hand value is any falsy value",
+                    Answer3 = "Converts null values to empty strings",
+                    Answer4 = "Checks whether two values are both null",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What is a key difference between '??' and '||' in JavaScript?",
+                    Answer1 = "'??' treats 0 and empty string as valid values, while '||' treats them as falsy",
+                    Answer2 = "'||' can only be used with boolean values",
+                    Answer3 = "'??' performs type conversion, while '||' does not",
+                    Answer4 = "'??' works only with arrays",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What does 'JSON.stringify()' do?",
+                    Answer1 = "Parses a JSON string into an object",
+                    Answer2 = "Converts a JavaScript value into a JSON string",
+                    Answer3 = "Validates TypeScript types at runtime",
+                    Answer4 = "Creates a deep copy of any object with full type preservation",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 1,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What does 'JSON.parse()' do?",
+                    Answer1 = "Converts a JSON string into a JavaScript value",
+                    Answer2 = "Converts a JavaScript value into a JSON string",
+                    Answer3 = "Compiles TypeScript into JavaScript",
+                    Answer4 = "Formats JavaScript code",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "Why should user-provided JSON parsing usually be wrapped in try/catch?",
+                    Answer1 = "Because JSON.parse() can throw when the input is invalid JSON",
+                    Answer2 = "Because JSON.parse() always returns null",
+                    Answer3 = "Because JSON.parse() is asynchronous",
+                    Answer4 = "Because JSON.parse() modifies the original string",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What is the purpose of 'setTimeout()'?",
+                    Answer1 = "To repeatedly execute code forever",
+                    Answer2 = "To schedule code to run after a delay",
+                    Answer3 = "To block the current thread for a fixed time",
+                    Answer4 = "To cancel a Promise",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 1,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What is the purpose of 'setInterval()'?",
+                    Answer1 = "To schedule repeated execution of code at a fixed interval",
+                    Answer2 = "To run code only once after a delay",
+                    Answer3 = "To pause JavaScript execution",
+                    Answer4 = "To wait for a Promise to finish",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What does 'clearInterval()' do?",
+                    Answer1 = "Removes all items from an array",
+                    Answer2 = "Stops a repeating timer created by setInterval()",
+                    Answer3 = "Clears all event listeners from an element",
+                    Answer4 = "Cancels all pending Promises",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 1,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What is the event loop responsible for in JavaScript?",
+                    Answer1 = "Managing how asynchronous callbacks are scheduled and executed",
+                    Answer2 = "Converting TypeScript to JavaScript",
+                    Answer3 = "Encrypting browser storage",
+                    Answer4 = "Automatically optimizing CSS selectors",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What is a microtask in JavaScript commonly associated with?",
+                    Answer1 = "Promise callbacks such as then/catch/finally",
+                    Answer2 = "CSS animations only",
+                    Answer3 = "Database transactions only",
+                    Answer4 = "HTML parsing only",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What does 'await' do inside an async function?",
+                    Answer1 = "Blocks the entire browser until the operation completes",
+                    Answer2 = "Pauses the async function until the awaited Promise settles",
+                    Answer3 = "Starts a new operating system thread",
+                    Answer4 = "Converts any value into a string",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What is the purpose of the 'catch' method on a Promise?",
+                    Answer1 = "To handle a rejected Promise",
+                    Answer2 = "To convert a Promise into an array",
+                    Answer3 = "To restart a failed HTTP request automatically",
+                    Answer4 = "To make a Promise synchronous",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
+                new()
+                {
+                    Text = "What does 'Promise.allSettled()' return information about?",
+                    Answer1 = "Only the first Promise that rejects",
+                    Answer2 = "Only Promises that resolve successfully",
+                    Answer3 = "The result status of every Promise, whether fulfilled or rejected",
+                    Answer4 = "The fastest fulfilled Promise only",
+                    CorrectAnswerNumber = 3,
+                    Difficulty = 2,
+                    TopicId = techArray[1].Id,
+                    Topic = techArray[1]
+                },
                 new() {
                     Text = "Why is '=== ' generally preferred over '==' in JavaScript?",
                     Answer1 = "Because it performs type coercion more efficiently",
@@ -768,6 +1229,226 @@ public static class DbInitializer
                 // C/C++ — techArray[2]
 
                 new() {
+                    Text = "Why is using 'std::unique_ptr' often preferred for single ownership?",
+                    Answer1 = "Because it allows many objects to delete the same memory",
+                    Answer2 = "Because it clearly expresses exclusive ownership and deletes automatically",
+                    Answer3 = "Because it disables constructors",
+                    Answer4 = "Because it stores objects only on the stack",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What does 'std::shared_ptr' provide in C++?",
+                    Answer1 = "Automatic reference-counted shared ownership of an object",
+                    Answer2 = "Manual memory allocation without constructors",
+                    Answer3 = "A pointer that can never be copied",
+                    Answer4 = "A replacement for all stack variables",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "Why should circular references with 'std::shared_ptr' be avoided?",
+                    Answer1 = "Because they always cause compile-time errors",
+                    Answer2 = "Because reference counts may never reach zero, causing memory leaks",
+                    Answer3 = "Because shared_ptr cannot point to classes",
+                    Answer4 = "Because shared_ptr works only with arrays",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 3,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What is the purpose of 'std::weak_ptr'?",
+                    Answer1 = "To own memory more strongly than shared_ptr",
+                    Answer2 = "To observe an object managed by shared_ptr without increasing its reference count",
+                    Answer3 = "To allocate memory on the stack",
+                    Answer4 = "To disable object destruction",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 3,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What is move semantics mainly used for in C++?",
+                    Answer1 = "To copy objects more slowly",
+                    Answer2 = "To transfer resources from one object to another efficiently",
+                    Answer3 = "To prevent objects from having constructors",
+                    Answer4 = "To make all variables global",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 3,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What does an rvalue reference usually look like in C++?",
+                    Answer1 = "int*",
+                    Answer2 = "int&",
+                    Answer3 = "int&&",
+                    Answer4 = "int[]",
+                    CorrectAnswerNumber = 3,
+                    Difficulty = 3,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "Why is 'std::move' used in C++?",
+                    Answer1 = "To physically move memory to another address",
+                    Answer2 = "To cast an object so it can be treated as movable",
+                    Answer3 = "To automatically delete an object",
+                    Answer4 = "To copy an object into a vector",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 3,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What is the Rule of Three in C++ related to?",
+                    Answer1 = "Classes that manage resources and need destructor, copy constructor, and copy assignment operator",
+                    Answer2 = "Functions that must always have three parameters",
+                    Answer3 = "Arrays that must contain exactly three elements",
+                    Answer4 = "Loops that can run only three times",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What is the Rule of Zero in modern C++?",
+                    Answer1 = "A rule that every class must contain zero fields",
+                    Answer2 = "A design guideline to avoid writing custom resource management functions when possible",
+                    Answer3 = "A rule that destructors should never run",
+                    Answer4 = "A rule that all pointers must be null",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 3,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What does 'virtual' allow in C++ member functions?",
+                    Answer1 = "Dynamic dispatch based on the actual object type",
+                    Answer2 = "Automatic stack allocation",
+                    Answer3 = "Compile-time only function calls",
+                    Answer4 = "Calling private functions from C code",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "Why should a base class with virtual functions often have a virtual destructor?",
+                    Answer1 = "To make the class smaller in memory",
+                    Answer2 = "To ensure derived destructors run correctly when deleting through a base pointer",
+                    Answer3 = "To prevent inheritance",
+                    Answer4 = "To disable dynamic allocation",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 3,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What is object slicing in C++?",
+                    Answer1 = "When a derived object is copied into a base object and derived-specific data is lost",
+                    Answer2 = "When an array is divided into two arrays automatically",
+                    Answer3 = "When a pointer is incremented incorrectly",
+                    Answer4 = "When a constructor is skipped",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What is the main purpose of the 'override' keyword in C++?",
+                    Answer1 = "To force a function to be static",
+                    Answer2 = "To tell the compiler that a virtual function is intended to override a base function",
+                    Answer3 = "To disable inheritance",
+                    Answer4 = "To make a method private",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What does 'final' mean when applied to a virtual function in C++?",
+                    Answer1 = "The function cannot be overridden further",
+                    Answer2 = "The function must return a value",
+                    Answer3 = "The function is automatically inline",
+                    Answer4 = "The function can only be called once",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What is a namespace used for in C++?",
+                    Answer1 = "To group names and reduce naming conflicts",
+                    Answer2 = "To allocate memory dynamically",
+                    Answer3 = "To create threads automatically",
+                    Answer4 = "To convert C code into C++ code",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "Which C++ container is usually best for fast insertion and removal at both ends?",
+                    Answer1 = "std::vector",
+                    Answer2 = "std::deque",
+                    Answer3 = "std::array",
+                    Answer4 = "std::string",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What is the main difference between 'std::array' and a built-in C-style array?",
+                    Answer1 = "std::array has no fixed size",
+                    Answer2 = "std::array is a standard library wrapper with value semantics and useful member functions",
+                    Answer3 = "std::array can only store pointers",
+                    Answer4 = "std::array cannot be passed to functions",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What does 'sizeof' return in C/C++?",
+                    Answer1 = "The number of characters printed by a variable",
+                    Answer2 = "The size in bytes of a type or object",
+                    Answer3 = "The number of elements in every pointer",
+                    Answer4 = "The memory address of a variable",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 1,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "Why can using 'sizeof' on a pointer be misleading when working with arrays?",
+                    Answer1 = "Because it returns the size of the pointer, not the size of the original array",
+                    Answer2 = "Because it always returns zero",
+                    Answer3 = "Because pointers do not have types",
+                    Answer4 = "Because sizeof can only be used with classes",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
+                    Text = "What is pointer arithmetic based on in C/C++?",
+                    Answer1 = "The size of the pointed-to type",
+                    Answer2 = "The current CPU frequency",
+                    Answer3 = "The number of functions in the file",
+                    Answer4 = "The value of the nearest integer variable",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[2].Id,
+                    Topic = techArray[2]
+                },
+                new() {
                     Text = "Why is manual memory management in C/C++ considered error-prone?",
                     Answer1 = "Because the compiler always ignores allocation failures",
                     Answer2 = "Because developers must ensure correct ownership and deallocation themselves",
@@ -1167,6 +1848,226 @@ public static class DbInitializer
                 // SQL — techArray[3]
 
                 new() {
+                    Text = "Why can using functions on indexed columns in a WHERE clause hurt performance?",
+                    Answer1 = "Because SQL functions are not allowed in WHERE clauses",
+                    Answer2 = "Because it may prevent the database from using the index efficiently",
+                    Answer3 = "Because it always changes the column data type permanently",
+                    Answer4 = "Because it disables all foreign keys",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 3,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What is a covering index?",
+                    Answer1 = "An index that contains all columns needed by a query",
+                    Answer2 = "An index that automatically backs up a table",
+                    Answer3 = "An index that prevents all duplicate rows",
+                    Answer4 = "An index that works only with temporary tables",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What is the main purpose of an execution plan?",
+                    Answer1 = "To show how the database intends to execute a query",
+                    Answer2 = "To encrypt the result set",
+                    Answer3 = "To create tables automatically",
+                    Answer4 = "To prevent all deadlocks",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "Why can implicit data type conversion hurt SQL query performance?",
+                    Answer1 = "Because it may prevent efficient index usage",
+                    Answer2 = "Because it always deletes duplicate rows",
+                    Answer3 = "Because it disables transactions",
+                    Answer4 = "Because it converts all tables to temporary tables",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What is a clustered index in SQL Server?",
+                    Answer1 = "An index that defines the physical order of data rows in a table",
+                    Answer2 = "An index stored only in memory",
+                    Answer3 = "An index that can exist many times on the same table",
+                    Answer4 = "An index used only for foreign keys",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What is a nonclustered index?",
+                    Answer1 = "An index structure separate from the table data that points to matching rows",
+                    Answer2 = "An index that physically sorts the entire table",
+                    Answer3 = "An index that can only be created on text columns",
+                    Answer4 = "An index that prevents SELECT queries",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "Why should leading wildcard searches like LIKE '%text' be used carefully?",
+                    Answer1 = "Because they may prevent efficient index seeks",
+                    Answer2 = "Because LIKE does not support text values",
+                    Answer3 = "Because they always return duplicated rows",
+                    Answer4 = "Because they disable ORDER BY",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What does ACID describe in database transactions?",
+                    Answer1 = "A set of properties for reliable transaction processing",
+                    Answer2 = "A special type of SQL index",
+                    Answer3 = "A command for deleting duplicate rows",
+                    Answer4 = "A storage format used only for logs",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What does transaction isolation control?",
+                    Answer1 = "How visible changes from one transaction are to other transactions",
+                    Answer2 = "How many columns a table may contain",
+                    Answer3 = "How indexes are physically named",
+                    Answer4 = "How passwords are encrypted",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What is a dirty read?",
+                    Answer1 = "Reading data that was changed by another transaction but not yet committed",
+                    Answer2 = "Reading data from a table with no primary key",
+                    Answer3 = "Reading rows without using ORDER BY",
+                    Answer4 = "Reading a result set that contains NULL values",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What is a composite key?",
+                    Answer1 = "A key made from two or more columns",
+                    Answer2 = "A key that stores encrypted values",
+                    Answer3 = "A key used only in temporary tables",
+                    Answer4 = "A key that allows every row to be duplicated",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What is the purpose of a UNIQUE constraint?",
+                    Answer1 = "To ensure values in a column or set of columns are not duplicated",
+                    Answer2 = "To make all values nullable",
+                    Answer3 = "To sort query results automatically",
+                    Answer4 = "To create a backup of the table",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What does a CHECK constraint do?",
+                    Answer1 = "It enforces a rule that inserted or updated values must satisfy",
+                    Answer2 = "It checks whether the database server is online",
+                    Answer3 = "It prevents SELECT statements from running",
+                    Answer4 = "It automatically creates indexes for every column",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What is the main purpose of GROUP BY?",
+                    Answer1 = "To combine rows into groups for aggregate calculations",
+                    Answer2 = "To delete duplicated rows permanently",
+                    Answer3 = "To sort rows alphabetically",
+                    Answer4 = "To create a new database",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What does LEFT JOIN return?",
+                    Answer1 = "All rows from the left table and matching rows from the right table",
+                    Answer2 = "Only rows that exist in both tables",
+                    Answer3 = "Only rows from the right table",
+                    Answer4 = "Rows that have no columns",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What is a subquery?",
+                    Answer1 = "A query nested inside another SQL query",
+                    Answer2 = "A table without columns",
+                    Answer3 = "A query that can only delete data",
+                    Answer4 = "A command used to restart the database server",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What is a Common Table Expression, or CTE?",
+                    Answer1 = "A named temporary result set defined within a query",
+                    Answer2 = "A permanent table created for backups",
+                    Answer3 = "A special index that replaces primary keys",
+                    Answer4 = "A command that commits a transaction",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What is the purpose of the UNION operator?",
+                    Answer1 = "To combine result sets from multiple SELECT statements",
+                    Answer2 = "To join tables by foreign keys only",
+                    Answer3 = "To create a unique constraint",
+                    Answer4 = "To cancel a transaction",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "What is the difference between UNION and UNION ALL?",
+                    Answer1 = "UNION removes duplicates, while UNION ALL keeps duplicates",
+                    Answer2 = "UNION ALL removes duplicates, while UNION keeps duplicates",
+                    Answer3 = "UNION works only with numbers",
+                    Answer4 = "UNION ALL can only be used inside transactions",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
+                    Text = "Why is ORDER BY important when using pagination?",
+                    Answer1 = "Because it gives a stable and predictable row order between pages",
+                    Answer2 = "Because pagination is impossible without deleting rows",
+                    Answer3 = "Because ORDER BY automatically creates a primary key",
+                    Answer4 = "Because it disables indexes",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[3].Id,
+                    Topic = techArray[3]
+                },
+                new() {
                     Text = "Why can SELECT * be a poor choice in production queries?",
                     Answer1 = "Because SQL does not allow it in joins",
                     Answer2 = "Because it may fetch unnecessary columns and make code more fragile",
@@ -1500,6 +2401,226 @@ public static class DbInitializer
                 // .NET — techArray[4]
 
                 new() {
+                    Text = "What is the main purpose of the IServiceCollection in ASP.NET Core?",
+                    Answer1 = "To register services and configure dependency injection",
+                    Answer2 = "To store HTTP response bodies permanently",
+                    Answer3 = "To replace the database provider",
+                    Answer4 = "To compile Razor views manually",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "What is the difference between AddScoped and AddSingleton in ASP.NET Core DI?",
+                    Answer1 = "Scoped creates one instance per scope, while Singleton creates one instance for the application lifetime",
+                    Answer2 = "Scoped creates one instance per method call, while Singleton creates one instance per controller",
+                    Answer3 = "Scoped services cannot use interfaces, while Singleton services must use interfaces",
+                    Answer4 = "There is no difference between them",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "Why can capturing a scoped service inside a singleton service be dangerous?",
+                    Answer1 = "Because the scoped service may live longer than intended and cause incorrect behavior",
+                    Answer2 = "Because singleton services cannot have constructors",
+                    Answer3 = "Because scoped services are always slower than singleton services",
+                    Answer4 = "Because it disables routing",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "What is the main purpose of CancellationToken in ASP.NET Core actions?",
+                    Answer1 = "To allow long-running work to be cancelled when the client disconnects or the request is aborted",
+                    Answer2 = "To encrypt the HTTP request body",
+                    Answer3 = "To force all database queries to run synchronously",
+                    Answer4 = "To replace model validation",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "Why should async methods usually be awaited instead of blocking with .Result or .Wait()?",
+                    Answer1 = "Because blocking can waste threads and may cause deadlocks in some environments",
+                    Answer2 = "Because async methods cannot return values",
+                    Answer3 = "Because await always makes code run on a new thread",
+                    Answer4 = "Because .Result deletes the Task object",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "What does ConfigureAwait(false) mainly control?",
+                    Answer1 = "Whether the await tries to resume on the captured synchronization context",
+                    Answer2 = "Whether the method becomes static",
+                    Answer3 = "Whether exceptions are ignored",
+                    Answer4 = "Whether the Task runs on the database server",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "What is the purpose of IOptions<T> in .NET?",
+                    Answer1 = "To access strongly typed configuration values",
+                    Answer2 = "To manually create database indexes",
+                    Answer3 = "To replace controller routing",
+                    Answer4 = "To serialize all responses as XML",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "What is the difference between IOptionsSnapshot<T> and IOptions<T> in ASP.NET Core?",
+                    Answer1 = "IOptionsSnapshot<T> can provide updated values per request scope, while IOptions<T> is generally fixed after creation",
+                    Answer2 = "IOptionsSnapshot<T> is only for logging, while IOptions<T> is only for routing",
+                    Answer3 = "IOptionsSnapshot<T> cannot be injected into services",
+                    Answer4 = "They are exactly the same in all situations",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "Why is IHttpClientFactory recommended for creating HttpClient instances?",
+                    Answer1 = "Because it helps manage handlers and reduces common socket exhaustion and DNS update problems",
+                    Answer2 = "Because it makes HTTP requests synchronous",
+                    Answer3 = "Because it disables TLS validation",
+                    Answer4 = "Because it stores all responses in memory forever",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "What is the purpose of appsettings.Development.json?",
+                    Answer1 = "To provide environment-specific configuration for development",
+                    Answer2 = "To store compiled DLL files",
+                    Answer3 = "To replace Program.cs",
+                    Answer4 = "To define C# namespaces",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "What does IWebHostEnvironment commonly help determine?",
+                    Answer1 = "The current hosting environment, such as Development or Production",
+                    Answer2 = "The number of SQL rows in a table",
+                    Answer3 = "The exact CPU instruction used by the runtime",
+                    Answer4 = "The password of the current user",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "What is the purpose of app.UseRouting() in ASP.NET Core?",
+                    Answer1 = "To match incoming requests to endpoint definitions",
+                    Answer2 = "To create database migrations automatically",
+                    Answer3 = "To validate JWT tokens by itself",
+                    Answer4 = "To start a background service",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "Why should app.UseAuthentication() usually be placed before app.UseAuthorization()?",
+                    Answer1 = "Because authorization often depends on the user identity created during authentication",
+                    Answer2 = "Because authentication deletes invalid routes",
+                    Answer3 = "Because authorization creates JWT tokens",
+                    Answer4 = "Because middleware order never matters",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "What does the [FromBody] attribute commonly tell ASP.NET Core?",
+                    Answer1 = "To bind the parameter from the HTTP request body",
+                    Answer2 = "To read the value only from route data",
+                    Answer3 = "To skip model validation permanently",
+                    Answer4 = "To create a new database transaction",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "What does the [FromQuery] attribute commonly tell ASP.NET Core?",
+                    Answer1 = "To bind the parameter from the query string",
+                    Answer2 = "To bind the parameter from a database table",
+                    Answer3 = "To force the response to be cached",
+                    Answer4 = "To disable dependency injection",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "Why are data annotations like [Required] useful in ASP.NET Core models?",
+                    Answer1 = "They can describe validation rules for incoming data",
+                    Answer2 = "They automatically create SQL backups",
+                    Answer3 = "They make all properties private",
+                    Answer4 = "They replace dependency injection",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "What is the purpose of ModelState in ASP.NET Core MVC/Web API?",
+                    Answer1 = "To track model binding and validation errors",
+                    Answer2 = "To store application logs forever",
+                    Answer3 = "To configure Kestrel ports",
+                    Answer4 = "To generate JWT signing keys",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "What does AsNoTracking() do in Entity Framework Core?",
+                    Answer1 = "It tells EF Core not to track returned entities for changes",
+                    Answer2 = "It disables SQL WHERE clauses",
+                    Answer3 = "It prevents the query from using indexes",
+                    Answer4 = "It automatically commits the transaction",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "Why can lazy loading cause performance problems in Entity Framework Core?",
+                    Answer1 = "Because it may trigger many unexpected database queries",
+                    Answer2 = "Because it prevents any related data from being loaded",
+                    Answer3 = "Because it can only work with static classes",
+                    Answer4 = "Because it disables LINQ",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
+                    Text = "What is the purpose of SaveChangesAsync() in Entity Framework Core?",
+                    Answer1 = "To persist tracked changes to the database asynchronously",
+                    Answer2 = "To create a new DbContext type",
+                    Answer3 = "To read configuration from appsettings.json",
+                    Answer4 = "To start the ASP.NET Core middleware pipeline",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[4].Id,
+                    Topic = techArray[4]
+                },
+                new() {
                     Text = "Why is dependency injection valuable in ASP.NET Core applications?",
                     Answer1 = "It reduces flexibility by forcing concrete dependencies everywhere",
                     Answer2 = "It improves modularity, testability, and separation of concerns",
@@ -1832,6 +2953,226 @@ public static class DbInitializer
 
                 // React — techArray[5]
 
+                new() {
+                    Text = "Why should React state usually be treated as immutable?",
+                    Answer1 = "Because mutating existing objects can prevent React from detecting changes correctly",
+                    Answer2 = "Because React forbids objects in state",
+                    Answer3 = "Because immutable state is always stored in localStorage",
+                    Answer4 = "Because state can only contain strings",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "What is the main purpose of the dependency array in useEffect?",
+                    Answer1 = "To control when the effect should run again",
+                    Answer2 = "To define CSS dependencies",
+                    Answer3 = "To list child components",
+                    Answer4 = "To create Redux actions automatically",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "Why can missing dependencies in useEffect cause bugs?",
+                    Answer1 = "Because the effect may use stale values from an earlier render",
+                    Answer2 = "Because React will stop rendering the component",
+                    Answer3 = "Because the browser will delete localStorage",
+                    Answer4 = "Because hooks cannot use variables",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "What is the purpose of a cleanup function returned from useEffect?",
+                    Answer1 = "To clean up subscriptions, timers, or other resources before the effect runs again or the component unmounts",
+                    Answer2 = "To clear all React state automatically",
+                    Answer3 = "To remove all CSS styles from the page",
+                    Answer4 = "To force a full browser refresh",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "Why can inline object or function props cause extra renders in memoized child components?",
+                    Answer1 = "Because a new reference is created on every render",
+                    Answer2 = "Because React converts them to strings",
+                    Answer3 = "Because objects cannot be passed as props",
+                    Answer4 = "Because functions passed as props are ignored",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "What does useCallback primarily memoize?",
+                    Answer1 = "A function reference",
+                    Answer2 = "A rendered DOM node",
+                    Answer3 = "A CSS class name",
+                    Answer4 = "An HTTP response",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "When can useCallback be useful?",
+                    Answer1 = "When passing callbacks to memoized child components or hook dependencies",
+                    Answer2 = "When replacing all useState calls",
+                    Answer3 = "When making network requests automatically",
+                    Answer4 = "When disabling component rendering",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "What does useMemo primarily memoize?",
+                    Answer1 = "The result of a calculation",
+                    Answer2 = "The browser history",
+                    Answer3 = "The entire application bundle",
+                    Answer4 = "The component file itself",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "Why should useMemo not be used everywhere by default?",
+                    Answer1 = "Because memoization has its own overhead and can make code harder to read",
+                    Answer2 = "Because useMemo prevents all state updates",
+                    Answer3 = "Because useMemo only works in class components",
+                    Answer4 = "Because useMemo always causes memory leaks",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "What is the main purpose of React.Fragment?",
+                    Answer1 = "To group multiple elements without adding an extra DOM node",
+                    Answer2 = "To create a new route",
+                    Answer3 = "To store global state",
+                    Answer4 = "To make components asynchronous",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "What does conditional rendering mean in React?",
+                    Answer1 = "Rendering different UI depending on state, props, or other conditions",
+                    Answer2 = "Rendering only CSS files",
+                    Answer3 = "Rendering components only on the server",
+                    Answer4 = "Preventing all re-renders",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "Why should expensive calculations usually not run unnecessarily during every render?",
+                    Answer1 = "Because they can slow down the UI and make interactions feel less responsive",
+                    Answer2 = "Because React forbids calculations inside components",
+                    Answer3 = "Because calculations always mutate state",
+                    Answer4 = "Because JavaScript cannot run calculations during rendering",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "What is the purpose of error boundaries in React?",
+                    Answer1 = "To catch rendering errors in part of the component tree and show fallback UI",
+                    Answer2 = "To validate CSS syntax",
+                    Answer3 = "To prevent all HTTP errors",
+                    Answer4 = "To replace try/catch in every JavaScript function",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "What is reconciliation in React?",
+                    Answer1 = "The process React uses to compare UI trees and decide what DOM updates are needed",
+                    Answer2 = "The process of installing npm packages",
+                    Answer3 = "The process of creating CSS variables",
+                    Answer4 = "The process of converting JSX to SQL",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "Why should component render logic usually be pure?",
+                    Answer1 = "Because rendering should return UI based on inputs without causing side effects",
+                    Answer2 = "Because pure components cannot receive props",
+                    Answer3 = "Because pure rendering automatically fetches data",
+                    Answer4 = "Because React requires every component to be memoized",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "What is the main purpose of Redux in a React application?",
+                    Answer1 = "To manage shared application state in a predictable way",
+                    Answer2 = "To replace HTML completely",
+                    Answer3 = "To compile TypeScript into SQL",
+                    Answer4 = "To make all components class-based",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "Why are Redux reducers expected to be pure functions?",
+                    Answer1 = "Because they should calculate the next state from the previous state and action without side effects",
+                    Answer2 = "Because they must directly call the database",
+                    Answer3 = "Because they should mutate the DOM",
+                    Answer4 = "Because they can only return strings",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 3,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "What does createAsyncThunk commonly help with in Redux Toolkit?",
+                    Answer1 = "Handling async operations and generating pending, fulfilled, and rejected actions",
+                    Answer2 = "Creating CSS animations automatically",
+                    Answer3 = "Replacing React Router",
+                    Answer4 = "Disabling Redux DevTools",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "Why should API calls usually not be made directly inside Redux reducers?",
+                    Answer1 = "Because reducers should be pure and free from side effects",
+                    Answer2 = "Because reducers cannot read action payloads",
+                    Answer3 = "Because API calls are only allowed in CSS files",
+                    Answer4 = "Because Redux does not support objects",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
+                new() {
+                    Text = "What is the purpose of selector functions in Redux or React state management?",
+                    Answer1 = "To read and derive specific values from state",
+                    Answer2 = "To send HTTP requests automatically",
+                    Answer3 = "To create database indexes",
+                    Answer4 = "To replace component props",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[5].Id,
+                    Topic = techArray[5]
+                },
                 new() {
                     Text = "Why is immutability especially important in React state management?",
                     Answer1 = "Because React can more reliably detect changes when new references are created",
@@ -2231,6 +3572,226 @@ public static class DbInitializer
 
                 // English Grammar — techArray[6]
 
+                new() {
+                    Text = "Choose the correct sentence.",
+                    Answer1 = "Neither of the answers are correct.",
+                    Answer2 = "Neither of the answers is correct.",
+                    Answer3 = "Neither answers is correct.",
+                    Answer4 = "Neither of the answer are correct.",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Which sentence is grammatically correct?",
+                    Answer1 = "Each of the students have finished their test.",
+                    Answer2 = "Each of the students has finished his or her test.",
+                    Answer3 = "Each students has finished the test.",
+                    Answer4 = "Each of students have finished their test.",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Choose the correct option: 'If I had studied harder, I ___ the exam.'",
+                    Answer1 = "would pass",
+                    Answer2 = "will pass",
+                    Answer3 = "would have passed",
+                    Answer4 = "pass",
+                    CorrectAnswerNumber = 3,
+                    Difficulty = 3,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Choose the correct sentence.",
+                    Answer1 = "The book which cover is blue belongs to me.",
+                    Answer2 = "The book whose cover is blue belongs to me.",
+                    Answer3 = "The book who cover is blue belongs to me.",
+                    Answer4 = "The book whom cover is blue belongs to me.",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Which sentence uses the present perfect continuous correctly?",
+                    Answer1 = "She has been working here since 2020.",
+                    Answer2 = "She is working here since 2020.",
+                    Answer3 = "She works here since 2020.",
+                    Answer4 = "She has working here since 2020.",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Choose the correct option: 'I wish I ___ more time to finish the project.'",
+                    Answer1 = "have",
+                    Answer2 = "had",
+                    Answer3 = "will have",
+                    Answer4 = "am having",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Which sentence is correct?",
+                    Answer1 = "She is used to wake up early.",
+                    Answer2 = "She used to waking up early.",
+                    Answer3 = "She is used to waking up early.",
+                    Answer4 = "She is used wake up early.",
+                    CorrectAnswerNumber = 3,
+                    Difficulty = 3,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Choose the correct sentence.",
+                    Answer1 = "I look forward to meet you.",
+                    Answer2 = "I look forward to meeting you.",
+                    Answer3 = "I look forward meeting you.",
+                    Answer4 = "I look forward to have met you.",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Which option correctly completes the sentence: 'Not only ___ late, but he also forgot the documents.'",
+                    Answer1 = "he was",
+                    Answer2 = "was he",
+                    Answer3 = "he is",
+                    Answer4 = "did he was",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 3,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Choose the correct reported speech: She said, 'I am tired.'",
+                    Answer1 = "She said that she is tired.",
+                    Answer2 = "She said that she was tired.",
+                    Answer3 = "She said that I was tired.",
+                    Answer4 = "She said that she has tired.",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Which sentence uses the passive voice correctly?",
+                    Answer1 = "The report was written by Maria.",
+                    Answer2 = "The report wrote by Maria.",
+                    Answer3 = "The report has wrote by Maria.",
+                    Answer4 = "The report was writing by Maria.",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 1,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Choose the correct option: 'Despite ___ tired, he continued working.'",
+                    Answer1 = "he was",
+                    Answer2 = "being",
+                    Answer3 = "was",
+                    Answer4 = "to be",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 3,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Which sentence is grammatically correct?",
+                    Answer1 = "There is many reasons to improve grammar.",
+                    Answer2 = "There are many reasons to improve grammar.",
+                    Answer3 = "There be many reasons to improve grammar.",
+                    Answer4 = "There has many reasons to improve grammar.",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 1,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Choose the correct sentence.",
+                    Answer1 = "He speaks English more fluently than I do.",
+                    Answer2 = "He speaks English more fluent than I do.",
+                    Answer3 = "He speaks English most fluently than I do.",
+                    Answer4 = "He speaks English fluently than I do.",
+                    CorrectAnswerNumber = 1,
+                    Difficulty = 2,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Which option correctly completes the sentence: 'She asked me where ___.'",
+                    Answer1 = "was the station",
+                    Answer2 = "the station was",
+                    Answer3 = "is the station",
+                    Answer4 = "the station is?",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Choose the correct form: 'The news ___ surprising.'",
+                    Answer1 = "are",
+                    Answer2 = "were",
+                    Answer3 = "is",
+                    Answer4 = "be",
+                    CorrectAnswerNumber = 3,
+                    Difficulty = 2,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Which sentence uses an infinitive correctly?",
+                    Answer1 = "I decided going home early.",
+                    Answer2 = "I decided to go home early.",
+                    Answer3 = "I decided go home early.",
+                    Answer4 = "I decided to going home early.",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 1,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Choose the correct sentence.",
+                    Answer1 = "This is the most unique solution.",
+                    Answer2 = "This is a very unique solution.",
+                    Answer3 = "This is a unique solution.",
+                    Answer4 = "This is the more unique solution.",
+                    CorrectAnswerNumber = 3,
+                    Difficulty = 3,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Which option correctly completes the sentence: 'Hardly ___ when the phone rang.'",
+                    Answer1 = "I had sat down",
+                    Answer2 = "had I sat down",
+                    Answer3 = "I sat down",
+                    Answer4 = "did I had sat down",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 3,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
+                new() {
+                    Text = "Choose the correct sentence.",
+                    Answer1 = "The team are playing well today.",
+                    Answer2 = "The team is playing well today.",
+                    Answer3 = "The team be playing well today.",
+                    Answer4 = "The team were plays well today.",
+                    CorrectAnswerNumber = 2,
+                    Difficulty = 2,
+                    TopicId = techArray[6].Id,
+                    Topic = techArray[6]
+                },
                 new() {
                     Text = "Choose the correct sentence.",
                     Answer1 = "Had I knew about the issue, I would have acted sooner.",
