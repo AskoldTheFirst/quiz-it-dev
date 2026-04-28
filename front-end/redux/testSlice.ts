@@ -140,6 +140,7 @@ export const testSlice = createSlice({
         state.test.questionId = ap.nextQuestion.questionId;
         state.test.testQuestionId = ap.nextQuestion.testQuestionId;
         state.test.number = ap.nextQuestion.number;
+        state.test.secondsLeft = ap.nextQuestion.secondsLeft;
 
         state.result = null;
       } else if (ap.testResult) {

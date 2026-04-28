@@ -59,13 +59,14 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
         }
 
         int durationInMin = _dataService.GetTopicById(currentTest.TopicId).DurationInMinutes;
-        bool isTestStillAlive = DateTime.UtcNow < currentTest.StartDate.AddMinutes(durationInMin);
+        int secondsLeft = CalculateLeftSeconds(currentTest, durationInMin);
 
         BL.QuestionDto nextQuestion = null;
-        if (isTestStillAlive)
+        if (secondsLeft > 0)
         {
             await SubmitAnswerAsync(testId, questionId, answerNumber, userName, cancellationToken);
             nextQuestion = await GetNextQuestionAsync(testId, userName, cancellationToken);
+            nextQuestion?.SecondsLeft = CalculateLeftSeconds(currentTest, durationInMin);
         }
 
         // If there is a next question, return it immediately
@@ -273,6 +274,12 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
         int totalPoints = easyAmount + middleAmount * 2 + hardAmount * 3;
 
         return (generatedIds.ToArray(), totalPoints);
+    }
+
+    private static int CalculateLeftSeconds(DAL.TestDto test, int durationInMin)
+    {
+        return Math.Max(0, (int)Math.Ceiling(
+                (test.StartDate.AddMinutes(durationInMin) - DateTime.UtcNow).TotalSeconds));
     }
 
     private static int[] GenerateQuestionIds(int[] ids, int amount)

@@ -19,4 +19,6 @@ public sealed record QuestionDto
     public string Answer3 { get; init; }
 
     public string Answer4 { get; init; }
+
+    public int SecondsLeft { get; set; }
 }

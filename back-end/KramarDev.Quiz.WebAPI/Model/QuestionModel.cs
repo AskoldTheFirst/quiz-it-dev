@@ -20,6 +20,8 @@ public sealed record QuestionModel
 
     public string Answer4 { get; init; }
 
+    public int SecondsLeft { get; init; }
+
     public static QuestionModel FromBLL(KramarDev.Quiz.BLLAbstractions.Dto.QuestionDto questionDto)
     {
         return new QuestionModel
@@ -32,7 +34,8 @@ public sealed record QuestionModel
             Answer1 = questionDto.Answer1,
             Answer2 = questionDto.Answer2,
             Answer3 = questionDto.Answer3,
-            Answer4 = questionDto.Answer4
+            Answer4 = questionDto.Answer4,
+            SecondsLeft = questionDto.SecondsLeft,
         };
     }
 }
