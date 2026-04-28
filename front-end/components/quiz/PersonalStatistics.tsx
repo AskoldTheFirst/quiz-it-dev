@@ -39,7 +39,9 @@ const getGradeLabel = (pct: number) => {
 
 export default function PersonalStatistics() {
   const user = useSelector((state: RootState) => state.appState.user);
-  const profile = useSelector((state: RootState) => state.profileState.profile);
+  const { profile, isLoading, error } = useSelector(
+    (state: RootState) => state.profileState
+  );
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -47,12 +49,29 @@ export default function PersonalStatistics() {
     dispatch(getProfile());
   }, [dispatch]);
 
-  if (!profile) {
+  if (isLoading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
         <CircularProgress />
       </Box>
     );
+  }
+
+  if (error) {
+    return (
+      <Box sx={{ textAlign: "center", py: 8 }}>
+        <Typography variant="h6" sx={{ color: "#f1f5f9", mb: 1 }}>
+          Could not load profile
+        </Typography>
+        <Typography variant="body2" sx={{ color: "#94a3b8" }}>
+          Please try again later.
+        </Typography>
+      </Box>
+    );
+  }
+
+  if (!profile) {
+    return null;
   }
 
   const totalAttempts = profile.profileSummary.totalAttemptCount;

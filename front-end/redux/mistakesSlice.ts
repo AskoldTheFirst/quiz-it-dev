@@ -9,14 +9,14 @@ export interface MistakesState {
   mistakes: Mistake[];
   topicId: number;
   isByPercentage: boolean;
-  hasLoaded: boolean;
+  isLoading: boolean;
 }
 
 const initialState: MistakesState = {
   mistakes: [],
   topicId: 0,
   isByPercentage: false,
-  hasLoaded: false,
+  isLoading: false,
 };
 
 export const loadMistakes = createAsyncThunk<MistakeDto[], MistakesRequestDto>(
@@ -37,12 +37,15 @@ export const mistakesSlice = createSlice({
   },
   extraReducers: (builder) => {
     // mistakes
+    builder.addCase(loadMistakes.pending, (state) => {
+      state.isLoading = true;
+    });
     builder.addCase(loadMistakes.fulfilled, (state, action) => {
       state.mistakes = mapMistakes(action.payload);
-      state.hasLoaded = true;
+      state.isLoading = false;
     });
     builder.addCase(loadMistakes.rejected, (state, action) => {
-      state.hasLoaded = true;
+      state.isLoading = false;
       console.log("loadMistakes.rejected", action.error);
     });
   },

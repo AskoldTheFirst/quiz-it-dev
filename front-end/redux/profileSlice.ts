@@ -5,10 +5,14 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 export interface ProfileState {
   profile: Profile | null;
+  isLoading: boolean;
+  error: string | null;
 }
 
 const initialState: ProfileState = {
   profile: null,
+  isLoading: false,
+  error: null,
 };
 
 export const getProfile = createAsyncThunk<ProfileDto>("profile/getProfile", async () =>
@@ -25,10 +29,19 @@ export const profileSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     // getProfile
+    builder.addCase(getProfile.pending, (state) => {
+      state.isLoading = true;
+      state.error = null;
+    });
     builder.addCase(getProfile.fulfilled, (state, action) => {
       state.profile = action.payload;
+      state.isLoading = false;
+      state.error = null;
     });
-    builder.addCase(getProfile.rejected, (_, action) => {
+    builder.addCase(getProfile.rejected, (state, action) => {
+      state.isLoading = false;
+      state.profile = null;
+      state.error = action.error.message ?? "Failed to load profile.";
       console.log("getProfile.rejected", action.error);
     });
 

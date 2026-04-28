@@ -53,7 +53,7 @@ const menuPropsSx = {
 
 export default function Mistakes() {
   const { topics } = useSelector((state: RootState) => state.appState);
-  const { mistakes, topicId, isByPercentage, hasLoaded } = useSelector(
+  const { mistakes, topicId, isByPercentage, isLoading } = useSelector(
     (state: RootState) => state.mistakesState
   );
   const dispatch = useAppDispatch();
@@ -127,6 +127,9 @@ export default function Mistakes() {
                 checked={isByPercentage}
                 onChange={(_, checked) => dispatch(setIsByPercentage(checked))}
                 sx={{
+                  "& .MuiSwitch-switchBase": {
+                    color: "#10b981",
+                  },
                   "& .MuiSwitch-switchBase.Mui-checked": { color: "#10b981" },
                   "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
                     backgroundColor: "#10b981",
@@ -147,7 +150,7 @@ export default function Mistakes() {
       <Card
         sx={{ backgroundColor: "#1e293b", border: "1px solid rgba(148, 163, 184, 0.1)" }}
       >
-        {!hasLoaded && (
+        {isLoading && (
           <LinearProgress
             sx={{
               backgroundColor: "rgba(148,163,184,0.1)",
@@ -289,7 +292,7 @@ export default function Mistakes() {
                 </Card>
               );
             })}
-            {mistakes.length === 0 && (
+            {!isLoading && mistakes.length === 0 && (
               <Typography sx={{ color: "#94a3b8" }}>
                 No mistakes found for the selected filter.
               </Typography>
