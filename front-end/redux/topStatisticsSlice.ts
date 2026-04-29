@@ -54,6 +54,11 @@ export const topStatisticsSlice = createSlice({
     setPageNumber: (state, action: PayloadAction<number>) => {
       state.pageNumber = action.payload;
     },
+    resetFilters: (state) => {
+      state.topicId = 0;
+      state.scoreThreshold = 0;
+      state.pageNumber = 1;
+    },
   },
   extraReducers: (builder) => {
     // getPage
@@ -67,5 +72,5 @@ export const topStatisticsSlice = createSlice({
   },
 });
 
-export const { setTopic, setScore, setPageSize, setPageNumber } =
+export const { setTopic, setScore, setPageSize, setPageNumber, resetFilters } =
   topStatisticsSlice.actions;

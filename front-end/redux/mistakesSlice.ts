@@ -34,6 +34,10 @@ export const mistakesSlice = createSlice({
     setIsByPercentage: (state, action) => {
       state.isByPercentage = action.payload;
     },
+    resetFilters: (state) => {
+      state.topicId = 0;
+      state.isByPercentage = false;
+    },
   },
   extraReducers: (builder) => {
     // mistakes
@@ -51,4 +55,4 @@ export const mistakesSlice = createSlice({
   },
 });
 
-export const { setTopicId, setIsByPercentage } = mistakesSlice.actions;
+export const { setTopicId, setIsByPercentage, resetFilters } = mistakesSlice.actions;
